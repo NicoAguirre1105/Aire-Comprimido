@@ -1,0 +1,79 @@
+[
+    {
+        "name": "Compresores de aire exentos de aceite",
+        "photo": "Photos/compresor1.jpg",
+        "specifications": [
+            "Marcas: Atlas Copco, Kaeser, Ingersoll Rand, Quincy",
+            "Tipo: Tornillo Rotativo / Uña Rotativa",
+            "Potencia: Desde 20HP hasta 350HP (15Kw - 275Kw)",
+            "Voltaje: 230V / 380V / 460V",
+            "Presión de Trabajo: Desde 7.5 bar hasta 10.4 bar (109 psig - 150 psig)",
+            "Caudal de Entrega (FAD): Desde 38.1 l/s hasta 713.7 l/s (138 m3/h - 2568 m3/h)"
+        ]
+    },
+
+    {
+        "name": "Compresores de aire lubricados de tornillo rotativo",
+        "photo": "Photos/compresorTornillo.png",
+        "specifications": [
+            "Marcas: Atlas Copco, Kaeser, Ingersoll Rand, Quincy",
+            "Tipo: Tornillo Rotativo",
+            "Potencia: Desde 7.5HP hasta 700HP (5.5Kw - 500Kw)",
+            "Voltaje: 230V / 380V / 460V",
+            "Presión de Trabajo: Desde 7.0 bar hasta 13.8 bar (90 psig - 200 psig)",
+            "Caudal de Entrega (FAD): Desde 15 l/s hasta 1114 l/s (54 m3/h - 3217 m3/h)"
+        ]
+    },
+
+    {
+        "name": "Compresores de Velocidad Variable",
+        "photo": "Photos/compresorVelocidad.webp",
+        "specifications": [
+            "Marcas: Atlas Copco, Kaeser, Ingersoll Rand, Quincy",
+            "Tipo: Tornillo Rotativo",
+            "Potencia: Desde 15HP hasta 422HP (11Kw - 315Kw)",
+            "Voltaje: 230V / 380V / 460V",
+            "Presión de Trabajo: Desde 4.0 bar hasta 13 bar (58 psig - 315 psig)",
+            "Caudal de Entrega (FAD): Desde 7.2 l/s hasta 1050 l/s (25.8 m3/h - 3780 m3/h)"
+        ]
+    },
+
+    {
+        "name": "Sistemas de Aire Medicinal",
+        "photo": "Photos/generadorMedicinal.jpg",
+        "specifications": [
+            "Marcas: Atlas Copco",
+            "Tipo: MED",
+            "Presión de Trabajo: Desde 7.0 bar hasta 13.0 bar (90 psig - 188.5 psig)",
+            "Caudal de Entrega (FAD): Desde 25.2 m3/h - 705 m3/h"
+        ]
+    },
+
+    {
+        "name": "Generadores de nitrógeno",
+        "photo": "Photos/generadorNitrogeno.jpg",
+        "specifications": [
+            "Marcas: Atlas Copco",
+            "Tipo: Generador de Nitrógeno",
+            "% de pureza: 95% / 97% / 98% / 99% / 99.5% / 99.90% / 99.99%",
+            "Caudal de Entrega (FOD): Desde 13.1 scfm hasta 1556.3 scfm",
+            "Presión de Entrada: 7.5 bar (108 psig)",
+            "Presión de Salida: 6.0 bar (87 psig)",
+            "Calidad de Nitrógeno: 1 / 2.1"
+        ]
+    },
+
+    {
+        "name": "Generadores de oxígeno",
+        "photo": "Photos/generadorOxigeno.jpg",
+        "specifications": [
+            "Marcas: Atlas Copco",
+            "Tipo: Generador de Oxígeno",
+            "% de pureza: 90% / 93% / 95%",
+            "Caudal de Entrega (FOD): Desde 1.3 scfm hasta 119 scfm",
+            "Presión de Entrada: 7.5 bar (108 psig)",
+            "Presión de Salida: 5.0 bar (72 psig)",
+            "Calidad de Oxígeno: 1 / 2.1"
+        ]
+    }
+]
