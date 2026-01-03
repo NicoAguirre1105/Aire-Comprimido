@@ -160,6 +160,7 @@ contactButton.addEventListener('click', createContactWindow)
 xmark.addEventListener('click', closeContactWindow)
 
 
+resizeWindow()
 fetch("Json/equipos.json")
     .then(response => response.json())
     .then(json => {
