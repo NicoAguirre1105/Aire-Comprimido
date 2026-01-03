@@ -164,10 +164,10 @@ header a {
 
 .slider {
     display: flex;
-    width: 400%;
+    width: 600%;
     height: 40vh;
     margin-left: 0;
-    animation: slide 16s infinite alternate ease-in-out;
+    animation: slide 24s infinite alternate ease-in-out;
 }
 
 .slider-section {
@@ -183,16 +183,22 @@ header a {
 
 @keyframes slide {
     0% {margin-left: 0;}
-    25% {margin-left: 0;}
+    18% {margin-left: 0;}
 
-    28% {margin-left: -100%;}
-    50% {margin-left: -100%;}
+    20% {margin-left: -100%;}
+    34% {margin-left: -100%;}
 
-    53% {margin-left: -200%;}
-    75% {margin-left: -200%;}
+    36% {margin-left: -200%;}
+    51% {margin-left: -200%;}
 
-    78% {margin-left: -300%;}
-    100% {margin-left: -300%;}
+    53% {margin-left: -300%;}
+    68% {margin-left: -300%;}
+
+    70% {margin-left: -400%;}
+    85% {margin-left: -400%;}
+
+    87% {margin-left: -500%;}
+    100% {margin-left: -500%;}
 }
 
 /* Main */
