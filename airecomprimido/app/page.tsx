@@ -1,65 +1,48 @@
-import Image from "next/image";
+import Slider from "./_components/slider";
+import ServiceCard from "./_components/serviceCard";
 
 export default function Home() {
+
+  const props = [
+    {src:"/logos/airhorse.webp", alt:"Airhorse Compressor"},
+    {src:"/logos/quincy.webp", alt:"Quincy Compressor"},
+    {src:"/logos/atlas_copco.svg", alt:"Atlas Copco"},
+    {src:"/logos/hertz.svg", alt:"Hertz Compressor"},
+    {src:"/logos/kaeser.webp", alt:"Kaeser Compressor"},
+    {src:"/logos/ir_short.webp", alt:"Ingersoll Rand"}
+  ]
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main>
+      <div className="hero">
+        <h1>AIRECOMPRIMIDO EC S.A.S</h1>
+        <p>La fuerza del aire... nos mueve</p>
+        <p>Nos dedicamos a la comercialización de compresores de aire, repuestos originales y servicio técnico de las marcas más prestigiosas a nivel mundial como son: Atlas Copco, Kaeser, Ingersoll Rand, Quincy, Airhorse, Hertz, entre otras</p>
+        <Slider props={props}/>
+        <button>Solicita una Cotización</button>
+      </div>
+      <div className="aboutUs">
+        <p>Todos quienes formamos AIRECOMPRIMIDO EC S.A.S., trabajamos arduamente para conseguir de las distintas fábricas, a nivel mundial, los mejores precios y tiempos de entrega, tanto en equipos como en repuestos. Para nosotros lo más importante es satisfacer la necesidad que tenga nuestro cliente a un precio justo y acorde a la realidad que estamos viviendo.</p>
+        <img src="Photos/img1.jpg" alt="Compresor" />
+        <p>Queremos brindar a la Industria Ecuatoriana y de la Región, una ALTERNATIVA válida que les permita obtener un mejor precio por los mismos compresores, repuestos y mano de obra calificada que ofrecen los distribuidores de las diferentes marcas en el país.</p>
+        <img src="Photos/img2.jpg" alt="Mantenimiento" />
+      </div>
+      <div className="services">
+        <h2>Servicios</h2>
+        <ServiceCard title="Equipos / Compresores" buttonText="Visita el Catálogo de Equipos">
+          <p>Ofrecemos compresores de aire para toda aplicación en la industria.</p>
+        </ServiceCard>
+        <ServiceCard title="Repuestos" buttonText="Visita el Catálogo de Repuestos">
+          <p>Disponemos en stock los repuestos que son de recambio frecuente en cada una de las marcas de compresores. Además, podemos importar los equipos y repuestos de cualquier país.</p>
+        </ServiceCard>
+        <ServiceCard title="Mantenimiento" buttonText="Visita el Catálogo de Mantenimiento">
+          <p>Ofrecemos mantenimiento preventivo y correctivo para sus compresores, de modo que, se mantengan en un estado óptimo para su correcto funcionamiento.</p>
+        </ServiceCard>
+      </div>
+      <div className="contactUs">
+        <p>Solicita ahora una visita técnica para la inspección de sus compresores o déjanos tu duda directamente con nuestro personal.</p>
+        <button>Contáctanos</button>
+      </div>
+    </main>
   );
 }
