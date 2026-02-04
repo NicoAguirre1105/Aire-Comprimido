@@ -1,6 +1,5 @@
 import Slider from "./_components/slider";
 import ServiceCard from "./_components/serviceCard";
-import ContactUs from "./_components/contactUs";
 
 export default function Home() {
 

@@ -1,4 +1,5 @@
-export default function Footer() {
+export default function Footer() 
+{
   return (
     <footer>
       <p>AIRECOMPRIMIDO EC S.A.S. Todos los derechos reservados &#169 2021</p>
