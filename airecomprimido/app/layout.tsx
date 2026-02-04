@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "./_components/header";
 import Footer from "./_components/footer";
+import ContactUs from "./_components/contactUs";
 import "./globals.css";
 
 
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body>
         <Header />
         {children}
+        <ContactUs />
         <Footer />
       </body>
     </html>

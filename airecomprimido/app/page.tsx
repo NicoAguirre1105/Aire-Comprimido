@@ -1,5 +1,6 @@
 import Slider from "./_components/slider";
 import ServiceCard from "./_components/serviceCard";
+import ContactUs from "./_components/contactUs";
 
 export default function Home() {
 
@@ -38,10 +39,6 @@ export default function Home() {
         <ServiceCard title="Mantenimiento" buttonText="Visita el Catálogo de Mantenimiento">
           <p>Ofrecemos mantenimiento preventivo y correctivo para sus compresores, de modo que, se mantengan en un estado óptimo para su correcto funcionamiento.</p>
         </ServiceCard>
-      </div>
-      <div className="contactUs">
-        <p>Solicita ahora una visita técnica para la inspección de sus compresores o déjanos tu duda directamente con nuestro personal.</p>
-        <button>Contáctanos</button>
       </div>
     </main>
   );
