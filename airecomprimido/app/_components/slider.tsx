@@ -11,10 +11,12 @@ type SliderProps = {
 
 export default function Slider({
   props,
-  className
+  className,
+  imgClass
 }: {
   props: SliderProps[],
   className: string
+  imgClass?: string
 }) {
 
   const [current, setCurrent] = useState(0)
@@ -41,7 +43,7 @@ export default function Slider({
             src={slide.src}
             alt={slide.alt}
             fill
-            className="w-auto h-full object-contain self-center"
+            className={`w-auto h-full object-contain self-center ${imgClass}`}
           />
         </div>
         ))}

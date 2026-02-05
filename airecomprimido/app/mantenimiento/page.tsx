@@ -16,6 +16,7 @@ export default function Mantenimiento()
   return (
     <main className="flex flex-col justify-center pt-15 gap-15">
       <h1 className="text-center text-5xl font-bold text-(--dark-blue)">Mantenimiento y otros servicios</h1>
+      <Slider props={props} className="w-auto h-50"/>
       <div className="bg-(--dark-blue) py-15 text-white pl-20">
         <h2 className={h2Style}>Mantenimiento y Servicio técnico</h2>
         <ul className={ulStyle}>
