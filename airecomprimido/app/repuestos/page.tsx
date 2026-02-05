@@ -1,4 +1,5 @@
 import Slider from "../_components/slider"
+import ProductContainer from "../_components/productContainer"
 
 export default function Repuestos ()
 {
@@ -24,13 +25,13 @@ export default function Repuestos ()
     <main>
       <h1>Catálogo de repuestos</h1>
       <Slider props={props}/>
-      <div className="products">
+      <ProductContainer>
         <h2>Repuestos</h2>        
         <p>Disponemos de los siguientes repuestos originales en marcas como: Atlas Copco, Kaeser, Ingersoll Rand, Quincy, Airhorse, entre otras</p>
         {/* lista */}
         <h2>Líneas de aire y accesorios</h2>        
         {/* lista */}
-      </div>
+      </ProductContainer>
     </main>
   )
 }

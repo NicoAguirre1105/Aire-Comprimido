@@ -1,5 +1,6 @@
 import Slider from "../_components/slider"
 import ProductCard from "../_components/productCard"
+import ProductContainer from "../_components/productContainer"
 
 export default function Equipos()
 {
@@ -17,7 +18,9 @@ return (
     <h1>Catálogo de equipos</h1>
     <Slider props={props}/>
     <div className="products">
-      <ProductCard />
+      <ProductContainer>
+        <ProductCard />
+      </ProductContainer>
     </div>
   </main>
 )

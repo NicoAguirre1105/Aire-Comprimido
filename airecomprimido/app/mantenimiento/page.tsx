@@ -1,4 +1,5 @@
 import Slider from "../_components/slider"
+import ProductContainer from "../_components/productContainer"
 
 export default function Mantenimiento()
 {
@@ -14,14 +15,14 @@ export default function Mantenimiento()
     <main>
       <h1>Mantenimiento y otros servicios</h1>
       <Slider props={props}/>
-      <div className="products">
+      <ProductContainer>
         <h2>Mantenimiento y Servicio técnico</h2>
         {/*lista*/ }
         <p></p>
         {/*lista*/ }
         <h2>Diseño e instalación de redes de aire</h2>
         {/*lista*/ }
-      </div>
+      </ProductContainer>
     </main>
   )
 }
