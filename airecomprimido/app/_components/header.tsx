@@ -9,7 +9,7 @@ export default function Header()
 {
   const linkStyle = "text-white text-lg font-medium  transition-all duration-100 hover:scale-110"
 
-  const [cardState, setcardState] = useState("flex")
+  const [cardState, setcardState] = useState("hidden")
 
   return (
     <>

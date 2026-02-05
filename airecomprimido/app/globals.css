@@ -10,3 +10,6 @@
   --hover-red: #c21703;
 }
 
+main { /* Header uses that space with fixed position */
+  margin-top: 4rem;  
+}
