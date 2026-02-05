@@ -9,7 +9,7 @@ export default function ContactCard({
   const buttonStyle = "min-w-35 text-center py-2 px-4 rounded-4xl text-white font-medium hover:cursor-pointer transition-all duration-300"
 
   return (
-    <div className={`absolute ${state} flex-col top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-10`}> {/*Contact Card*/ }
+    <div className={`fixed ${state} flex-col top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-10 z-100`}> {/*Contact Card*/ }
       <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-(--dark-blue) w-7 h-7 text-white text-center rounded-4xl hover:cursor-pointer">X</span> {/*Close icon*/}
       <h3 className="text-(--dark-blue) text-center text-3xl font-medium mb-4">Información de contacto</h3>
       <h4 className={titleStyle}>Dirección</h4>
