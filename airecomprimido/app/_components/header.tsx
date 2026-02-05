@@ -9,11 +9,11 @@ export default function Header()
 {
   const linkStyle = "text-white text-lg font-medium  transition-all duration-100 hover:scale-110"
 
-  const [cardState, setcardState] = useState("hidden")
+  const [cardState, setcardState] = useState("flex")
 
   return (
     <>
-      <header className="fixed w-full bg-(--light-blue) flex h-16 px-10 py-2.5">
+      <header className="fixed top-0 w-full bg-(--light-blue) flex h-16 px-10 py-2.5 z-50">
         <Link href="/">
           <Image 
             src="/logos/logo.png"
