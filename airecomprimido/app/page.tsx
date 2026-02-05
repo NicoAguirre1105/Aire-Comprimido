@@ -1,6 +1,9 @@
+'use client'
+
 import Slider from "./_components/slider";
 import ServiceCard from "./_components/serviceCard";
 import Image from "next/image";
+import { useContactVisibility } from "./_context/ContactVisibilityContext";
 
 export default function Home() {
 
@@ -16,6 +19,8 @@ export default function Home() {
   const sliderStyle = "w-100 h-30"
   const h2Style = "text-(--light-blue) font-bold text-5xl"
 
+  const { isVisible, toggleContact } = useContactVisibility();
+
   return (
     <main>
       <div className="flex flex-col items-center gap-10 p-18 bg-[linear-gradient(200deg,var(--dark-blue)_10%,var(--light-blue)_100%)]">
@@ -25,7 +30,7 @@ export default function Home() {
         </div>
         <p className="text-center text-white font-light text-lg px-20">Nos dedicamos a la comercialización de compresores de aire, repuestos originales y servicio técnico de las marcas más prestigiosas a nivel mundial como son: Atlas Copco, Kaeser, Ingersoll Rand, Quincy, Airhorse, Hertz, entre otras</p>
         <Slider props={props} className={sliderStyle}/>
-        <button className={`${buttonStyle} w-fit mx-3 bg-(--light-blue) hover:bg-(--dark-blue) text-lg`}>Solicita una Cotización</button>
+        <button onClick={toggleContact} className={`${buttonStyle} w-fit mx-3 bg-(--light-blue) hover:bg-(--dark-blue) text-lg`}>Solicita una Cotización</button>
       </div>
       <div className="flex flex-col items-center px-40 py-30 gap-10">
         <h2 className={h2Style}>Quienes somos</h2>

@@ -3,13 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import ContactCard from "./contactCard";
-import { useState } from "react";
 
-export default function Header() 
-{
+export default function Header({
+  state,
+  handler
+}:{
+  state: boolean,
+  handler: () => void
+}) {
   const linkStyle = "text-white text-lg font-medium  transition-all duration-100 hover:scale-110"
-
-  const [cardState, setcardState] = useState("hidden")
 
   return (
     <>
@@ -31,10 +33,10 @@ export default function Header()
             <Link href="/repuestos" className={linkStyle}>Repuestos</Link>
             <Link href="/mantenimiento" className={linkStyle}>Mantenimiento</Link>
           </nav>
-          <button className="bg-white text-(--dark-blue) rounded-4xl px-5 text-lg font-medium hover:bg-(--dark-blue) hover:text-white transition-all duration-300 hover:cursor-pointer">Contáctanos</button>
+          <button onClick={handler} className="bg-white text-(--dark-blue) rounded-4xl px-5 text-lg font-medium hover:bg-(--dark-blue) hover:text-white transition-all duration-300 hover:cursor-pointer">Contáctanos</button>
         </div>
       </header>
-      <ContactCard state={cardState}/>
+      <ContactCard state={state} handler={handler}/>
     </>
   );
 }
