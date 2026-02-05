@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "name": "Compresores de aire exentos de aceite",
+    "src": "/img/compresor1.jpg",
+    "props": [
+      {"title": "Marca", "description": "Atlas Copco, Kaeser, Ingersoll Rand, Quincy"},
+      {"title": "Tipo", "description": "Tornillo Rotativo / Uña Rotativa"},
+      {"title": "Potencia", "description": "Desde 20HP hasta 350HP (15Kw - 275Kw)"},
+      {"title": "Voltaje", "description": "230V / 380V / 460V"},
+      {"title": "Presión de Trabajo", "description": "Desde 7.5 bar hasta 10.4 bar (109 psig - 150 psig)"},
+      {"title": "Caudal de Entrega (FAD)", "description": "Desde 38.1 l/s hasta 713.7 l/s (138 m3/h - 2568 m3/h)"}
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Compresores de aire lubricados de tornillo rotativo",
+    "src": "/img/compresorTornillo.png",
+    "props": [
+      {"title": "Marca", "description": "Atlas Copco, Kaeser, Ingersoll Rand, Quincy"},
+      {"title": "Tipo", "description": "Tornillo Rotativo"},
+      {"title": "Potencia", "description": "Desde 7.5HP hasta 700HP (5.5Kw - 500Kw)"},
+      {"title": "Voltaje", "description": "230V / 380V / 460V"},
+      {"title": "Presión de Trabajo", "description": "Desde 7.0 bar hasta 13.8 bar (90 psig - 200 psig)"},
+      {"title": "Caudal de Entrega (FAD)", "description": "Desde 15 l/s hasta 1114 l/s (54 m3/h - 3217 m3/h)"}
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Compresores de Velocidad Variable",
+    "src": "/img/compresorVelocidad.webp",
+    "props": [
+      {"title": "Marca", "description": "Atlas Copco, Kaeser, Ingersoll Rand, Quincy"},
+      {"title": "Tipo", "description": "Tornillo Rotativo"},
+      {"title": "Potencia", "description": "Desde 15HP hasta 422HP (11Kw - 315Kw)"},
+      {"title": "Voltaje", "description": "230V / 380V / 460V"},
+      {"title": "Presión de Trabajo", "description": "Desde 4.0 bar hasta 13 bar (58 psig - 315 psig)"},
+      {"title": "Caudal de Entrega (FAD)", "description": "Desde 7.2 l/s hasta 1050 l/s (25.8 m3/h - 3780 m3/h)"}
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Sistemas de Aire Medicinal",
+    "src": "/img/generadorMedicinal.jpg",
+    "props": [
+      {"title": "Marca", "description": "Atlas Copco"},
+      {"title": "Tipo", "description": "MED"},
+      {"title": "Presión de Trabajo", "description": "Desde 7.0 bar hasta 13.0 bar (90 psig - 188.5 psig)"},
+      {"title": "Caudal de Entrega (FAD)", "description": "Desde 25.2 m3/h - 705 m3/h"}
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Generadores de nitrógeno",
+    "src": "/img/generadorNitrogeno.jpg",
+    "props": [
+      {"title": "Marca", "description": "Atlas Copco"},
+      {"title": "Tipo", "description": "Generador de Nitrógeno"},
+      {"title": "% de pureza", "description": "95% / 97% / 98% / 99% / 99.5% / 99.90% / 99.99%"},
+      {"title": "Caudal de Entrega (FOD)", "description": "Desde 13.1 scfm hasta 1556.3 scfm"},
+      {"title": "Presión de Entrada", "description": "7.5 bar (108 psig)"},
+      {"title": "Presión de Salida", "description": "6.0 bar (87 psig)"},
+      {"title": "Calidad de Nitrógeno", "description": "1 / 2.1"}
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Generadores de oxígeno",
+    "src": "/img/generadorOxigeno.jpg",
+    "props": [
+      {"title": "Marca", "description": "Atlas Copco"},
+      {"title": "Tipo", "description": "Generador de Oxígeno"},
+      {"title": "% de pureza", "description": "90% / 93% / 95%"},
+      {"title": "Caudal de Entrega (FOD)", "description": "Desde 1.3 scfm hasta 119 scfm"},
+      {"title": "Presión de Entrada", "description": "7.5 bar (108 psig)"},
+      {"title": "Presión de Salida", "description": "5.0 bar (72 psig)"},
+      {"title": "Calidad de Oxígeno", "description": "1 / 2.1"}
+    ]
+  }
+]
