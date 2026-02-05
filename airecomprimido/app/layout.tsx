@@ -5,7 +5,6 @@ import ContactUs from "./_components/contactUs";
 import "./globals.css";
 
 
-
 export const metadata: Metadata = {
   title: "AIRECOMPRIMIDO EC S.A.S | Mantenimiento Industrial",
   description: "Comercializamos compresores de aire, repuestos originales y ofrecemos mantenimiento industrial a los diferentes equipos multimarca"
@@ -18,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>
+      <body className="bg-pink-500"> {/* bg-color to check mistakes directly */}
         <Header />
         {children}
         <ContactUs />
