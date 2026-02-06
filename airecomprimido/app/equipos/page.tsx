@@ -46,7 +46,7 @@ return (
             <div className="my-2">
               <h2 className="text-2xl font-medium italic mb-2">{product.name}</h2>
               {product.props.map((property, idx) => (
-                <p className="font-light"><strong className="font-medium">{property.title}:</strong> {property.description}</p>
+                <p key={property.title + product.id} className="font-light"><strong className="font-medium">{property.title}:</strong> {property.description}</p>
               ))}
             </div>
           </ProductCard>
