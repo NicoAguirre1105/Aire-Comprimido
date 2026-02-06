@@ -5,6 +5,7 @@ import Header from "./_components/header";
 import ContactUs from "./_components/contactUs";
 import Footer from "./_components/footer";
 import { ContactVisibilityProvider, useContactVisibility } from "./_context/ContactVisibilityContext";
+import { ViewportProvider } from "./_context/ViewportContext";
 
 function ClientLayoutInner({
   children,
@@ -14,7 +15,7 @@ function ClientLayoutInner({
   const { isVisible, toggleContact } = useContactVisibility();
 
   return (
-    <>
+    <ViewportProvider>
       <Image
         src="/logos/logo_black.png"
         alt="AIRECOMPRIMIDO EC logo"
@@ -22,11 +23,11 @@ function ClientLayoutInner({
         height={150}
         className="fixed -z-1 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-7 w-80"
       />
-      <Header state={isVisible} handler={toggleContact} />
+      <Header />
       {children}
       <ContactUs handler={toggleContact} />
       <Footer />
-    </>
+    </ViewportProvider>
   );
 }
 

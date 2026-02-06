@@ -21,13 +21,13 @@ export default function Repuestos ()
   ]
 
   const h2Style = "font-bold text-3xl my-5"
-  const ulStyle = "mx-20 list-disc font-light text-xl"
+  const ulStyle = "mx-20 list-disc font-light text-xl max-sm:mx-10"
 
   return (
     <main className="flex flex-col justify-center pt-15 gap-15">
-      <h1 className="text-center text-5xl font-bold text-(--dark-blue)">Catálogo de repuestos</h1>
+      <h1 className="text-center text-5xl font-bold text-(--dark-blue) mx-5">Catálogo de repuestos</h1>
       <Slider props={props} className="w-auto h-50"/>
-      <div className="bg-(--dark-blue) py-15 text-white pl-20">
+      <div className="bg-(--dark-blue) py-15 text-white px-20 max-sm:px-10">
         <h2 className={h2Style}>Repuestos</h2>        
         <p className="font-light text-xl">Disponemos de los siguientes repuestos originales en marcas como: Atlas Copco, Kaeser, Ingersoll Rand, Quincy, Airhorse, entre otras</p>
         <ul className={ulStyle}>

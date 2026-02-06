@@ -15,8 +15,8 @@ export default function ServiceCard({
 
     return (
     <div className="flex flex-col justify-between items-center rounded-xl shadow-[2px_2px_20px_15px_#ddd] max-w-80 bg-white px-5 py-10 gap-5">
-        <h3 className="text-(--dark-blue) text-center font-bold text-xl">{title}</h3>
-        <p className="px-5 text-center font-light">{children}</p>
+        <h3 className="text-(--dark-blue) text-center font-bold text-2xl">{title}</h3>
+        <p className="px-5 text-center font-light text-xl">{children}</p>
         <Link className={buttonStyle} href={link}>{buttonText}</Link>
     </div>
     )

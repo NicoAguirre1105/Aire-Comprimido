@@ -11,13 +11,13 @@ export default function Mantenimiento()
   ]
 
   const h2Style = "font-bold text-2xl my-5"
-  const ulStyle = "mx-20 list-disc font-light text-xl"
+  const ulStyle = "mx-20 list-disc font-light text-xl max-sm:text-lg max-sm:mx-5"
 
   return (
     <main className="flex flex-col justify-center pt-15 gap-15">
-      <h1 className="text-center text-5xl font-bold text-(--dark-blue)">Mantenimiento y otros servicios</h1>
-      <Slider props={props} className="w-auto h-50"/>
-      <div className="bg-(--dark-blue) py-15 text-white pl-20">
+      <h1 className="text-center text-5xl mx-10 font-bold text-(--dark-blue) max-sm:text-4xl">Mantenimiento y otros servicios</h1>
+      <Slider props={props} className="w-auto h-50" imgClass="px-5"/>
+      <div className="bg-(--dark-blue) py-15 text-white pl-20 max-sm:px-10">
         <h2 className={h2Style}>Mantenimiento y Servicio técnico</h2>
         <ul className={ulStyle}>
           <li>Mantenimiento Básico</li>

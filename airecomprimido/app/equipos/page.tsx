@@ -29,10 +29,12 @@ export default function Equipos()
   const productList = equipos as Product[]
 
 return (
-  <main className="flex flex-col justify-center pt-15 gap-15">
-      <h1 className="text-center text-5xl font-bold text-(--dark-blue)">Catálogo de equipos</h1>
-    <Slider props={props} className="h-30 w-auto"/>
-    <div className="bg-(--dark-blue) py-25 text-white">
+  <main className="flex flex-col justify-center">
+    <div className="bg-(--dark-blue) flex flex-col py-15 px-10 gap-15">
+      <h1 className="text-center text-5xl max-sm:text-4xl font-bold text-white">Catálogo de equipos</h1>
+      <Slider props={props} className="h-30 w-auto max-sm:h-20"/>
+    </div>
+    <div className="py-25 text-white">
       <div className="flex flex-col items-center gap-15">
         {productList.map((product, index) => (
           <ProductCard key={product.id}>
@@ -41,12 +43,12 @@ return (
               alt={`Equipo ${product.id}`}
               width={150}
               height={150} 
-              className="" 
+              className="min-w-30 max-md:max-h-60 " 
             />
             <div className="my-2">
-              <h2 className="text-2xl font-medium italic mb-2">{product.name}</h2>
+              <h2 className="text-2xl max-sm:text-lg font-medium italic mb-2">{product.name}</h2>
               {product.props.map((property, idx) => (
-                <p key={property.title + product.id} className="font-light"><strong className="font-medium">{property.title}:</strong> {property.description}</p>
+                <p key={property.title + product.id} className=" text-lg font-light max-sm:text-base"><strong className="font-medium">{property.title}:</strong> {property.description}</p>
               ))}
             </div>
           </ProductCard>
