@@ -22,7 +22,7 @@ export default function ContactCard({
   return (
     <>
     {isMobile ?
-      <div className={`${isVisible ? "fixed" : "hidden"} absolute flex flex-col w-full h-full top-0 left-0 bg-(--dark-blue) px-20 py-20 z-100 text-white max-sm:px-15`}>
+      <div className={`${isVisible ? "fixed" : "hidden"} overflow-y-auto flex flex-col w-full h-full top-0 left-0 bg-(--dark-blue) px-20 py-20 z-100 text-white max-sm:px-15`}>
         <Image
           src="/icons/close.svg"
           alt="Close Icon"

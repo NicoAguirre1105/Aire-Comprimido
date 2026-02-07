@@ -28,7 +28,7 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-0 w-full bg-(--light-blue) flex h-16 px-10 py-2.5 z-50 max-sm:px-5">
-        <Link href="/">
+        <Link href="/" onClick={toggleMenu}>
           <Image 
             src="/logos/logo.png"
             alt="AireComprimido EC S.A.S"

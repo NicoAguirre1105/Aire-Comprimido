@@ -8,8 +8,8 @@ export default function ContactUs({
   
   return (
     <div className="bg-(--grey-blue) flex flex-col py-25 px-40 max-md:px-20 max-md:py-20 items-center gap-10">
-    <p className="text-center text-(--dark-blue) text-2xl max-sm:text-xl font-light">Solicita ahora una visita técnica para la inspección de sus compresores o déjanos tu duda directamente con nuestro personal.</p>
-    <button onClick={handler} className={buttonStyle}>Contáctanos</button>
+      <p className="text-center text-(--dark-blue) text-2xl max-sm:text-xl font-light">Solicita ahora una visita técnica para la inspección de sus compresores o déjanos tu duda directamente con nuestro personal.</p>
+      <button onClick={handler} className={buttonStyle}>Contáctanos</button>
     </div>
   )
 }
