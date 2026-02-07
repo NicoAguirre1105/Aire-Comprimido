@@ -25,7 +25,7 @@ export default function ContactCard({
       <div className={`${isVisible ? "fixed" : "hidden"} absolute flex flex-col w-full h-full top-0 left-0 bg-(--dark-blue) px-20 py-20 z-100 text-white max-sm:px-15`}>
         <Image
           src="/icons/close.svg"
-          alt="Menu Icon"
+          alt="Close Icon"
           width={24}
           height={24} 
           className="h-10 w-auto fixed top-5 right-5 z-60 cursor-pointer"
@@ -34,10 +34,10 @@ export default function ContactCard({
         <h3 className="text-center text-3xl font-medium mb-4">Información de contacto</h3>
         <h4 className={titleStyle}>Dirección</h4>
         <p className={infoStyle}>José Mogro Oe10D s/n y Matilde Hidalgo</p>
-        <Link href={locationUrl} target="_blank" className={`${buttonStyle} w-50 self-center my-3 bg-(--light-blue) hover:bg-(--dark-blue)`}>
+        <Link href={locationUrl} target="_blank" className={`${buttonStyle} w-50 self-center my-3 bg-(--light-blue) hover:bg-black`}>
           <Image
             src="/icons/location.svg"
-            alt="Menu Icon"
+            alt="Location"
             width={24}
             height={24} 
             className="h-7 w-auto"
@@ -65,7 +65,7 @@ export default function ContactCard({
             <Link href={mailUrl} target="_blank" className={`bg-(--red) hover:bg-(--hover-red) ${buttonStyle}`}>
               <Image
                 src="/icons/mail.svg"
-                alt="WhatsApp"
+                alt="Mail"
                 width={24}
                 height={24} 
                 className="h-7 w-auto"
@@ -80,10 +80,10 @@ export default function ContactCard({
         <div className={`absolute flex flex-col w-2/3 max-w-120 max-h-9/10 h-fit top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg p-10 z-100`}>
           <Image
             src="/icons/close.svg"
-            alt="Menu Icon"
+            alt="Close Icon"
             width={24}
             height={24} 
-            className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-(--dark-blue) w-9 h-9 text-white text-center rounded-4xl hover:cursor-pointer p-1"
+            className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-(--dark-blue) w-9 h-9 rounded-4xl hover:cursor-pointer p-1"
             onClick={toggleContact}
           />
           <h3 className="text-(--dark-blue) text-center text-3xl font-medium mb-4">Información de contacto</h3>
@@ -92,7 +92,7 @@ export default function ContactCard({
           <Link href={locationUrl} target="_blank" className={`${buttonStyle} w-50 self-center my-3 bg-(--light-blue) hover:bg-(--dark-blue)`}>
             <Image
               src="/icons/location.svg"
-              alt="Menu Icon"
+              alt="Location"
               width={24}
               height={24} 
               className="h-7 w-auto"
@@ -113,17 +113,17 @@ export default function ContactCard({
                   alt="WhatsApp"
                   width={24}
                   height={24} 
-                  className="h-7 w-auto top-5 right-5 fill-white z-60 cursor-pointer"
+                  className="h-7 w-auto cursor-pointer"
                 />
                 WhatsApp
               </Link>
               <Link href={mailUrl} target="_blank" className={`bg-(--red) hover:bg-(--hover-red) ${buttonStyle}`}>
                 <Image
                   src="/icons/mail.svg"
-                  alt="WhatsApp"
+                  alt="Mail"
                   width={24}
                   height={24} 
-                  className="h-7 w-auto top-5 right-5 z-60 cursor-pointer"
+                  className="h-7 w-auto cursor-pointer"
                 />
                 Correo
               </Link>
