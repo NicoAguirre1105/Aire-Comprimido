@@ -8,12 +8,12 @@ import { useContactVisibility } from "./_context/ContactVisibilityContext";
 export default function Home() {
 
   const props = [
-    {id: 1, src:"/logos/airhorse.webp", alt:"Airhorse Compressor"},
-    {id: 2, src:"/logos/quincy.webp", alt:"Quincy Compressor"},
+    {id: 1, src:"/logos/airhorse.svg", alt:"Airhorse Compressor"},
+    {id: 2, src:"/logos/quincy.svg", alt:"Quincy Compressor"},
     {id: 3, src:"/logos/atlas_copco.svg", alt:"Atlas Copco"},
     {id: 4, src:"/logos/hertz.svg", alt:"Hertz Compressor"},
-    {id: 5, src:"/logos/kaeser.webp", alt:"Kaeser Compressor"},
-    {id: 6, src:"/logos/ir_large.png", alt:"Ingersoll Rand"}
+    {id: 5, src:"/logos/kaeser.svg", alt:"Kaeser Compressor"},
+    {id: 6, src:"/logos/IR_logo.svg", alt:"Ingersoll Rand"}
   ]
   const buttonStyle = "text-center py-2 px-5 rounded-4xl text-white font-medium hover:cursor-pointer transition-all duration-300"
   const sliderStyle = "w-100 h-30 max-sm:w-70 max-sm:h-20"
