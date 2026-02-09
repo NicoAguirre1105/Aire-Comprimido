@@ -1,9 +1,9 @@
 'use client'
 
-import Slider from "./_components/slider";
-import ServiceCard from "./_components/serviceCard";
+import Slider from "../_components/slider";
+import ServiceCard from "../_components/serviceCard";
 import Image from "next/image";
-import { useContactVisibility } from "./_context/ContactVisibilityContext";
+import { useContactVisibility } from "../_context/ContactVisibilityContext";
 
 export default function Home() {
 
