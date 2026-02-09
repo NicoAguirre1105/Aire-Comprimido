@@ -16,7 +16,7 @@ export default function RootLayout({
 
   return (
     <html lang="es">
-      <body className="bg-white" cz-shortcut-listen="true">
+      <body className="bg-white min-h-screen flex flex-col" cz-shortcut-listen="true">
         <ClientLayout>
           {children}
         </ClientLayout>
