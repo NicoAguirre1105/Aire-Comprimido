@@ -1,6 +1,10 @@
 import Image from "next/image"
+import { useContactVisibility } from "../_context/ContactVisibilityContext"
 
 export default function EmailSentMessage() {
+
+  const { isVisible, toggleContact } = useContactVisibility()
+
   return(
     <>
     <Image
@@ -11,7 +15,7 @@ export default function EmailSentMessage() {
       className="h-3/5 w-fit mx-auto"
     />
     <p className="text-center py-5 px-5 text-xl font-light">El correo ha sido enviado exitosamente!</p>
-    <button className="button-style bg-(--light-blue) text-white w-30 self-center">Hecho</button>
+    <button onClick={toggleContact} className="button-style bg-(--light-blue) text-white w-30 self-center">Hecho</button>
     </>
   )
 }
