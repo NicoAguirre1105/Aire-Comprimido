@@ -20,7 +20,7 @@ export default function EmailForm({
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sendEmail.php`, {
+      const res = await fetch(`/api/sendEmail.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, subject, message }),
