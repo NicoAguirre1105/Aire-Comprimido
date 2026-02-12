@@ -25,7 +25,7 @@ export function ViewportProvider({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 830px)");
+    const mq = window.matchMedia("(max-width: 768px)");
 
     const handler = () => setIsMobile(mq.matches);
     handler();
