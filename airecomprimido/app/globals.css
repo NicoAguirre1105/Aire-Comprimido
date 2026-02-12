@@ -13,3 +13,29 @@
 main { /* Header uses that space with fixed position */
   margin-top: 4rem;  
 }
+
+.window-title {
+  text-align: center;
+  font-size: xx-large;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.button-style {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  text-align: center;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  transition: all;
+  animation-duration: 300ms;
+  cursor: pointer;
+}
+
+.button-style:hover {
+  opacity: 85%;
+}

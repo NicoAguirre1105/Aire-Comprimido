@@ -70,10 +70,10 @@ export default function Header() {
             toggleContact()
             toggleMenu()
             }} 
-            className="bg-(--grey-blue) text-(--dark-blue) rounded-4xl w-fit px-6 py-1.5 font-medium hover:bg-(--light-blue) hover:text-white hover:cursor-pointer">Contáctanos</button>
+            className="button-style bg-(--light-blue) text-white">Contáctanos</button>
         </div>
       </>)}
-      <ContactCard toggleMenu={toggleMenu}/>
+      { isVisible && <ContactCard /> }
     </>
   );
 }
