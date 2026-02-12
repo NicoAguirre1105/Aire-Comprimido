@@ -16,7 +16,7 @@ $data = json_decode(file_get_contents('php://input'));
 
 if (!empty($data->email) && !empty($data->subject) && !empty($data->message)) {
 
-  $message = "Este es un email de prueba enviado desde PHP en cPanel. El correo es {$data->email}.\n\n y el mensage es {$data->message} \n\n Fecha: " . date('Y-m-d H:i:s');
+  $message = "Este es un email es fue enviado desde tu sitio web.\n\n Un visitante ha dejado el siguiente mensaje: Correo electrónico del autor: {$data->email}.\n Mensaje: {$data->message} \n\n Fecha: " . date('Y-m-d H:i:s');
   $headers = "From: no-reply@airecomprimidoec.com\r\n"; 
 
   if(mail($to, $data->subject, $message, $headers)) {
