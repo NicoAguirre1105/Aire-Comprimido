@@ -18,12 +18,12 @@ export default function Login() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user, password }),
+        credentials: 'include'
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem('adminToken', data.token);
         router.push('/dashboard');
       } else {
         setError(data.message);
