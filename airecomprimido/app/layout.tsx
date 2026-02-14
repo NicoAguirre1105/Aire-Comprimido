@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
-import ClientLayout from "@/app/ClientLayout";
 import "./globals.css";
+import Image from "next/image";
+import { ViewportProvider } from "./_context/ViewportContext";
+
 
 export const metadata: Metadata = {
   title: "AIRECOMPRIMIDO EC S.A.S | Mantenimiento Industrial",
@@ -17,9 +19,16 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="bg-white min-h-screen flex flex-col" cz-shortcut-listen="true">
-        <ClientLayout>
+        <ViewportProvider>
+          <Image
+            src="/logos/logo_black.png"
+            alt="AIRECOMPRIMIDO EC logo"
+            width={150}
+            height={150}
+            className="fixed -z-1 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-7 w-80"
+          />
           {children}
-        </ClientLayout>
+        </ViewportProvider>
       </body>
     </html>
   );
