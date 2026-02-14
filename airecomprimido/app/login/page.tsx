@@ -40,7 +40,7 @@ export default function Login() {
   return (
     <>
     <BgLogo />
-    <div className="flex min-h-full flex-1 pt-16">
+    <div className="flex min-h-full flex-1">
       <div className="m-auto h-full w-full flex flex-col items-center gap-5 text-(--dark-blue)">
         <h2 className='text-3xl font-bold text-center'>Inicio de sesión</h2>
         <form onSubmit={handleLogin} className='mt-5 flex flex-col'>

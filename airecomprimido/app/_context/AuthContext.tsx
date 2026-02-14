@@ -33,15 +33,9 @@ export const AuthProvider = ({
           'Content-Type': 'application/json',
         },
       });
-      
-      console.log('Debug 0')
-      console.log(res)
       if (res.ok) {
-        console.log('Debug 1')
         const data = await res.json();
-        console.log('Debug 2')
         setUser(data.user);
-        console.log('Debug 3')
       } else {
         setUser(null);
       }

@@ -1,14 +1,16 @@
-"use client";
-
 import { AuthProvider } from '../_context/AuthContext';
-export default function ProtectedLayout({
+import ProtectedLayout from './ProtectedLayout';
+
+export default function Layout({
   children
 }: {
   children: React.ReactNode
 }) {
   return (
     <AuthProvider>
-      {children}
+      <ProtectedLayout>
+        {children}
+      </ProtectedLayout>
     </AuthProvider>
   );
 }

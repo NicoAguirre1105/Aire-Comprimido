@@ -39,3 +39,14 @@ main { /* Header uses that space with fixed position */
 .button-style:hover {
   opacity: 85%;
 }
+
+@layer utilities {
+  @keyframes blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.8; }
+  }
+
+  .loader-animation {
+    animation: blink 3s ease-in-out infinite;
+  }
+}
