@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import ContactCard from "./contactCard";
-import { useViewport } from "../_context/ViewportContext";
+import { useViewport } from "../../_context/ViewportContext";
 import { useState, useEffect } from "react";
-import { useContactVisibility } from "../_context/ContactVisibilityContext";
+import { useContactVisibility } from "../../_context/ContactVisibilityContext";
 
 export default function Header() {
   const linkStyle = "text-white text-lg font-medium  transition-all duration-100 hover:scale-110"

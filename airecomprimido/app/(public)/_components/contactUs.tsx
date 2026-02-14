@@ -1,4 +1,4 @@
-import { useContactVisibility } from "../_context/ContactVisibilityContext"
+import { useContactVisibility } from "../../_context/ContactVisibilityContext"
 
 
 export default function ContactUs() {

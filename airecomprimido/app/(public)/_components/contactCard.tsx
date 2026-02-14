@@ -1,6 +1,6 @@
 'use client'
 
-import { useContactVisibility } from "../_context/ContactVisibilityContext"
+import { useContactVisibility } from "../../_context/ContactVisibilityContext"
 import ContactInfo from "./contactInfo"
 import EmailForm from "./emailForm"
 import { useState } from 'react'

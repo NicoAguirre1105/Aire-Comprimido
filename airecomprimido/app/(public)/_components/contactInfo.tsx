@@ -1,8 +1,8 @@
 
-import { useViewport } from "../_context/ViewportContext"
+import { useViewport } from "../../_context/ViewportContext"
 import Image from "next/image"
 import Link from "next/link"
-import { useContactVisibility } from "../_context/ContactVisibilityContext"
+import { useContactVisibility } from "../../_context/ContactVisibilityContext"
 
 export default function ContactInfo({
   handleWindowState
