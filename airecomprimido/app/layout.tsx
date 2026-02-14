@@ -37,13 +37,6 @@ export default function RootLayout({
     <html lang="es">
       <body className="bg-white min-h-screen flex flex-col" cz-shortcut-listen="true">
         <ViewportProvider>
-          <Image
-            src="/logos/logo_black.png"
-            alt="AIRECOMPRIMIDO EC logo"
-            width={150}
-            height={150}
-            className="fixed -z-1 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-7 w-80"
-          />
           {children}
         </ViewportProvider>
       </body>

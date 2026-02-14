@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import BgLogo from '../_components/bgLogo';
 
 export default function Login() {
   const [user, setUser] = useState('');
@@ -37,6 +38,8 @@ export default function Login() {
   const inputStyle = 'mb-4 placeholder-black/50 border-b-2 border-(--dark-blue) py-1 px-2 focus:outline-none focus:border-b-3 placeholder:italic placeholder:font-normal font-medium'
 
   return (
+    <>
+    <BgLogo />
     <div className="flex min-h-full flex-1 pt-16">
       <div className="m-auto h-full w-full flex flex-col items-center gap-5 text-(--dark-blue)">
         <h2 className='text-3xl font-bold text-center'>Inicio de sesión</h2>
@@ -56,5 +59,6 @@ export default function Login() {
         </form>
       </div>
     </div>
+    </>
   );
 }
