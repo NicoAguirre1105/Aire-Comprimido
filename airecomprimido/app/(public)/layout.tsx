@@ -1,19 +1,22 @@
 'use client';
 
 import ContactUs from "../_components/contactUs";
-import { useContactVisibility } from "../_context/ContactVisibilityContext"
+import { ContactVisibilityProvider } from "../_context/ContactVisibilityContext";
+import Header from "../_components/header";
+import Footer from "../_components/footer";
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isVisible, toggleContact } = useContactVisibility();
 
   return (
-    <>
+    <ContactVisibilityProvider>
+      <Header />
       {children}
-      <ContactUs handler={toggleContact} />
-    </>
+      <ContactUs />
+      <Footer />
+    </ContactVisibilityProvider>
   );
 }
