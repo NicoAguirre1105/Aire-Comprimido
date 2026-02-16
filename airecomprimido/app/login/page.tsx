@@ -25,7 +25,7 @@ export default function Login() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push('/dashboard');
+        router.push('/reportes');
       } else {
         setError(data.message);
       }

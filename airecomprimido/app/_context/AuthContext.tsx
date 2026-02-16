@@ -7,12 +7,14 @@ interface AuthContextType {
   user: any;
   loading: boolean;
   logout: () => void;
+  verifySession: (options?: { silent?: boolean }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   logout: () => {},
+  verifySession: async () => {},
 });
 
 export const AuthProvider = ({ 
@@ -24,11 +26,12 @@ export const AuthProvider = ({
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const verifySession = async () => {
+  const verifySession = async (options?: { silent?: boolean }) => {
+    const isSilent = options?.silent ?? false;
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/verifySession.php`, {
         method: 'GET',
-        credentials: 'include', 
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -43,7 +46,7 @@ export const AuthProvider = ({
       console.error("Error verificando sesión:", error);
       setUser(null);
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   };
 
@@ -57,8 +60,16 @@ export const AuthProvider = ({
     verifySession();
   }, []);
 
+  useEffect(() => {
+    const INTERVAL_MS = 5 * 60 * 1000; // 5 minutos
+    const intervalId = setInterval(() => {
+      verifySession({ silent: true });
+    }, INTERVAL_MS);
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, verifySession }}>
       {children}
     </AuthContext.Provider>
   );
