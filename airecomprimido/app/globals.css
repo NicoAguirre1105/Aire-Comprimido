@@ -49,4 +49,15 @@ main { /* Header uses that space with fixed position */
   .loader-animation {
     animation: blink 3s ease-in-out infinite;
   }
+
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .no-spinner {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }

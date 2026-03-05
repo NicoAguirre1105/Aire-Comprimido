@@ -1,0 +1,68 @@
+.formContainer {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.formContainer input {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.formContainer input:focus {
+  outline: none;
+}
+
+.formContainer label {  
+  font-weight: 500;
+  font-size: medium;
+}
+
+.formContainer form select {
+  padding-left: 0.5rem;
+  width: 8rem;
+  font-size: medium;
+  font-weight: 300;
+  cursor: pointer;
+}
+
+.formContainer form div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.formContainer strong {
+  color:var(--light-blue);
+}
+
+@media (min-width: 768px) {
+  .formContainer {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .formContainer form {
+    gap: 0.5rem;
+  }
+  
+  .formContainer label {
+    font-size: large;
+  }
+  
+  .formContainer h3 {
+    font-size: large;
+  }
+
+  .formContainer input,
+  .formContainer select {
+    font-size: large;
+  }
+
+  .formContainer form select {
+    width: 12rem;
+    font-size: large;
+    padding-left: 1rem;
+  }
+
+  .formContainer form div {
+    gap: 1rem;
+  }
+}
