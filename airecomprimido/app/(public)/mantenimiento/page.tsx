@@ -1,4 +1,4 @@
-import Slider from "../_components/slider"
+import Slider from "../../_components/slider"
 
 export default function Mantenimiento()
 {
