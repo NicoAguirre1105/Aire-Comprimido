@@ -1,13 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-<<<<<<< HEAD:airecomprimido/app/_components/emailForm.tsx
-import { useViewport } from '../_context/ViewportContext'
-import { useForm, ValidationError} from "@formspree/react"
-import { Spinner } from './Spinner'
-=======
 import { useViewport } from '../../_context/ViewportContext'
->>>>>>> 95bf102 (Move components according to usage):airecomprimido/app/(public)/_components/emailForm.tsx
+import { useForm, ValidationError} from "@formspree/react"
+import { Spinner } from '../../_components/Spinner'
 
 
 export default function EmailForm({
