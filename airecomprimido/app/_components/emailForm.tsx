@@ -25,7 +25,7 @@ export default function EmailForm({
   }
 
   const subtitleStyle = 'text-xl font-medium'
-  const inputStyle = 'bg-(--grey-blue) px-2 py-1 text-(--dark-blue) rounded-sm font-semibold placeholder:text-(--dark-blue) placeholder:italic placeholder:font-normal'
+  const inputStyle = 'bg-(--grey-blue) px-2 py-1 text-(--dark-blue) rounded-md font-semibold placeholder:text-(--dark-blue) placeholder:italic placeholder:font-normal focus:outline-(--light-blue)'
 
   const { isMobile } = useViewport()
 
@@ -67,12 +67,15 @@ export default function EmailForm({
         <input required type="text" placeholder='Ej. Juan Castillo' name='full-name' id='full-name' 
         className={inputStyle}/>
         <ValidationError field="full-name" prefix="full-name" errors={state.errors}></ValidationError>
+        <label htmlFor="phone" className={subtitleStyle}>Número de contacto*</label>
+        <input required type="tel" name="phone" id="phone" placeholder="Ej. 0987654321" className={inputStyle}/>
+        <ValidationError field="phone" prefix="phone" errors={state.errors}></ValidationError>
         <label htmlFor="email" className={subtitleStyle}>Correo electrónico*</label>
         <input required type="email" name="email" id="email" placeholder='ejemplo@gmail.com' 
         className={inputStyle}/>
         <ValidationError field="email" prefix="email" errors={state.errors}></ValidationError>
         <label htmlFor="message" className={subtitleStyle}>Mensaje</label>
-        <textarea name="message" id="message" rows={7} placeholder='Quiero agendar una visita técnica en...'
+        <textarea name="message" id="message" rows={5} placeholder='Quiero agendar una visita técnica en...'
         className={`${inputStyle} resize-none h-fit`}></textarea>
         <ValidationError field="message" prefix="message" errors={state.errors}></ValidationError>
         <button type="submit" className='button-style bg-(--light-blue) text-white w-30 self-center'>Enviar</button>
