@@ -3,14 +3,13 @@
 import { useContactVisibility } from "../_context/ContactVisibilityContext"
 import ContactInfo from "./contactInfo"
 import EmailForm from "./emailForm"
-import EmailSentMessage from "./emailSentMessage"
 import { useState } from 'react'
 
 import Image from "next/image"
 
 export default function ContactCard()
 {
-  const [windowState, setWindowState] = useState("contact-info") /* Possible values: contact-info, email-form, message-sent */
+  const [windowState, setWindowState] = useState("contact-info") /* Possible values: contact-info, email-form */
   const { isVisible, toggleContact } = useContactVisibility()
   
   const handleWindowState = (newState:string) => {
@@ -37,9 +36,6 @@ export default function ContactCard()
         }
         {windowState == 'email-form' &&
           <EmailForm handleWindowState={handleWindowState}/>
-        }
-        {windowState == 'message-sent' &&
-          <EmailSentMessage />
         }
       </div>
     </div>
