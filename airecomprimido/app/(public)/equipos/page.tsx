@@ -1,5 +1,5 @@
-import Slider from "../_components/slider"
-import ProductCard from "../_components/productCard"
+import Slider from "../../_components/slider"
+import ProductCard from "../../_components/productCard"
 import Image from "next/image"
 import equipos from "@/public/equipos.json"
 

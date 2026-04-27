@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
-import Image from "next/image";
 import { ViewportProvider } from "./_context/ViewportContext";
 
 
