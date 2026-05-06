@@ -1,5 +1,5 @@
 import { AuthProvider } from '../_context/AuthContext';
-import ProtectedLayout from './ProtectedLayout';
+import { ProtectedRoute } from './ProtectedRoute';
 
 export default function Layout({
   children
@@ -8,9 +8,9 @@ export default function Layout({
 }) {
   return (
     <AuthProvider>
-      <ProtectedLayout>
+      <ProtectedRoute>
         {children}
-      </ProtectedLayout>
+      </ProtectedRoute>
     </AuthProvider>
   );
 }

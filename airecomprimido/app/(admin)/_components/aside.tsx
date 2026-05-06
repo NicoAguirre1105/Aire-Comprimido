@@ -3,6 +3,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useViewport } from "@/app/_context/ViewportContext"
+import { useRouter } from "next/navigation"
+import { supabase } from "@/app/utils/supabaseClient"
 
 export default function Aside({
   isOpen,
@@ -15,6 +17,18 @@ export default function Aside({
   const { isMobile } = useViewport()
   const hyperStyle = 'flex items-center gap-2 opacity-75 hover:opacity-100 hover:scale-103 transition-all duration-200'
   const hyperIconStyle = 'h-8 w-fit'
+
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    
+    if (error) {
+      console.error('Error al cerrar sesión:', error.message)
+    } else {
+      router.push('/login')
+    }
+  }
 
   let asideStyle = ''
   if (isMobile) {
@@ -65,6 +79,19 @@ export default function Aside({
           Generador QR
         </Link>
       </nav>
+      <button 
+        onClick={handleLogout}
+        className="text-(--red) font-medium text-left mt-auto mb-5 flex items-center gap-1"
+      >
+        <Image
+            src="/icons/exit_red.svg"
+            alt="Exit"
+            width={150}
+            height={150}
+            className={hyperIconStyle}
+          />
+        Cerrar Sesión
+      </button>
     </aside>
   )
 }

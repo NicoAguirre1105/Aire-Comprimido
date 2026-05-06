@@ -34,7 +34,7 @@ export default function EmailForm({
       {isMobile ? 
         <div className='flex top-5.5 left-8 items-center mb-4 pr-3'>
         <Image
-        src="/icons/arrow_white.svg"
+        src="/icons/left_arrow_white.svg"
         alt="Return arrow"
         width={24}
         height={24} 
@@ -46,7 +46,7 @@ export default function EmailForm({
       :
         <div className='flex items-center mb-4'>
         <Image
-        src="/icons/arrow_blue.svg"
+        src="/icons/left_arrow_blue.svg"
         alt="Return Arrow"
         width={24}
         height={24} 
