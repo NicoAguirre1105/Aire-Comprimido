@@ -17,33 +17,39 @@ export const deviceFilters = [
 ]
 
 export const adminColumns = [
-  {key: "title", label: "Título"},
-  {key: "company", label: "Empresa"},
-  {key: "device", label: "Equipo"},
-  {key: "model", label: "Modelo"},
-  {key: "date", label: "Fecha"},
-  {key: "file", label: "Archivo"}
-]
-
-export const adminColumnsMobile = [
-  {key: "title", label: "Título"},
-  {key: "company", label: "Empresa"},
-  {key: "device", label: "Equipo"},
-  {key: "model", label: "Modelo"},
-  {key: "date", label: "Fecha"},
-  {key: "file", label: "Archivo"}
+  {key: "titulo", label: "Título"},
+  {key: "descripcion", label: "Descripción"},
+  {key: "fecha", label: "Fecha"},
+  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "empresa", label: "Empresa"},
+  {key: "area", label: "Área"},
+  {key: "equipo", label: "Equipo"},
+  {key: "filepath", label: "Archivo"}
 ]
 
 export const companyColumns = [
-  {key: "title", label: "Título"},
-  {key: "device", label: "Equipo"},
-  {key: "model", label: "Modelo"},
-  {key: "date", label: "Fecha"},
-  {key: "file", label: "Archivo"},
+  {key: "titulo", label: "Título"},
+  {key: "descripcion", label: "Descripción"},
+  {key: "fecha", label: "Fecha"},
+  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "area", label: "Área"},
+  {key: "equipo", label: "Equipo"},
+  {key: "filepath", label: "Archivo"}
+]
+
+export const areaColumns = [
+  {key: "titulo", label: "Título"},
+  {key: "descripcion", label: "Descripción"},
+  {key: "fecha", label: "Fecha"},
+  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "equipo", label: "Equipo"},
+  {key: "filepath", label: "Archivo"}
 ]
 
 export const deviceColumns = [
-  {key: "title", label: "Título"},
-  {key: "date", label: "Fecha"},
-  {key: "file", label: "Archivo"},
+  {key: "titulo", label: "Título"},
+  {key: "descripcion", label: "Descripción"},
+  {key: "fecha", label: "Fecha"},
+  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "filepath", label: "Archivo"}
 ]

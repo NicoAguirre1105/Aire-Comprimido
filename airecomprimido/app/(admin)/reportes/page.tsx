@@ -7,13 +7,62 @@ import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
 import Image from "next/image"
 import NewReportForm from "../_components/newReportForm"
+import { supabase } from "@/app/utils/supabaseClient"
+import Loader from "@/app/_components/loader"
+import Equipos from "@/app/(public)/equipos/page"
 
 const SEARCH_DEBOUNCE_MS = 400
+
+type Informe = {
+  id: number,
+  created_at: string,
+  titulo: string,
+  fecha: string,
+  descripcion: string,
+  empresa: string,
+  area: string,
+  equipo_id: number,
+  equipo: string,
+  conteo_horas: number,
+  filepath: string;
+}
+
+type Empresa = {
+  id: number,
+  created_at: string,
+  empresa: string,
+  public_uuid: string
+}
+
+type Equipo = {
+  id: number,
+  created_at: string,
+  equipo: string,
+  modelo: string,
+  empresa: string,
+  area: string,
+  public_uuid: string
+}
+
+type Area = {
+  id: number,
+  created_at: string,
+  area: string,
+  empresa: string,
+  public_uuid: string
+}
 
 export default function Reportes() {
 
   const [isAsideOpen, setIsAsideOpen] = useState(false)
   const [isNewReportOpen, setIsNewReportOpen] = useState(false)
+
+  const [informes, setInformes] = useState<Informe[]>([])
+  const [empresas, setEmpresas] = useState<Empresa[]>([])
+  const [areas, setAreas] = useState<Area[]>([])
+  const [equipos, setEquipos] = useState<Equipo[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Estados del formulario de filtros (para envío futuro)
   const [searchInput, setSearchInput] = useState("")
@@ -24,141 +73,128 @@ export default function Reportes() {
   const selectStyle = 'bg-(--grey-blue) pl-3 py-1 rounded-sm w-30 font-semibold md:py-2 cursor-pointer'
 
   useEffect(() => {
-    const timer = setTimeout(() => setAppliedSearch(searchInput), SEARCH_DEBOUNCE_MS)
-    return () => clearTimeout(timer)
-  }, [searchInput])
+    const fetchInformes = async () => {
+      try {
+        setLoading(true)
+        
+        // Realizamos la consulta a la tabla 'informes'
+        const { data, error: supabaseError } = await supabase
+          .from('informes')
+          .select('*')
+          .order('fecha', { ascending: false })
 
-  const applyFilters = useCallback(() => {
-  }, [appliedSearch, companyFilter, deviceFilter])
+        if (supabaseError) throw supabaseError
+
+        if (data) {
+          setInformes(data as Informe[])
+        }
+        console.log(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchInformes()
+  }, [])
 
   useEffect(() => {
-    applyFilters()
-  }, [applyFilters])
+    const fetchEmpresas = async () => {
+      try {
+        setLoading(true)
+        
+        // Realizamos la consulta a la tabla 'informes'
+        const { data, error: supabaseError } = await supabase
+          .from('empresas')
+          .select('*')
+          .order('empresa', { ascending: true })
 
-  const dataValue = [
-    {
-      id: 1,
-      title:'Mantenimiento mensual del equipo A correspondiente a Enero', 
-      company:'Company A',
-      device:'Device A',
-      model:'00001-A',
-      date:'01/15/20',
-      file:'/src/reporte.pdf'
-    },
-    {
-      id: 2,
-      title:'Titulo 2',
-      company:'Company B',
-      device:'Device A22',
-      model:'00011-H',
-      date:'16/5/22',
-      file:'/src/reporte2.pdf'
-    },
-    {
-      id: 3,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 4,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 5,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 6,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 7,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 8,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 9,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 10,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 11,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 12,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
-    },
-    {
-      id: 13,
-      title:'Titulo 3',
-      company:'Company A',
-      device:'Device C',
-      model:'00234-D',
-      date:'1/1/23',
-      file:'/src/reporte3.pdf'
+        if (supabaseError) throw supabaseError
+
+        if (data) {
+          setEmpresas(data as Empresa[])
+        }
+        console.log(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
-  const companyList = [
-    {id: 1, label: "Company A"},
-    {id: 2, label: "Company B"},
-    {id: 3, label: "Company CCCCCCCCCC"},
-    {id: 4, label: "Company D"}]
+
+    fetchEmpresas()
+  }, [])
+
+  useEffect(() => {
+    const fetchAreas = async () => {
+      try {
+        setLoading(true)
+        
+        // Realizamos la consulta a la tabla 'informes'
+        const { data, error: supabaseError } = await supabase
+          .from('areas')
+          .select('*')
+          .order('area', { ascending: true })
+
+        if (supabaseError) throw supabaseError
+
+        if (data) {
+          setAreas(data as Area[])
+        }
+        console.log(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAreas()
+  }, [])
+
+  useEffect(() => {
+    const fetchEquipos = async () => {
+      try {
+        setLoading(true)
+        
+        // Realizamos la consulta a la tabla 'informes'
+        const { data, error: supabaseError } = await supabase
+          .from('equipos')
+          .select('*')
+          .order('equipo', { ascending: true })
+
+        if (supabaseError) throw supabaseError
+
+        if (data) {
+          setEquipos(data as Equipo[])
+        }
+        console.log(data)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEquipos()
+  }, [])
+
+  if (loading) return <Loader />
+  if (error) return <p>Error: {error}</p>
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setAppliedSearch(searchInput), SEARCH_DEBOUNCE_MS)
+  //   return () => clearTimeout(timer)
+  // }, [searchInput])
+
+  // const applyFilters = useCallback(() => {
+  // }, [appliedSearch, companyFilter, deviceFilter])
+
+  // useEffect(() => {
+  //   applyFilters()
+  // }, [applyFilters])
+
   
   const deviceList = [
     {id: 1, label: "Device A"},
@@ -211,32 +247,50 @@ export default function Reportes() {
                 />
               </span>
               <div className="w-full md:w-fit flex gap-3">
-                <select
-                  name="company"
-                  id="companySelect"
-                  className={selectStyle}
-                  value={companyFilter}
-                  onChange={(e) => setCompanyFilter(e.target.value)}
-                  aria-label="Filtrar por empresa"
-                >
-                  <option value="">Empresa</option>
-                  {companyList.map(comp => (
-                    <option key={comp.id} value={String(comp.id)}>{comp.label}</option>
-                  ))}
-                </select>
-                <select
-                  name="device"
-                  id="deviceSelect"
-                  className={selectStyle}
-                  value={deviceFilter}
-                  onChange={(e) => setDeviceFilter(e.target.value)}
-                  aria-label="Filtrar por equipo"
-                >
-                  <option value="">Equipo</option>
-                  {deviceList.map(device => (
-                    <option key={device.id} value={String(device.id)}>{device.label}</option>
-                  ))}
-                </select>
+                <div className="flex items-center">
+                  <select
+                    name="company"
+                    id="companySelect"
+                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-35 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
+                    value={companyFilter}
+                    onChange={(e) => setCompanyFilter(e.target.value)}
+                    aria-label="Filtrar por empresa"
+                  >
+                    <option value="">Empresa</option>
+                    {empresas.map(empresa => (
+                      <option key={empresa.id} value={String(empresa.id)}>{empresa.empresa}</option>
+                    ))}
+                  </select>
+                  <Image
+                    src="/icons/arrow_drop_down_blue.svg"
+                    alt="Filtro por empresa"
+                    width={150}
+                    height={150}
+                    className="h-5 w-auto -translate-x-7 pointer-events-none"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <select
+                    name="device"
+                    id="deviceSelect"
+                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-35 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
+                    value={deviceFilter}
+                    onChange={(e) => setDeviceFilter(e.target.value)}
+                    aria-label="Filtrar por equipo"
+                    >
+                    <option value="">Equipo</option>
+                    {equipos.map(equipo => (
+                      <option key={equipo.id} value={String(equipo.id)}>{equipo.equipo}</option>
+                    ))}
+                  </select>
+                  <Image
+                    src="/icons/arrow_drop_down_blue.svg"
+                    alt="Filtro por empresa"
+                    width={150}
+                    height={150}
+                    className="h-5 w-auto -translate-x-7 pointer-events-none"
+                  />
+                </div>
                 <button
                   type="button"
                   className="bg-(--light-blue) fixed rounded-4xl p-2 bottom-10 right-10 z-40 cursor-pointer md:relative md:w-fit md:mr-0 md:ml-auto md:right-0 md:bottom-0 md:px-4 md:rounded-sm md:font-semibold hover:bg-(--dark-blue) transition-all duration-200 ease-in-out md:py-2"
@@ -253,7 +307,7 @@ export default function Reportes() {
                 </button>
               </div>
             </form>
-          <DataTable columns={adminColumns} data={dataValue} />
+          <DataTable columns={adminColumns} data={informes} />
         </>    
         }
         </main>
