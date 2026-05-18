@@ -2,67 +2,31 @@
 
 import Aside from "../_components/aside"
 import Header from "../_components/header"
-import { useState, useEffect, useCallback } from "react"
+import { useState } from "react"
 import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
 import Image from "next/image"
 import NewReportForm from "../_components/newReportForm"
-import { supabase } from "@/app/utils/supabaseClient"
 import Loader from "@/app/_components/loader"
-import Equipos from "@/app/(public)/equipos/page"
+import { useInformes } from "@/app/hooks/useInformes"
+import { useEmpresas } from "@/app/hooks/useEmpresas"
+import { useAreas } from "@/app/hooks/useAreas"
+import { useEquipos } from "@/app/hooks/useEquipos"
 
 const SEARCH_DEBOUNCE_MS = 400
-
-type Informe = {
-  id: number,
-  created_at: string,
-  titulo: string,
-  fecha: string,
-  descripcion: string,
-  empresa: string,
-  area: string,
-  equipo_id: number,
-  equipo: string,
-  conteo_horas: number,
-  filepath: string;
-}
-
-type Empresa = {
-  id: number,
-  created_at: string,
-  empresa: string,
-  public_uuid: string
-}
-
-type Equipo = {
-  id: number,
-  created_at: string,
-  equipo: string,
-  modelo: string,
-  empresa: string,
-  area: string,
-  public_uuid: string
-}
-
-type Area = {
-  id: number,
-  created_at: string,
-  area: string,
-  empresa: string,
-  public_uuid: string
-}
 
 export default function Reportes() {
 
   const [isAsideOpen, setIsAsideOpen] = useState(false)
   const [isNewReportOpen, setIsNewReportOpen] = useState(false)
 
-  const [informes, setInformes] = useState<Informe[]>([])
-  const [empresas, setEmpresas] = useState<Empresa[]>([])
-  const [areas, setAreas] = useState<Area[]>([])
-  const [equipos, setEquipos] = useState<Equipo[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: informes, loading: informesLoading, error: informesError } = useInformes()
+  const { data: empresas, loading: empresasLoading, error: empresasError } = useEmpresas()
+  const { loading: areasLoading, error: areasError } = useAreas()
+  const { data: equipos, loading: equiposLoading, error: equiposError } = useEquipos()
+
+  const loading = informesLoading || empresasLoading || areasLoading || equiposLoading
+  const error = informesError ?? empresasError ?? areasError ?? equiposError
 
   // Estados del formulario de filtros (para envío futuro)
   const [searchInput, setSearchInput] = useState("")
@@ -71,114 +35,6 @@ export default function Reportes() {
   const [deviceFilter, setDeviceFilter] = useState("")
   
   const selectStyle = 'bg-(--grey-blue) pl-3 py-1 rounded-sm w-30 font-semibold md:py-2 cursor-pointer'
-
-  useEffect(() => {
-    const fetchInformes = async () => {
-      try {
-        setLoading(true)
-        
-        // Realizamos la consulta a la tabla 'informes'
-        const { data, error: supabaseError } = await supabase
-          .from('informes')
-          .select('*')
-          .order('fecha', { ascending: false })
-
-        if (supabaseError) throw supabaseError
-
-        if (data) {
-          setInformes(data as Informe[])
-        }
-        console.log(data)
-      } catch (err: any) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchInformes()
-  }, [])
-
-  useEffect(() => {
-    const fetchEmpresas = async () => {
-      try {
-        setLoading(true)
-        
-        // Realizamos la consulta a la tabla 'informes'
-        const { data, error: supabaseError } = await supabase
-          .from('empresas')
-          .select('*')
-          .order('empresa', { ascending: true })
-
-        if (supabaseError) throw supabaseError
-
-        if (data) {
-          setEmpresas(data as Empresa[])
-        }
-        console.log(data)
-      } catch (err: any) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchEmpresas()
-  }, [])
-
-  useEffect(() => {
-    const fetchAreas = async () => {
-      try {
-        setLoading(true)
-        
-        // Realizamos la consulta a la tabla 'informes'
-        const { data, error: supabaseError } = await supabase
-          .from('areas')
-          .select('*')
-          .order('area', { ascending: true })
-
-        if (supabaseError) throw supabaseError
-
-        if (data) {
-          setAreas(data as Area[])
-        }
-        console.log(data)
-      } catch (err: any) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchAreas()
-  }, [])
-
-  useEffect(() => {
-    const fetchEquipos = async () => {
-      try {
-        setLoading(true)
-        
-        // Realizamos la consulta a la tabla 'informes'
-        const { data, error: supabaseError } = await supabase
-          .from('equipos')
-          .select('*')
-          .order('equipo', { ascending: true })
-
-        if (supabaseError) throw supabaseError
-
-        if (data) {
-          setEquipos(data as Equipo[])
-        }
-        console.log(data)
-      } catch (err: any) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchEquipos()
-  }, [])
 
   if (loading) return <Loader />
   if (error) return <p>Error: {error}</p>
@@ -313,4 +169,5 @@ export default function Reportes() {
         </main>
       </div>
     </div>
-  )}
+  )
+}
