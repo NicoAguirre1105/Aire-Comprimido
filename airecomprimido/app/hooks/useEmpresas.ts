@@ -8,22 +8,30 @@ function getErrorMessage(err: unknown): string {
   return err instanceof Error ? err.message : 'Error desconocido'
 }
 
+type RefetchOptions = {
+  empresa?: string
+}
+
 export function useEmpresas() {
   const [data, setData] = useState<Empresa[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const refetch = useCallback(async () => {
+  const refetch = useCallback(async (options?:RefetchOptions) => {
     try {
       setLoading(true)
       setError(null)
 
-      const { data: rows, error: supabaseError } = await supabase
-        .from('empresas')
-        .select('*')
-        .order('empresa', { ascending: true })
+      let query = supabase
+      .from('empresas')
+      .select('*')
+      .order('name', { ascending: true })
+  
+      if (options?.empresa) {
+        query = query.eq('name', options.empresa)
+      }
 
-      if (supabaseError) throw supabaseError
+      const { data: rows, error: supabaseError } = await query
 
       setData((rows as Empresa[]) ?? [])
     } catch (err: unknown) {

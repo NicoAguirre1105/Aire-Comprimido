@@ -6,7 +6,6 @@ export type Informe = {
   descripcion: string
   empresa: string
   area: string
-  equipo_id: number
   equipo: string
   conteo_horas: number
   filepath: string
@@ -15,14 +14,14 @@ export type Informe = {
 export type Empresa = {
   id: number
   created_at: string
-  empresa: string
+  name: string
   public_uuid: string
 }
 
 export type Equipo = {
   id: number
   created_at: string
-  equipo: string
+  name: string
   modelo: string
   empresa: string
   area: string
@@ -32,7 +31,7 @@ export type Equipo = {
 export type Area = {
   id: number
   created_at: string
-  area: string
+  name: string
   empresa: string
   public_uuid: string
 }

@@ -2,7 +2,7 @@
 
 import Aside from "../_components/aside"
 import Header from "../_components/header"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
 import Image from "next/image"
@@ -20,10 +20,10 @@ export default function Reportes() {
   const [isAsideOpen, setIsAsideOpen] = useState(false)
   const [isNewReportOpen, setIsNewReportOpen] = useState(false)
 
-  const { data: informes, loading: informesLoading, error: informesError } = useInformes()
-  const { data: empresas, loading: empresasLoading, error: empresasError } = useEmpresas()
-  const { loading: areasLoading, error: areasError } = useAreas()
-  const { data: equipos, loading: equiposLoading, error: equiposError } = useEquipos()
+  const { data: informes, loading: informesLoading, error: informesError, refetch: informesRefetch } = useInformes()
+  const { data: empresas, loading: empresasLoading, error: empresasError, refetch: empresasRefetch } = useEmpresas()
+  const { data: equipos, loading: equiposLoading, error: equiposError, refetch: equiposRefetch } = useEquipos()
+  const { loading: areasLoading, error: areasError, refetch: areasRefetch } = useAreas()
 
   const loading = informesLoading || empresasLoading || areasLoading || equiposLoading
   const error = informesError ?? empresasError ?? areasError ?? equiposError
@@ -33,8 +33,13 @@ export default function Reportes() {
   const [appliedSearch, setAppliedSearch] = useState("")
   const [companyFilter, setCompanyFilter] = useState("")
   const [deviceFilter, setDeviceFilter] = useState("")
-  
-  const selectStyle = 'bg-(--grey-blue) pl-3 py-1 rounded-sm w-30 font-semibold md:py-2 cursor-pointer'
+
+  const handleReportCreated = useCallback(() => {
+    informesRefetch()
+    empresasRefetch()
+    equiposRefetch()
+    areasRefetch()
+  }, [informesRefetch, empresasRefetch, equiposRefetch, areasRefetch])
 
   if (loading) return <Loader />
   if (error) return <p>Error: {error}</p>
@@ -50,13 +55,6 @@ export default function Reportes() {
   // useEffect(() => {
   //   applyFilters()
   // }, [applyFilters])
-
-  
-  const deviceList = [
-    {id: 1, label: "Device A"},
-    {id: 2, label: "Device 33333333333"},
-    {id: 3, label: "Device C4"},
-    {id: 4, label: "Device D55"}]
   
   const toggleAside = () => {
     setIsAsideOpen((prev) => (!prev))
@@ -75,9 +73,9 @@ export default function Reportes() {
       <Aside isOpen={isAsideOpen} toggleAside={toggleAside}/>
       <div className="flex w-full flex-col overflow-x-hidden">
         <Header title="Reportes" toggleAside={toggleAside}/>
-        <main className="relative flex flex-col mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400 md:pt-0">
+        <main className="relative flex flex-col  mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400 md:pt-0">
         { isNewReportOpen ?
-          <NewReportForm handleNewReport={handleNewReport}/>
+          <NewReportForm handleNewReport={handleNewReport} onReportCreated={handleReportCreated} />
         :
           <>
             <form
@@ -114,7 +112,7 @@ export default function Reportes() {
                   >
                     <option value="">Empresa</option>
                     {empresas.map(empresa => (
-                      <option key={empresa.id} value={String(empresa.id)}>{empresa.empresa}</option>
+                      <option key={empresa.id} value={String(empresa.id)}>{empresa.name}</option>
                     ))}
                   </select>
                   <Image
@@ -136,7 +134,7 @@ export default function Reportes() {
                     >
                     <option value="">Equipo</option>
                     {equipos.map(equipo => (
-                      <option key={equipo.id} value={String(equipo.id)}>{equipo.equipo}</option>
+                      <option key={equipo.id} value={String(equipo.id)}>{equipo.name}</option>
                     ))}
                   </select>
                   <Image

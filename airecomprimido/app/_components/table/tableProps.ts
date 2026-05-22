@@ -20,7 +20,7 @@ export const adminColumns = [
   {key: "titulo", label: "Título"},
   {key: "descripcion", label: "Descripción"},
   {key: "fecha", label: "Fecha"},
-  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "conteo_horas", label: "Horas"},
   {key: "empresa", label: "Empresa"},
   {key: "area", label: "Área"},
   {key: "equipo", label: "Equipo"},
@@ -31,7 +31,7 @@ export const companyColumns = [
   {key: "titulo", label: "Título"},
   {key: "descripcion", label: "Descripción"},
   {key: "fecha", label: "Fecha"},
-  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "conteo_horas", label: "Horas"},
   {key: "area", label: "Área"},
   {key: "equipo", label: "Equipo"},
   {key: "filepath", label: "Archivo"}
@@ -41,7 +41,7 @@ export const areaColumns = [
   {key: "titulo", label: "Título"},
   {key: "descripcion", label: "Descripción"},
   {key: "fecha", label: "Fecha"},
-  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "conteo_horas", label: "Horas"},
   {key: "equipo", label: "Equipo"},
   {key: "filepath", label: "Archivo"}
 ]
@@ -50,6 +50,6 @@ export const deviceColumns = [
   {key: "titulo", label: "Título"},
   {key: "descripcion", label: "Descripción"},
   {key: "fecha", label: "Fecha"},
-  {key: "conteo_horas", label: "Conteo de horas"},
+  {key: "conteo_horas", label: "Horas"},
   {key: "filepath", label: "Archivo"}
 ]
