@@ -100,6 +100,7 @@ export default function NewReportForm({
     if(!form.titulo) {setError("Complete el título del reporte."); return false}
     if(!form.fecha) {setError("Ingrese la fecha del reporte."); return false}
     if(!form.empresa) {setError("Ingrese la empresa."); return false}
+    if(!form.area) {setError("Ingrese el área respectiva."); return false}
     if(!form.equipo) {setError("Ingrese el equipo asociado al reporte."); return false}
     if(!form.modelo) {setError("Ingrese el modelo del equipo asociado al reporte."); return false}
     if(!form.file) {setError("Adjunte el reporte en formato PDF."); return false}
@@ -144,15 +145,10 @@ export default function NewReportForm({
       if (areas.length > 0) new_warning.push("La empresa asignada tiene áreas disponibles, pero ninguna ha sido seleccionada para este reporte.")
     }
   
-    if (!empresa_check && form.area) {
+    if (!empresa_check) {
       new_warning.push(`Se crearán nuevos elementos: ${form.empresa} , ${form.area}, ${form.equipo}.`)
       insertItems.company = true
       insertItems.area = true
-      insertItems.device = true
-      
-    } else if (!empresa_check && !form.area) {
-      new_warning.push(`Se crearán nuevos elementos: ${form.empresa}, ${form.equipo}.`)
-      insertItems.company = true
       insertItems.device = true
     } else if (!area_check && form.area) {
       new_warning.push(`Se crearán nuevos elementos: ${form.area}, ${form.equipo}.`)
@@ -224,7 +220,6 @@ export default function NewReportForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('leyendo')
     const form:FormType = {
       created_at: new Date(TODAY),
       titulo: title,
@@ -240,8 +235,6 @@ export default function NewReportForm({
     }
 
     if (!validateForm(form)) return
-  
-    console.log('form validado')
 
     const { insertItems: itemsToCreate, warnings } = checkFormWarnings(form)
 
@@ -437,14 +430,15 @@ export default function NewReportForm({
             required/>
         </div>
         <div>
-          <label htmlFor="report-area">Área: </label>
+          <label htmlFor="report-area">Área<strong>*</strong>: </label>
           <DataList 
           options={areas} 
-          placeholder="(Opcional)" 
+          placeholder="Ingrese área" 
           state={area} 
           handleChange={handleAreaSelection} 
           id="report-area"
-          key="area"/>
+          key="area"
+          required/>
         </div>
         <div>
           <label htmlFor="report-device">Equipo<strong>*</strong>: </label>

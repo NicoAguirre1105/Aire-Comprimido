@@ -13,19 +13,32 @@ import { useEmpresas } from "@/app/hooks/useEmpresas"
 import { useAreas } from "@/app/hooks/useAreas"
 import { useEquipos } from "@/app/hooks/useEquipos"
 
-const SEARCH_DEBOUNCE_MS = 400
-
 export default function Reportes() {
 
   const [isAsideOpen, setIsAsideOpen] = useState(false)
   const [isNewReportOpen, setIsNewReportOpen] = useState(false)
 
-  const { data: informes, loading: informesLoading, error: informesError, refetch: informesRefetch } = useInformes()
+  const {
+    data: informes,
+    loading: informesLoading,
+    isPaginating,
+    error: informesError,
+    resetToFirstPage,
+    page,
+    setPage,
+    totalCount,
+    totalPages,
+    pageSize,
+  } = useInformes()
   const { data: empresas, loading: empresasLoading, error: empresasError, refetch: empresasRefetch } = useEmpresas()
   const { data: equipos, loading: equiposLoading, error: equiposError, refetch: equiposRefetch } = useEquipos()
   const { loading: areasLoading, error: areasError, refetch: areasRefetch } = useAreas()
 
-  const loading = informesLoading || empresasLoading || areasLoading || equiposLoading
+  const loading =
+    (informesLoading && informes.length === 0) ||
+    empresasLoading ||
+    areasLoading ||
+    equiposLoading
   const error = informesError ?? empresasError ?? areasError ?? equiposError
 
   // Estados del formulario de filtros (para envío futuro)
@@ -35,11 +48,11 @@ export default function Reportes() {
   const [deviceFilter, setDeviceFilter] = useState("")
 
   const handleReportCreated = useCallback(() => {
-    informesRefetch()
+    resetToFirstPage()
     empresasRefetch()
     equiposRefetch()
     areasRefetch()
-  }, [informesRefetch, empresasRefetch, equiposRefetch, areasRefetch])
+  }, [resetToFirstPage, empresasRefetch, equiposRefetch, areasRefetch])
 
   if (loading) return <Loader />
   if (error) return <p>Error: {error}</p>
@@ -161,7 +174,18 @@ export default function Reportes() {
                 </button>
               </div>
             </form>
-          <DataTable columns={adminColumns} data={informes} />
+          <DataTable
+            columns={adminColumns}
+            data={informes}
+            pagination={{
+              page,
+              totalPages,
+              totalCount,
+              pageSize,
+              onPageChange: setPage,
+              isLoading: isPaginating,
+            }}
+          />
         </>    
         }
         </main>

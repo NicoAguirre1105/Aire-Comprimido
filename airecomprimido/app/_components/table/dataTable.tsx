@@ -12,19 +12,72 @@ type Filter = {
   label: string
 }
 
-interface DataTableProps {
+type TablePagination = {
+  page: number
+  totalPages: number
+  totalCount: number
+  pageSize: number
+  onPageChange: (page: number) => void
+  isLoading?: boolean
+}
+
+  interface DataTableProps {
   columns: Column[];
   filters?: Filter[];
   data: any[];
+  pagination?: TablePagination;
 }
 
-export default function DataTable({ columns, data }: DataTableProps) {
+function TablePaginationControls({ pagination }: { pagination: TablePagination }) {
+  const { page, totalPages, totalCount, pageSize, onPageChange, isLoading } = pagination
+  const from = totalCount === 0 ? 0 : (page - 1) * pageSize + 1
+  const to = Math.min(page * pageSize, totalCount)
+
+  return (
+    <nav
+      className="flex flex-col items-center gap-3 mt-6 sm:flex-row sm:justify-between"
+      aria-label="Paginación de reportes"
+    >
+      <p className="text-sm text-(--dark-blue)/70">
+        {totalCount === 0
+          ? 'Sin reportes'
+          : `Mostrando ${from}–${to} de ${totalCount}`}
+      </p>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onPageChange(page - 1)}
+          disabled={page <= 1 || isLoading}
+          className="px-3 py-1 rounded-sm font-semibold bg-(--grey-blue) disabled:opacity-40 disabled:cursor-not-allowed hover:bg-(--light-blue) hover:text-white transition-colors cursor-pointer"
+        >
+          Anterior
+        </button>
+        <span className="text-sm font-medium min-w-28 text-center">
+          Página {page} de {totalPages}
+        </span>
+        <button
+          type="button"
+          onClick={() => onPageChange(page + 1)}
+          disabled={page >= totalPages || isLoading}
+          className="px-3 py-1 rounded-sm font-semibold bg-(--grey-blue) disabled:opacity-40 disabled:cursor-not-allowed hover:bg-(--light-blue) hover:text-white transition-colors cursor-pointer"
+        >
+          Siguiente
+        </button>
+      </div>
+    </nav>
+  )
+}
+
+export default function DataTable({ columns, data, pagination }: DataTableProps) {
 
   const { isMobile } = useViewport()
   const tdStyle = "py-3 px-2 text-center"
 
+  const contentClass = pagination?.isLoading ? "opacity-50 pointer-events-none" : ""
+
   if (isMobile) return (
-    <section className="flex flex-col gap-5 my-7 items-center">
+    <>
+    <section className={`flex flex-col gap-5 my-7 items-center ${contentClass}`}>
       {data.map((informe) => (
         <article key={informe.id} className="flex flex-col bg-(--grey-blue) p-5 rounded-sm sm:px-10 w-full max-w-100">
           <h2 className="font-bold text-xl">{informe['titulo']}</h2>
@@ -63,10 +116,13 @@ export default function DataTable({ columns, data }: DataTableProps) {
         </article>
       ))}
     </section>
+    {pagination && <TablePaginationControls pagination={pagination} />}
+    </>
   )
 
   return (
-    <div className="w-full mt-10 rounded-lg overflow-hidden">
+    <>
+    <div className={`w-full mt-10 rounded-lg overflow-hidden ${contentClass}`}>
       <div className="w-full overflow-x-auto relative">
         <table className="min-w-200 w-full">
           <thead className="bg-(--grey-blue)">
@@ -127,5 +183,7 @@ export default function DataTable({ columns, data }: DataTableProps) {
         </table>
       </div>
     </div>
+    {pagination && <TablePaginationControls pagination={pagination} />}
+    </>
   );
 }
