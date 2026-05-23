@@ -282,7 +282,7 @@ export default function Reportes() {
                     aria-hidden
                   />
                 </div>
-                <div className="flex items-center">
+                <div className="relative w-fit">
                   <select
                     name="device"
                     id="deviceSelect"
