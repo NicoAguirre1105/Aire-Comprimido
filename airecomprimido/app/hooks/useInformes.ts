@@ -5,12 +5,43 @@ import { supabase } from '@/app/utils/supabaseClient'
 import type { Informe } from '@/app/types/database'
 
 export const INFORMES_PAGE_SIZE = 10
+/** Años hacia atrás para filtro de mes sin año (debe coincidir con YEAR_OPTIONS en reportes) */
+export const INFORMES_YEAR_SPAN = 5
 
-function getErrorMessage(err: unknown): string {
-  return err instanceof Error ? err.message : 'Error desconocido'
+export type InformesFilters = {
+  search?: string
+  empresa?: string
+  area?: string
+  equipo?: string
+  year?: number
+  month?: number
 }
 
-export function useInformes() {
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message
+  if (typeof err === 'object' && err !== null && 'message' in err) {
+    return String((err as { message: unknown }).message)
+  }
+  return 'Error desconocido'
+}
+
+function getFilterYearRange(): number[] {
+  const currentYear = new Date().getFullYear()
+  return Array.from({ length: INFORMES_YEAR_SPAN }, (_, i) => currentYear - i)
+}
+
+function escapeIlike(value: string): string {
+  return value.replace(/[%_\\]/g, '\\$&')
+}
+
+function getMonthDateRange(year: number, month: number): { from: string; to: string } {
+  const mm = String(month).padStart(2, '0')
+  const lastDay = new Date(year, month, 0).getDate()
+  const dd = String(lastDay).padStart(2, '0')
+  return { from: `${year}-${mm}-01`, to: `${year}-${mm}-${dd}` }
+}
+
+export function useInformes(filters: InformesFilters = {}) {
   const [data, setData] = useState<Informe[]>([])
   const [loading, setLoading] = useState(true)
   const [isPaginating, setIsPaginating] = useState(false)
@@ -18,10 +49,13 @@ export function useInformes() {
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
   const hasLoadedRef = useRef(false)
+  const filtersRef = useRef(filters)
+
+  filtersRef.current = filters
 
   const totalPages = Math.max(1, Math.ceil(totalCount / INFORMES_PAGE_SIZE))
 
-  const fetchPage = useCallback(async (pageNumber: number) => {
+  const fetchPage = useCallback(async (pageNumber: number, activeFilters: InformesFilters) => {
     try {
       setError(null)
       if (!hasLoadedRef.current) {
@@ -33,9 +67,42 @@ export function useInformes() {
       const from = (pageNumber - 1) * INFORMES_PAGE_SIZE
       const to = from + INFORMES_PAGE_SIZE - 1
 
-      const { data: rows, error: supabaseError, count } = await supabase
+      let query = supabase
         .from('informes')
         .select('*', { count: 'exact' })
+
+      if (activeFilters.empresa) {
+        query = query.eq('empresa', activeFilters.empresa)
+      }
+      if (activeFilters.area) {
+        query = query.eq('area', activeFilters.area)
+      }
+      if (activeFilters.equipo) {
+        query = query.eq('equipo', activeFilters.equipo)
+      }
+      if (activeFilters.year && activeFilters.month) {
+        const { from, to } = getMonthDateRange(activeFilters.year, activeFilters.month)
+        query = query.gte('fecha', from).lte('fecha', to)
+      } else if (activeFilters.year) {
+        query = query
+          .gte('fecha', `${activeFilters.year}-01-01`)
+          .lte('fecha', `${activeFilters.year}-12-31`)
+      } else if (activeFilters.month) {
+        const orParts = getFilterYearRange().map((year) => {
+          const { from, to } = getMonthDateRange(year, activeFilters.month!)
+          return `and(fecha.gte.${from},fecha.lte.${to})`
+        })
+        query = query.or(orParts.join(','))
+      }
+      const search = activeFilters.search?.trim()
+      if (search) {
+        const term = `%${escapeIlike(search)}%`
+        query = query.or(
+          `titulo.ilike.${term},descripcion.ilike.${term},empresa.ilike.${term},area.ilike.${term},equipo.ilike.${term}`
+        )
+      }
+
+      const { data: rows, error: supabaseError, count } = await query
         .order('fecha', { ascending: false })
         .range(from, to)
 
@@ -52,19 +119,29 @@ export function useInformes() {
     }
   }, [])
 
+  const filtersKey = JSON.stringify(filters)
+  const prevFiltersKeyRef = useRef(filtersKey)
+
   useEffect(() => {
-    fetchPage(page)
-  }, [page, fetchPage])
+    const filtersChanged = prevFiltersKeyRef.current !== filtersKey
+    prevFiltersKeyRef.current = filtersKey
+
+    const pageToFetch = filtersChanged ? 1 : page
+    if (filtersChanged && page !== 1) {
+      setPage(1)
+    }
+    fetchPage(pageToFetch, filtersRef.current)
+  }, [page, filtersKey, fetchPage])
 
   const refetch = useCallback(() => {
-    fetchPage(page)
+    fetchPage(page, filtersRef.current)
   }, [fetchPage, page])
 
   const resetToFirstPage = useCallback(() => {
     if (page !== 1) {
       setPage(1)
     } else {
-      fetchPage(1)
+      fetchPage(1, filtersRef.current)
     }
   }, [page, fetchPage])
 
