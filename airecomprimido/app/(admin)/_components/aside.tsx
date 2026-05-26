@@ -82,7 +82,7 @@ export default function Aside({
         </nav>
         <button 
           onClick={handleLogout}
-          className="text-(--red) font-medium text-left mt-auto mb-5 flex items-center gap-1"
+          className="text-(--red) font-medium text-left mt-auto mb-5 flex items-center gap-1 cursor-pointer transition-[scale] ease-in-out hover:scale-105"
         >
           <Image
               src="/icons/exit_red.svg"

@@ -57,7 +57,7 @@ export default function NewReportForm({
   const [title, setTitle] = useState("")
   const [reportDate, setReportDate] = useState(TODAY)
   const [description, setDescription] = useState("")
-  const [hoursCount, setHoursCount] = useState("0")
+  const [hoursCount, setHoursCount] = useState("")
   const [company, setCompany] = useState("")
   const [area, setArea] = useState("")
   const [device, setDevice] = useState("")
@@ -67,7 +67,7 @@ export default function NewReportForm({
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { data: empresas, loading: empresasLoading, error: empresasError } = useEmpresas()
+  const { data: empresas, refetch: empresasRefetch, loading: empresasLoading, error: empresasError } = useEmpresas()
   const { data: equipos, refetch: equiposRefetch, loading: equiposLoading, error: equiposError } = useEquipos()
   const { data: areas, refetch: areasRefetch, loading: areasLoading, error: areaError } = useAreas()
 
@@ -95,16 +95,16 @@ export default function NewReportForm({
   }
 
   function validateForm(form: FormType): string | null {
-    if (!form.titulo) return 'Complete el título del reporte.'
+    if (!form.titulo.trim()) return 'Complete el título del reporte.'
     if (!form.fecha) return 'Ingrese la fecha del reporte.'
-    if (!form.empresa) return 'Ingrese la empresa.'
-    if (!form.area) return 'Ingrese el área respectiva.'
-    if (!form.equipo) return 'Ingrese el equipo asociado al reporte.'
-    if (!form.modelo) return 'Ingrese el modelo del equipo asociado al reporte.'
+    if (!form.empresa.trim()) return 'Ingrese la empresa.'
+    if (!form.area.trim()) return 'Ingrese el área respectiva.'
+    if (!form.equipo.trim()) return 'Ingrese el equipo asociado al reporte.'
+    if (!form.modelo.trim()) return 'Ingrese el modelo del equipo asociado al reporte.'
     if (!form.file) return 'Adjunte el reporte en formato PDF.'
-
-    if (form.descripcion.length > 100) {
-      return 'La descripción debe tener menos de 100 caracteres.'
+  
+    if (form.descripcion.length > 180) {
+      return 'La descripción debe tener menos de 180 caracteres.'
     }
 
     const date = new Date(form.fecha)
@@ -146,7 +146,7 @@ export default function NewReportForm({
   
     if(!form.descripcion) new_warning.push('El reporte no tiene descripción.')
 
-    if (empresa_check && !area_check && form.area !== "") {
+    if (empresa_check && !area_check && form.area === "") {
       areasRefetch({ empresa: empresa_check.name || "" })
       if (areas.length > 0) new_warning.push("La empresa asignada tiene áreas disponibles, pero ninguna ha sido seleccionada para este reporte.")
     }
@@ -204,7 +204,7 @@ export default function NewReportForm({
     setTitle("")
     setReportDate(TODAY)
     setDescription("")
-    setHoursCount("0")
+    setHoursCount("")
     setCompany("")
     setArea("")
     setDevice("")
@@ -214,6 +214,9 @@ export default function NewReportForm({
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
+    empresasRefetch()
+    areasRefetch()
+    equiposRefetch()
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -227,7 +230,7 @@ export default function NewReportForm({
       area: area,
       equipo: device,
       modelo: model,
-      conteo_horas: hoursCount,
+      conteo_horas: hoursCount === '' ? '0' : hoursCount,
       file: file,
       fileName: fileName 
     }
@@ -399,7 +402,7 @@ export default function NewReportForm({
       <form className="flex flex-col gap-3 mt-5 font-(--dark-blue)" onSubmit={handleSubmit}>
         <div className="flex flex-col">
           <label htmlFor="title">Título:<strong>*</strong></label>
-          <input type="text" name="title" placeholder="Mantenimiento mensual" id="title" value={title} onChange={(e) => setTitle(e.target.value.trim())} className=" text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)"/>
+          <input type="text" name="title" placeholder="Mantenimiento mensual" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className=" text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)"/>
         </div>
         <div className="">
           <label htmlFor="report-date">Fecha del reporte<strong>*</strong>:</label>
@@ -410,14 +413,14 @@ export default function NewReportForm({
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            maxLength={100}
+            maxLength={180}
             rows={3}
             className="
             w-full
             border-2
             border-(--dark-blue)
             rounded-sm
-            text-sm
+            text-base
             p-3
             resize-none
             focus:outline-none
@@ -427,13 +430,13 @@ export default function NewReportForm({
             placeholder="Escribe aquí..."
           />
           <div className="text-right text-sm text-gray-500 self-end">
-            {description.length}/100
+            {description.length}/180
           </div>
         </div>
         <div className="inline-flex flex-wrap items-center gap-2">
           <label htmlFor="hours-count">Conteo de horas:</label>
           <span className="inline-flex items-center border-b-3 border-(--dark-blue) focus-within:border-(--light-blue)">
-            <input type="number" name="hours-count" id="hours-count" min={0} value={hoursCount} onChange={(e) => setHoursCount(e.target.value.trim())} className="no-spinner w-fit border-0 bg-transparent text-center focus:outline-none"/>
+            <input type="number" name="hours-count" id="hours-count" min={0} value={hoursCount} onChange={(e) => setHoursCount(e.target.value.trim())} placeholder="0" className="no-spinner w-fit border-0 bg-transparent text-center focus:outline-none"/>
             <span className="text-(--dark-blue)">hrs</span>
           </span>
         </div>
@@ -473,7 +476,7 @@ export default function NewReportForm({
         
         <div>
           <label htmlFor="report-model">Modelo<strong>*</strong>: </label>
-          <input type="text" name="report-model" id="report-model" placeholder="Modelo" value={model} onChange={(e) => setModel(e.target.value)} className="text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)" required/>
+          <input type="text" name="report-model" id="report-model" placeholder="Modelo" value={model} onChange={(e) => setModel(e.target.value)} className="text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)" required autoComplete="off"/>
         </div>
         
         <div className="">
