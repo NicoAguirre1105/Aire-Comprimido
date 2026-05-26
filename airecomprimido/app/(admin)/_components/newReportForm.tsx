@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import Image from "next/image"
 import styles from "../_styles/newReport.module.css"
 import DataList from "./dataList"
@@ -8,6 +8,8 @@ import { useEmpresas } from "@/app/hooks/useEmpresas"
 import { useAreas } from "@/app/hooks/useAreas"
 import Alert from "@/app/_components/Alert"
 import { supabase} from "@/app/utils/supabaseClient"
+import { getSupabaseErrorMessage } from "@/app/utils/supabaseErrors"
+import { useAlert } from "@/app/hooks/useAlert"
 import { Spinner } from "@/app/_components/Spinner"
 
 const TODAY = new Date().toISOString().split("T")[0]
@@ -44,11 +46,10 @@ export default function NewReportForm({
   handleNewReport: () => void
   onReportCreated?: () => void
 }) {
-  const [error, setError] = useState("")
+  const { alert, showAlert } = useAlert()
   const [warning, setWarning] = useState<string[]>([])
   const [showWarning, setShowWarning] = useState(false)
   const [uploadMessage, setUploadMessage] = useState("")
-  const [newReportCreated,setNewReportCreated] = useState(false)
   const resolveWarningRef = useRef<((accepted: boolean) => void) | null>(null)
   const pendingRefetchRef = useRef(false)
 
@@ -70,59 +71,64 @@ export default function NewReportForm({
   const { data: equipos, refetch: equiposRefetch, loading: equiposLoading, error: equiposError } = useEquipos()
   const { data: areas, refetch: areasRefetch, loading: areasLoading, error: areaError } = useAreas()
 
-  // Cierre automático de la ventana de error a los 4 s
   useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(""), 3000)
-      return () => clearTimeout(timer)
+    const loadError = empresasError ?? equiposError ?? areaError
+    if (loadError) {
+      showAlert('error', loadError)
     }
-  }, [error])
+  }, [empresasError, equiposError, areaError, showAlert])
 
-  useEffect(() => {
-    if(newReportCreated) {
-      const timer = setTimeout(() => setNewReportCreated(false), 3000)
-      return () => clearTimeout(timer)
-    }
-  }, [newReportCreated])
+  const handleWarningDecline = useCallback(() => {
+    setShowWarning(false)
+    setWarning([])
+    const resolve = resolveWarningRef.current
+    resolveWarningRef.current = null
+    resolve?.(false)
+  }, [])
 
   const handleClose = () => {
     if (pendingRefetchRef.current) {
       onReportCreated?.()
       pendingRefetchRef.current = false
-      setNewReportCreated(false)
     }
     handleNewReport()
   }
 
-  function validateForm(form:FormType): boolean {
-    setError("")
+  function validateForm(form: FormType): string | null {
+    if (!form.titulo) return 'Complete el título del reporte.'
+    if (!form.fecha) return 'Ingrese la fecha del reporte.'
+    if (!form.empresa) return 'Ingrese la empresa.'
+    if (!form.area) return 'Ingrese el área respectiva.'
+    if (!form.equipo) return 'Ingrese el equipo asociado al reporte.'
+    if (!form.modelo) return 'Ingrese el modelo del equipo asociado al reporte.'
+    if (!form.file) return 'Adjunte el reporte en formato PDF.'
 
-    if(!form.titulo) {setError("Complete el título del reporte."); return false}
-    if(!form.fecha) {setError("Ingrese la fecha del reporte."); return false}
-    if(!form.empresa) {setError("Ingrese la empresa."); return false}
-    if(!form.area) {setError("Ingrese el área respectiva."); return false}
-    if(!form.equipo) {setError("Ingrese el equipo asociado al reporte."); return false}
-    if(!form.modelo) {setError("Ingrese el modelo del equipo asociado al reporte."); return false}
-    if(!form.file) {setError("Adjunte el reporte en formato PDF."); return false}
+    if (form.descripcion.length > 100) {
+      return 'La descripción debe tener menos de 100 caracteres.'
+    }
 
-    if(form.descripcion.length > 100) {setError("La descripción debe tener menos de 100 caractéres."); return false}
-    
     const date = new Date(form.fecha)
     const today = new Date(form.created_at)
     const limit = new Date(FIVE_YEARS_AGO)
 
-    if(date > today) {setError("La fecha no puede ser mayor a la actual."); return false}
-    if(date < limit) {setError("La fecha no puede ser anterior a 5 años."); return false}
-    
+    if (date > today) return 'La fecha no puede ser mayor a la actual.'
+    if (date < limit) return 'La fecha no puede ser anterior a 5 años.'
+
     const hours = Number(form.conteo_horas)
-    if(Number.isNaN(Number(form.conteo_horas)) || hours < 0) {setError('Número de horas debe ser mayor o igual a 0.'); return false}
+    if (Number.isNaN(hours) || hours < 0) {
+      return 'El número de horas debe ser mayor o igual a 0.'
+    }
 
-    const equipo_check = equipos.find(e => e.name === form.equipo)
-    if(equipo_check && equipo_check.modelo !== form.modelo) {setError("El modelo no coincide con los datos ingresados previamente del equipo. Quite la selección del equipo y vuelva a seleccionarlo o comuníquese con soporte."); return false}
-    
-    if(form.file.type !== 'application/pdf') {setError("Solo se aceptan archivos con formato PDF."); return false}
+    const equipo_check = equipos.find((e) => e.name === form.equipo)
+    if (equipo_check && equipo_check.modelo !== form.modelo) {
+      return 'El modelo no coincide con el equipo seleccionado. Vuelva a elegir el equipo o contacte a soporte.'
+    }
 
-    return true
+    if (form.file.type !== 'application/pdf') {
+      return 'Solo se aceptan archivos en formato PDF.'
+    }
+
+    return null
   }
 
   function checkFormWarnings(form: FormType): { insertItems: itemsCreation; warnings: string[] } {
@@ -178,19 +184,12 @@ export default function NewReportForm({
   
   const handleWarningAccept = () => {
     setShowWarning(false)
+    setWarning([])
     const resolve = resolveWarningRef.current
     resolveWarningRef.current = null
     resolve?.(true)
   }
   
-  const handleWarningDecline = () => {
-    setShowWarning(false)
-    setWarning([])
-    const resolve = resolveWarningRef.current
-    resolveWarningRef.current = null
-    resolve?.(false)
-  }
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const f = e.target.files[0]
@@ -202,7 +201,6 @@ export default function NewReportForm({
     }
   }
   const resetForm = () => {
-    setError("")
     setTitle("")
     setReportDate(TODAY)
     setDescription("")
@@ -234,7 +232,11 @@ export default function NewReportForm({
       fileName: fileName 
     }
 
-    if (!validateForm(form)) return
+    const validationError = validateForm(form)
+    if (validationError) {
+      showAlert('error', validationError)
+      return
+    }
 
     const { insertItems: itemsToCreate, warnings } = checkFormWarnings(form)
 
@@ -243,91 +245,108 @@ export default function NewReportForm({
       if (!accepted) return
     }
 
-    
-    setUploadMessage('Creando informe')
-
-    if (itemsToCreate.company) {
-      setUploadMessage('Creando empresa')
-      const { data: equipoUploadData, error: EquipoUploadError } = await supabase
-      .from('empresas')
-      .insert({
-        name: form.empresa
-      })
-  
-      if (EquipoUploadError) throw EquipoUploadError
-      setUploadMessage('Empresa creada')
+    const failSubmit = (err: unknown, fallback: string) => {
+      setUploadMessage('')
+      showAlert('error', getSupabaseErrorMessage(err, fallback))
     }
 
-    if (itemsToCreate.area) {
-      setUploadMessage('Creando area')
-      const { data: areaUploadData, error: AreaUploadError } = await supabase
-      .from('areas')
-      .insert({
-        name: form.area,
-        empresa: form.empresa
-      })
-  
-      if (AreaUploadError) throw AreaUploadError
-      setUploadMessage('Area creada')
-    }
+    try {
+      setUploadMessage('Creando informe')
 
-    if (itemsToCreate.device) {
-      setUploadMessage('Creando equipo')
-      const { data: areaUploadData, error: EquipoUploadError } = await supabase
-      .from('equipos')
-      .insert({
-        name: form.equipo,
-        modelo: form.modelo,
+      if (itemsToCreate.company) {
+        setUploadMessage('Creando empresa')
+        const { error: empresaError } = await supabase
+          .from('empresas')
+          .insert({ name: form.empresa })
+
+        if (empresaError) {
+          failSubmit(empresaError, 'No se pudo crear la empresa.')
+          return
+        }
+        setUploadMessage('Empresa creada')
+      }
+
+      if (itemsToCreate.area) {
+        setUploadMessage('Creando área')
+        const { error: areaError } = await supabase
+          .from('areas')
+          .insert({ name: form.area, empresa: form.empresa })
+
+        if (areaError) {
+          failSubmit(areaError, 'No se pudo crear el área.')
+          return
+        }
+        setUploadMessage('Área creada')
+      }
+
+      if (itemsToCreate.device) {
+        setUploadMessage('Creando equipo')
+        const { error: equipoError } = await supabase
+          .from('equipos')
+          .insert({
+            name: form.equipo,
+            modelo: form.modelo,
+            empresa: form.empresa,
+            area: form.area,
+          })
+
+        if (equipoError) {
+          failSubmit(equipoError, 'No se pudo crear el equipo.')
+          return
+        }
+        setUploadMessage('Equipo creado')
+      }
+
+      if (!file) {
+        showAlert('error', 'Adjunte el reporte en formato PDF.')
+        setUploadMessage('')
+        return
+      }
+
+      setUploadMessage('Subiendo archivo')
+
+      const fileExt = file.name.split('.').pop()
+      const filePath = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`
+
+      const { error: storageError } = await supabase.storage
+        .from('Informes')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (storageError) {
+        failSubmit(storageError, 'No se pudo subir el archivo PDF.')
+        return
+      }
+
+      const { data: urlData } = supabase.storage.from('Informes').getPublicUrl(filePath)
+      const publicUrl = urlData.publicUrl
+
+      setUploadMessage('Guardando informe')
+      const { error: informeError } = await supabase.from('informes').insert({
+        titulo: form.titulo,
+        fecha: form.fecha,
+        descripcion: form.descripcion,
         empresa: form.empresa,
-        area: form.area
+        area: form.area,
+        equipo: form.equipo,
+        conteo_horas: Number(form.conteo_horas),
+        filepath: publicUrl,
       })
-  
-      if (EquipoUploadError) throw EquipoUploadError
-      setUploadMessage('Equipo creado')
+
+      if (informeError) {
+        failSubmit(informeError, 'No se pudo guardar el informe.')
+        return
+      }
+
+      resetForm()
+      setUploadMessage('')
+      pendingRefetchRef.current = true
+      showAlert('success', 'El reporte ha sido creado correctamente.')
+    } catch (err) {
+      failSubmit(err, 'No se pudo crear el reporte.')
     }
-
-    if (!file) return
-
-    setUploadMessage('Subiendo archivo')
-
-    const fileExt = file.name.split('.').pop()
-    const filePath = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`
-      
-    const { data: storageData, error: storageError } = await supabase.storage
-      .from('Informes') // Reemplaza con el nombre de tu bucket
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
-      })
-  
-      if (storageError) throw storageError
-    
-    const { data } = supabase
-      .storage
-      .from('Informes')
-      .getPublicUrl(filePath)
-    
-    const publicUrl = data.publicUrl
-
-    setUploadMessage('Subiendo informe')
-    const { data: areaUploadData, error: InformeUploadError } = await supabase
-    .from('informes')
-    .insert({
-      titulo: form.titulo,
-      fecha:form.fecha,
-      descripcion: form.descripcion,
-      empresa: form.empresa,
-      area: form.area,
-      equipo: form.equipo,
-      conteo_horas: Number(form.conteo_horas),
-      filepath: publicUrl
-    })
-
-    if (InformeUploadError) throw InformeUploadError
-    resetForm()
-    setUploadMessage('')
-    pendingRefetchRef.current = true
-    setNewReportCreated(true)
   }
 
   const handleCompanySelection = (new_empresa: string) => {
@@ -476,7 +495,7 @@ export default function NewReportForm({
         <p>{uploadMessage}</p>
       </div>
       }
-      {error && <Alert type="error" message={error}/>}
+      {alert && <Alert type={alert.type} message={alert.message} />}
       {showWarning && 
       <Alert type="warning" message="Tenga en cuanta la siguiente información.">
         <ul className="text-sm list-disc">
@@ -499,7 +518,6 @@ export default function NewReportForm({
           </button>
         </div>
       </Alert>}
-      {newReportCreated && <Alert type="success" message="El reporte ha sido creado correctamente."/>}
     </div>
   )
 }

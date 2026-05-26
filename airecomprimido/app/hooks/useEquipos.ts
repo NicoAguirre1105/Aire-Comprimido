@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/app/utils/supabaseClient'
+import { getSupabaseErrorMessage } from '@/app/utils/supabaseErrors'
 import type { Equipo } from '@/app/types/database'
 
 type RefetchOptions = {
@@ -10,9 +11,6 @@ type RefetchOptions = {
   equipo?: string
 }
 
-function getErrorMessage(err: unknown): string {
-  return err instanceof Error ? err.message : 'Error desconocido'
-}
 export function useEquipos() {
   const [data, setData] = useState<Equipo[]>([])
   const [loading, setLoading] = useState(true)
@@ -46,7 +44,7 @@ export function useEquipos() {
 
       setData((rows as Equipo[]) ?? [])
     } catch (err: unknown) {
-      setError(getErrorMessage(err))
+      setError(getSupabaseErrorMessage(err, 'No se pudieron cargar los equipos.'))
     } finally {
       setLoading(false)
     }

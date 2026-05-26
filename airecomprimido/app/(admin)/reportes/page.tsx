@@ -2,12 +2,14 @@
 
 import Aside from "../_components/aside"
 import Header from "../_components/header"
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useEffect } from "react"
 import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
 import Image from "next/image"
 import NewReportForm from "../_components/newReportForm"
 import Loader from "@/app/_components/loader"
+import Alert from "@/app/_components/Alert"
+import { useAlert } from "@/app/hooks/useAlert"
 import { useInformes, INFORMES_YEAR_SPAN } from "@/app/hooks/useInformes"
 import { useEmpresas } from "@/app/hooks/useEmpresas"
 import { useAreas } from "@/app/hooks/useAreas"
@@ -44,6 +46,7 @@ export default function Reportes() {
   const [deviceFilter, setDeviceFilter] = useState("")
   const [yearFilter, setYearFilter] = useState("")
   const [monthFilter, setMonthFilter] = useState("")
+  const { alert, showAlert } = useAlert()
 
   const debouncedSearch = useDebounce(searchInput, SEARCH_DEBOUNCE_MS)
 
@@ -76,7 +79,17 @@ export default function Reportes() {
   const loading =
     (informesLoading && informes.length === 0) ||
     (empresasLoading && empresas.length === 0)
-  const error = informesError ?? empresasError ?? areasError ?? equiposError
+  useEffect(() => {
+    if (informesError) {
+      showAlert('error', informesError)
+    } else if (empresasError) {
+      showAlert('error', empresasError)
+    } else if (areasError) {
+      showAlert('error', areasError)
+    } else if (equiposError) {
+      showAlert('error', equiposError)
+    }
+  }, [informesError, empresasError, areasError, equiposError, showAlert])
 
   const handleCompanyFilterChange = useCallback(
     (companyName: string) => {
@@ -139,7 +152,6 @@ export default function Reportes() {
   }, [resetToFirstPage, empresasRefetch, equiposRefetch, areasRefetch])
 
   if (loading) return <Loader />
-  if (error) return <p>Error: {error}</p>
 
   const toggleAside = () => {
     setIsAsideOpen((prev) => (!prev))
@@ -163,6 +175,7 @@ export default function Reportes() {
       <div className="flex w-full flex-col overflow-x-hidden">
         <Header title="Reportes" toggleAside={toggleAside}/>
         <main className="relative flex flex-col  mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400 md:pt-0">
+        {alert && <Alert type={alert.type} message={alert.message} />}
         { isNewReportOpen ?
           <NewReportForm handleNewReport={handleNewReport} onReportCreated={handleReportCreated} />
         :

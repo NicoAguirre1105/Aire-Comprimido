@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/app/utils/supabaseClient'
+import { getSupabaseErrorMessage } from '@/app/utils/supabaseErrors'
 import type { Informe } from '@/app/types/database'
 
 export const INFORMES_PAGE_SIZE = 10
@@ -15,14 +16,6 @@ export type InformesFilters = {
   equipo?: string
   year?: number
   month?: number
-}
-
-function getErrorMessage(err: unknown): string {
-  if (err instanceof Error) return err.message
-  if (typeof err === 'object' && err !== null && 'message' in err) {
-    return String((err as { message: unknown }).message)
-  }
-  return 'Error desconocido'
 }
 
 function getFilterYearRange(): number[] {
@@ -112,7 +105,7 @@ export function useInformes(filters: InformesFilters = {}) {
       setTotalCount(count ?? 0)
       hasLoadedRef.current = true
     } catch (err: unknown) {
-      setError(getErrorMessage(err))
+      setError(getSupabaseErrorMessage(err, 'No se pudieron cargar los reportes.'))
     } finally {
       setLoading(false)
       setIsPaginating(false)

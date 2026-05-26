@@ -2,11 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/app/utils/supabaseClient'
+import { getSupabaseErrorMessage } from '@/app/utils/supabaseErrors'
 import type { Empresa } from '@/app/types/database'
-
-function getErrorMessage(err: unknown): string {
-  return err instanceof Error ? err.message : 'Error desconocido'
-}
 
 type RefetchOptions = {
   empresa?: string
@@ -33,9 +30,11 @@ export function useEmpresas() {
 
       const { data: rows, error: supabaseError } = await query
 
+      if (supabaseError) throw supabaseError
+
       setData((rows as Empresa[]) ?? [])
     } catch (err: unknown) {
-      setError(getErrorMessage(err))
+      setError(getSupabaseErrorMessage(err, 'No se pudieron cargar las empresas.'))
     } finally {
       setLoading(false)
     }

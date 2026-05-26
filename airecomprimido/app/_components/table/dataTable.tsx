@@ -153,14 +153,18 @@ export default function DataTable({ columns, data, pagination }: DataTableProps)
                   }
                 })}
                 <td className={`${tdStyle}`}>
-                  <div className="flex">
-                    <Image
-                      src="/icons/open_link_blue.svg"
-                      alt="Abrir reporte"
-                      width={150}
-                      height={150}
-                      className="hover:scale-110 cursor-pointer w-auto mx-auto"
-                    />
+                  <div className="flex justify-center">
+                    <Link
+                    href={informe['filepath']}
+                    target="_blank">
+                      <Image
+                        src="/icons/open_link_blue.svg"
+                        alt="Abrir reporte"
+                        width={150}
+                        height={150}
+                        className="hover:scale-110 cursor-pointer w-auto mx-auto"
+                      />
+                    </Link>
                     {/* <Image
                       src="/icons/edit.svg"
                       alt="Editicon"
