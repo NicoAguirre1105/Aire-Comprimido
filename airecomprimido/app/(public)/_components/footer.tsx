@@ -6,6 +6,7 @@ export default function Footer()
     <footer className="bg-black flex flex-col py-10 px-10 text-center items-center max-sm:py-7">
       <p className={textStyle}>AIRECOMPRIMIDO EC S.A.S. Todos los derechos reservados © 2021</p>
       <p className={textStyle}>Sitio web elaborado por Nicolas Aguirre</p>
+      <p className={`${textStyle} text-xs`}>v1.1.5</p>
     </footer>
   );
 }
