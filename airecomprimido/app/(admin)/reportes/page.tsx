@@ -7,6 +7,7 @@ import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
 import Image from "next/image"
 import NewReportForm from "../_components/newReportForm"
+import EditReportForm from "../_components/editReportForm"
 import Loader from "@/app/_components/loader"
 import Alert from "@/app/_components/Alert"
 import ReportFilters from "@/app/_components/ReportFilters"
@@ -16,6 +17,9 @@ import { useEmpresas } from "@/app/hooks/useEmpresas"
 import { useAreas } from "@/app/hooks/useAreas"
 import { useEquipos } from "@/app/hooks/useEquipos"
 import { useDebounce } from "@/app/_hooks/useDebounce"
+import { supabase } from "@/app/utils/supabaseClient"
+import { getSupabaseErrorMessage } from "@/app/utils/supabaseErrors"
+import type { Informe } from "@/app/types/database"
 
 const SEARCH_DEBOUNCE_MS = 400
 
@@ -23,6 +27,9 @@ export default function Reportes() {
 
   const [isAsideOpen, setIsAsideOpen] = useState(false)
   const [isNewReportOpen, setIsNewReportOpen] = useState(false)
+  const [editingInforme, setEditingInforme] = useState<Informe | null>(null)
+  const [deletingInforme, setDeletingInforme] = useState<Informe | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [searchInput, setSearchInput] = useState("")
   const [companyFilter, setCompanyFilter] = useState("")
   const [areaFilter, setAreaFilter] = useState("")
@@ -134,6 +141,39 @@ export default function Reportes() {
     areasRefetch()
   }, [resetToFirstPage, empresasRefetch, equiposRefetch, areasRefetch])
 
+  const handleReportUpdated = useCallback(() => {
+    resetToFirstPage()
+    empresasRefetch()
+    equiposRefetch()
+    areasRefetch()
+  }, [resetToFirstPage, empresasRefetch, equiposRefetch, areasRefetch])
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!deletingInforme) return
+    setIsDeleting(true)
+    try {
+      const url = deletingInforme.filepath
+      const marker = '/storage/v1/object/public/Informes/'
+      const idx = url.indexOf(marker)
+      if (idx !== -1) {
+        const filePath = url.slice(idx + marker.length)
+        await supabase.storage.from('Informes').remove([filePath])
+      }
+      const { error } = await supabase.from('informes').delete().eq('id', deletingInforme.id)
+      if (error) {
+        showAlert('error', getSupabaseErrorMessage(error, 'No se pudo eliminar el reporte.'))
+      } else {
+        showAlert('success', 'El reporte ha sido eliminado.')
+        resetToFirstPage()
+      }
+    } catch (err) {
+      showAlert('error', getSupabaseErrorMessage(err, 'No se pudo eliminar el reporte.'))
+    } finally {
+      setIsDeleting(false)
+      setDeletingInforme(null)
+    }
+  }, [deletingInforme, resetToFirstPage, showAlert])
+
   if (loading) return <Loader />
 
   const toggleAside = () => {
@@ -159,8 +199,47 @@ export default function Reportes() {
         <Header title="Reportes" toggleAside={toggleAside}/>
         <main className="relative flex flex-col  mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400 md:pt-0">
         {alert && <Alert type={alert.type} message={alert.message} />}
+        {deletingInforme && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
+            <div className="bg-white rounded-md p-6 max-w-sm w-full flex flex-col gap-4 shadow-xl">
+              <h3 className="text-lg font-semibold text-(--dark-blue)">Eliminar reporte</h3>
+              <p className="text-sm text-gray-600">
+                ¿Estás seguro de que deseas eliminar el reporte{' '}
+                <strong>&quot;{deletingInforme.titulo}&quot;</strong>? Esta acción no se puede deshacer.
+              </p>
+              <div className="flex justify-end gap-3 mt-2">
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={() => setDeletingInforme(null)}
+                  className="border border-gray-400 text-gray-600 px-4 py-2 rounded text-sm hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  onClick={handleDeleteConfirm}
+                  className="bg-(--red) text-white px-4 py-2 rounded text-sm hover:opacity-85 disabled:opacity-50 cursor-pointer"
+                >
+                  {isDeleting ? 'Eliminando...' : 'Eliminar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         { isNewReportOpen ?
           <NewReportForm handleNewReport={handleNewReport} onReportCreated={handleReportCreated} />
+        : editingInforme ?
+          <EditReportForm
+            informe={editingInforme}
+            onClose={() => setEditingInforme(null)}
+            onReportUpdated={() => {
+              setEditingInforme(null)
+              handleReportUpdated()
+              showAlert('success', 'El reporte ha sido actualizado correctamente.')
+            }}
+          />
         :
           <>
             <div className="w-full flex flex-col gap-4 md:flex-row md:flex-wrap md:items-start">
@@ -208,8 +287,10 @@ export default function Reportes() {
               onPageChange: setPage,
               isLoading: isPaginating,
             }}
+            onEdit={(item) => setEditingInforme(item as Informe)}
+            onDelete={(item) => setDeletingInforme(item as Informe)}
           />
-        </>    
+        </>
         }
         </main>
       </div>

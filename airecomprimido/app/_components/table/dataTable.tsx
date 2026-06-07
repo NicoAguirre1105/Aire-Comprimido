@@ -26,6 +26,8 @@ type TablePagination = {
   filters?: Filter[];
   data: any[];
   pagination?: TablePagination;
+  onEdit?: (item: any) => void;
+  onDelete?: (item: any) => void;
 }
 
 function TablePaginationControls({ pagination }: { pagination: TablePagination }) {
@@ -68,7 +70,7 @@ function TablePaginationControls({ pagination }: { pagination: TablePagination }
   )
 }
 
-export default function DataTable({ columns, data, pagination }: DataTableProps) {
+export default function DataTable({ columns, data, pagination, onEdit, onDelete }: DataTableProps) {
 
   const { isMobile } = useViewport()
   const tdStyle = "py-3 px-2 text-center"
@@ -94,24 +96,24 @@ export default function DataTable({ columns, data, pagination }: DataTableProps)
           })}
           <div className="flex gap-2 mt-4 w-full justify-center">
             <Link className="text-white bg-(--dark-blue) w-full py-1 font-semibold text-center transition-[scale] ease-in-out rounded-sm hover:scale-102 max-w-75" href={informe['filepath']} target="_blank">Abrir</Link>
-            {/* <button className="bg-(--light-blue) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
+            <button type="button" onClick={() => onEdit?.(informe)} className="bg-(--light-blue) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
               <Image
                 src="/icons/edit_white.svg"
-                alt="Editicon"
+                alt="Editar reporte"
                 width={150}
                 height={150}
                 className="cursor-pointer w-auto"
               />
             </button>
-            <button className="bg-(--red) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
+            <button type="button" onClick={() => onDelete?.(informe)} className="bg-(--red) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
               <Image
                 src="/icons/delete_white.svg"
-                alt="Editicon"
+                alt="Eliminar reporte"
                 width={150}
                 height={150}
                 className="cursor-pointer w-auto"
               />
-            </button> */}
+            </button>
           </div>
         </article>
       ))}
@@ -165,20 +167,24 @@ export default function DataTable({ columns, data, pagination }: DataTableProps)
                         className="hover:scale-110 cursor-pointer w-auto mx-auto"
                       />
                     </Link>
-                    {/* <Image
-                      src="/icons/edit.svg"
-                      alt="Editicon"
-                      width={150}
-                      height={150}
-                      className="hover:scale-110 cursor-pointer w-auto mx-auto"
-                    />
-                    <Image
-                      src="/icons/delete.svg"
-                      alt="Delete icon"
-                      width={150}
-                      height={150}
-                      className="hover:scale-105 cursor-pointer w-auto mx-auto"
-                    /> */}
+                    <button type="button" onClick={() => onEdit?.(informe)} className="cursor-pointer">
+                      <Image
+                        src="/icons/edit.svg"
+                        alt="Editar reporte"
+                        width={150}
+                        height={150}
+                        className="hover:scale-110 w-auto mx-auto"
+                      />
+                    </button>
+                    <button type="button" onClick={() => onDelete?.(informe)} className="cursor-pointer">
+                      <Image
+                        src="/icons/delete.svg"
+                        alt="Eliminar reporte"
+                        width={150}
+                        height={150}
+                        className="hover:scale-105 w-auto mx-auto"
+                      />
+                    </button>
                   </div>
                 </td>
               </tr>
