@@ -38,6 +38,7 @@ export default function Header() {
             priority
           />
         </Link>
+        <h2 className="text-white text-xs font-medium self-end">AireComprimido Ec S.A.S</h2>
         {!isMobile && 
           <div className="mr-5 ml-auto flex">
             <nav className="flex items-center gap-10 mr-15">

@@ -9,32 +9,15 @@ import Image from "next/image"
 import NewReportForm from "../_components/newReportForm"
 import Loader from "@/app/_components/loader"
 import Alert from "@/app/_components/Alert"
+import ReportFilters from "@/app/_components/ReportFilters"
 import { useAlert } from "@/app/hooks/useAlert"
-import { useInformes, INFORMES_YEAR_SPAN } from "@/app/hooks/useInformes"
+import { useInformes } from "@/app/hooks/useInformes"
 import { useEmpresas } from "@/app/hooks/useEmpresas"
 import { useAreas } from "@/app/hooks/useAreas"
 import { useEquipos } from "@/app/hooks/useEquipos"
 import { useDebounce } from "@/app/_hooks/useDebounce"
 
 const SEARCH_DEBOUNCE_MS = 400
-
-const MONTH_OPTIONS = [
-  { value: '1', label: 'Enero' },
-  { value: '2', label: 'Febrero' },
-  { value: '3', label: 'Marzo' },
-  { value: '4', label: 'Abril' },
-  { value: '5', label: 'Mayo' },
-  { value: '6', label: 'Junio' },
-  { value: '7', label: 'Julio' },
-  { value: '8', label: 'Agosto' },
-  { value: '9', label: 'Septiembre' },
-  { value: '10', label: 'Octubre' },
-  { value: '11', label: 'Noviembre' },
-  { value: '12', label: 'Diciembre' },
-] as const
-
-const CURRENT_YEAR = new Date().getFullYear()
-const YEAR_OPTIONS = Array.from({ length: INFORMES_YEAR_SPAN }, (_, i) => CURRENT_YEAR - i)
 
 export default function Reportes() {
 
@@ -180,160 +163,40 @@ export default function Reportes() {
           <NewReportForm handleNewReport={handleNewReport} onReportCreated={handleReportCreated} />
         :
           <>
-            <form
-              className="w-full flex flex-col justify-between gap-4 md:flex-row md:flex-wrap"
-              onSubmit={(e) => e.preventDefault()}
-              role="search"
-            >
-              <span className="w-full max-w-140 flex bg-(--grey-blue) px-2 py-1 rounded-sm gap-2 md:py-2">
+            <div className="w-full flex flex-col gap-4 md:flex-row md:flex-wrap md:items-start">
+              <ReportFilters
+                show={{ search: true, date: true, empresa: true, area: true, equipo: true }}
+                searchValue={searchInput}
+                onSearchChange={setSearchInput}
+                monthValue={monthFilter}
+                onMonthChange={setMonthFilter}
+                yearValue={yearFilter}
+                onYearChange={setYearFilter}
+                empresas={empresas}
+                empresaValue={companyFilter}
+                onEmpresaChange={handleCompanyFilterChange}
+                areas={areas}
+                areaValue={areaFilter}
+                onAreaChange={handleAreaFilterChange}
+                equipos={equipos}
+                equipoValue={deviceFilter}
+                onEquipoChange={handleDeviceFilterChange}
+              />
+              <button
+                type="button"
+                className="bg-(--light-blue) fixed rounded-4xl p-2 bottom-10 right-10 z-40 cursor-pointer md:relative md:w-fit md:mr-0 md:ml-auto md:right-0 md:bottom-0 md:px-4 md:rounded-sm md:font-semibold hover:bg-(--dark-blue) transition-all duration-200 ease-in-out md:py-2"
+                onClick={handleNewReport}
+              >
                 <Image
-                  src="/icons/search.svg"
-                  alt="Buscar"
+                  src="/icons/add.svg"
+                  alt="Crear reporte"
                   width={150}
                   height={150}
-                  className="h-5 w-auto cursor-pointer my-auto"
+                  className="h-9 w-auto cursor-pointer md:hidden"
                 />
-                <input
-                  type="search"
-                  placeholder="Busca un reporte"
-                  className="w-full outline-0"
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  aria-label="Buscar reporte"
-                />
-              </span>
-              <div className="w-full md:w-fit flex flex-wrap gap-3 justify-baseline">
-                <div className="relative w-fit">
-                  <select
-                    name="month"
-                    id="monthSelect"
-                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-30 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
-                    value={monthFilter}
-                    onChange={(e) => setMonthFilter(e.target.value)}
-                    aria-label="Filtrar por mes"
-                  >
-                    <option value="">Mes</option>
-                    {MONTH_OPTIONS.map((month) => (
-                      <option key={month.value} value={month.value}>{month.label}</option>
-                    ))}
-                  </select>
-                  <Image
-                    src="/icons/arrow_drop_down_blue.svg"
-                    alt="Filtro por mes"
-                    width={150}
-                    height={150}
-                    className="absolute right-2 top-1/2 h-5 w-auto -translate-y-1/2 pointer-events-none"
-                    aria-hidden
-                  />
-                </div>
-                <div className="relative w-fit">
-                  <select
-                    name="year"
-                    id="yearSelect"
-                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-30 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
-                    value={yearFilter}
-                    onChange={(e) => setYearFilter(e.target.value)}
-                    aria-label="Filtrar por año"
-                  >
-                    <option value="">Año</option>
-                    {YEAR_OPTIONS.map((year) => (
-                      <option key={year} value={String(year)}>{year}</option>
-                    ))}
-                  </select>
-                  <Image
-                    src="/icons/arrow_drop_down_blue.svg"
-                    alt="Filtro por año"
-                    width={150}
-                    height={150}
-                    className="absolute right-2 top-1/2 h-5 w-auto -translate-y-1/2 pointer-events-none"
-                    aria-hidden
-                  />
-                </div>
-                <div className="relative w-fit">
-                  <select
-                    name="company"
-                    id="companySelect"
-                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-30 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
-                    value={companyFilter}
-                    onChange={(e) => handleCompanyFilterChange(e.target.value)}
-                    aria-label="Filtrar por empresa"
-                  >
-                    <option value="">Empresa</option>
-                    {empresas.map(empresa => (
-                      <option key={empresa.name} value={empresa.name}>{empresa.name}</option>
-                    ))}
-                  </select>
-                  <Image
-                    src="/icons/arrow_drop_down_blue.svg"
-                    alt="Filtro por empresa"
-                    width={150}
-                    height={150}
-                    className="absolute right-2 top-1/2 h-5 w-auto -translate-y-1/2 pointer-events-none"
-                    aria-hidden
-                  />
-                </div>
-                <div className="relative w-fit">
-                  <select
-                    name="area"
-                    id="areaSelect"
-                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-30 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
-                    value={areaFilter}
-                    onChange={(e) => handleAreaFilterChange(e.target.value)}
-                    aria-label="Filtrar por area"
-                    >
-                    <option value="">Área</option>
-                    {areas.map(area => (
-                      <option key={area.name} value={area.name}>{area.name}</option>
-                    ))}
-                  </select>
-                  <Image
-                    src="/icons/arrow_drop_down_blue.svg"
-                    alt="Filtro por área"
-                    width={150}
-                    height={150}
-                    className="absolute right-2 top-1/2 h-5 w-auto -translate-y-1/2 pointer-events-none"
-                    aria-hidden
-                  />
-                </div>
-                <div className="relative w-fit">
-                  <select
-                    name="device"
-                    id="deviceSelect"
-                    className="bg-(--grey-blue) pl-3 py-1 appearance-none w-30 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7"
-                    value={deviceFilter}
-                    onChange={(e) => handleDeviceFilterChange(e.target.value)}
-                    aria-label="Filtrar por equipo"
-                    >
-                    <option value="">Equipo</option>
-                    {equipos.map(equipo => (
-                      <option key={equipo.name} value={equipo.name}>{equipo.name}</option>
-                    ))}
-                  </select>
-                  <Image
-                    src="/icons/arrow_drop_down_blue.svg"
-                    alt="Filtro por equipo"
-                    width={150}
-                    height={150}
-                    className="absolute right-2 top-1/2 h-5 w-auto -translate-y-1/2 pointer-events-none"
-                    aria-hidden
-                  />
-                </div>
-                <button
-                  type="button"
-                  className="bg-(--light-blue) fixed rounded-4xl p-2 bottom-10 right-10 z-40 cursor-pointer md:relative md:w-fit md:mr-0 md:ml-auto md:right-0 md:bottom-0 md:px-4 md:rounded-sm md:font-semibold hover:bg-(--dark-blue) transition-all duration-200 ease-in-out md:py-2"
-                  onClick={handleNewReport}
-                >
-                  <Image
-                    src="/icons/add.svg"
-                    alt="Crear reporte"
-                    width={150}
-                    height={150}
-                    className="h-9 w-auto cursor-pointer md:hidden"
-                  />
-                  <p className="hidden text-white md:inline">Crear reporte</p>
-                </button>
-              </div>
-            </form>
+                <p className="hidden text-white md:inline">Crear reporte</p>
+              </button>
+            </div>
           <DataTable
             columns={adminColumns}
             data={informes}

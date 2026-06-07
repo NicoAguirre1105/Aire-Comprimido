@@ -28,7 +28,7 @@ export default function Home() {
           <h1 className="text-4xl text-white font-bold text-center max-md:text-3xl">AIRECOMPRIMIDO EC S.A.S</h1>
           <p className="text-white text-center translate-x-70 italic text-lg w-fit max-md:text-base max-md:translate-x-0">La fuerza del aire... nos mueve</p>
         </div>
-        <p className="text-center text-white font-light text-xl px-20 max-md:px-5 max-sm:px-0">Nos dedicamos a la comercialización de compresores de aire, repuestos originales y servicio técnico de las marcas más prestigiosas a nivel mundial como son: Atlas Copco, Kaeser, Ingersoll Rand, Quincy, Airhorse, Hertz, entre otras</p>
+        <p className="text-center text-white font-light text-xl px-20 max-md:px-5 max-sm:px-0">Nos dedicamos a la comercialización de compresores de aire, repuestos originales y servicio técnico de las marcas más prestigiosas a nivel mundial como son: Atlas Copco, Kaeser, Ingersoll Rand, Quincy, Airhorse, Hertz, entre otras.</p>
         <Slider props={props} className={sliderStyle}/>
         <button onClick={toggleContact} className={`${buttonStyle} w-fit mx-3 bg-(--light-blue) hover:bg-(--dark-blue) text-lg max-sm:text-base max-sm:mx-0`}>Solicita una Cotización</button>
       </div>

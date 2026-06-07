@@ -122,7 +122,7 @@ export default function DataTable({ columns, data, pagination }: DataTableProps)
 
   return (
     <>
-    <div className={`w-full mt-10 rounded-lg overflow-hidden ${contentClass}`}>
+    <div className={`w-full mt-10 rounded-lg border-3 border-(--dark-blue) overflow-hidden ${contentClass}`}>
       <div className="w-full overflow-x-auto relative">
         <table className="min-w-200 w-full">
           <thead className="bg-(--grey-blue)">
@@ -137,7 +137,7 @@ export default function DataTable({ columns, data, pagination }: DataTableProps)
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-white">
             {data.map(informe => (
               <tr key={informe.id} className="border-b-3">
                 {columns.flatMap((col, idx) => {
