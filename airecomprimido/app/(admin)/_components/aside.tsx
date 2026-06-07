@@ -69,7 +69,7 @@ export default function Aside({
             />
             Reportes
           </Link>
-          {/* <Link href='/generador_qr' className={hyperStyle}>
+          <Link href='/generador_qr' className={hyperStyle}>
             <Image
               src="/icons/qr_code.svg"
               alt="QR code icon"
@@ -78,7 +78,7 @@ export default function Aside({
               className={hyperIconStyle}
             />
             Generador QR
-          </Link> */}
+          </Link>
         </nav>
         <button 
           onClick={handleLogout}
