@@ -1,17 +1,15 @@
-'use client'
+import type { Metadata } from 'next'
+import HistorialShell from './_components/HistorialShell'
 
-import Header from '@/app/(public)/_components/header'
-import Footer from '@/app/(public)/_components/footer'
-import BgLogo from '@/app/_components/bgLogo'
-import { ContactVisibilityProvider } from '@/app/_context/ContactVisibilityContext'
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    noarchive: true,
+    nosnippet: true,
+  },
+}
 
 export default function HistorialLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <ContactVisibilityProvider>
-      <BgLogo />
-      <Header />
-      {children}
-      <Footer />
-    </ContactVisibilityProvider>
-  )
+  return <HistorialShell>{children}</HistorialShell>
 }

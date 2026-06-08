@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /historial
+Disallow: /login
+Disallow: /dashboard
+Disallow: /reportes
+Disallow: /generador_qr
+
+Sitemap: https://airecomprimidoec.com/sitemap.xml
