@@ -13,13 +13,6 @@ import { useAlert } from "@/app/hooks/useAlert"
 import { Spinner } from "@/app/_components/Spinner"
 import type { Informe } from "@/app/types/database"
 
-const TODAY = new Date().toISOString().split("T")[0]
-const FIVE_YEARS_AGO = (() => {
-  const d = new Date()
-  d.setFullYear(d.getFullYear() - 5)
-  return d.toISOString().split("T")[0]
-})()
-
 type itemsCreation = {
   company: boolean
   area: boolean
@@ -47,6 +40,13 @@ export default function EditReportForm({
   onClose: () => void
   onReportUpdated?: () => void
 }) {
+  const today = new Date().toISOString().split("T")[0]
+  const fiveYearsAgo = (() => {
+    const d = new Date()
+    d.setFullYear(d.getFullYear() - 5)
+    return d.toISOString().split("T")[0]
+  })()
+
   const { alert, showAlert } = useAlert()
   const [warning, setWarning] = useState<string[]>([])
   const [showWarning, setShowWarning] = useState(false)
@@ -107,7 +107,7 @@ export default function EditReportForm({
 
     const date = new Date(form.fecha)
     const today = new Date(form.created_at)
-    const limit = new Date(FIVE_YEARS_AGO)
+    const limit = new Date(fiveYearsAgo)
 
     if (date > today) return 'La fecha no puede ser mayor a la actual.'
     if (date < limit) return 'La fecha no puede ser anterior a 5 años.'
@@ -213,7 +213,7 @@ export default function EditReportForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const form: FormType = {
-      created_at: new Date(TODAY),
+      created_at: new Date(today),
       titulo: title,
       fecha: reportDate,
       descripcion: description,
@@ -436,7 +436,7 @@ export default function EditReportForm({
       {showWarning &&
         <Alert type="warning" message="Tenga en cuenta la siguiente información.">
           <ul className="text-sm list-disc">
-            {warning.map((m) => <li key={m.length}>{m}</li>)}
+            {warning.map((m) => <li key={m}>{m}</li>)}
           </ul>
           <div className="flex gap-2 mt-2">
             <button

@@ -12,13 +12,6 @@ import { getSupabaseErrorMessage } from "@/app/utils/supabaseErrors"
 import { useAlert } from "@/app/hooks/useAlert"
 import { Spinner } from "@/app/_components/Spinner"
 
-const TODAY = new Date().toISOString().split("T")[0]
-const FIVE_YEARS_AGO = (() => {
-  const d = new Date()
-  d.setFullYear(d.getFullYear() - 5)
-  return d.toISOString().split("T")[0]
-})()
-
 type itemsCreation = {
   company: boolean,
   area: boolean,
@@ -46,6 +39,13 @@ export default function NewReportForm({
   handleNewReport: () => void
   onReportCreated?: () => void
 }) {
+  const today = new Date().toISOString().split("T")[0]
+  const fiveYearsAgo = (() => {
+    const d = new Date()
+    d.setFullYear(d.getFullYear() - 5)
+    return d.toISOString().split("T")[0]
+  })()
+
   const { alert, showAlert } = useAlert()
   const [warning, setWarning] = useState<string[]>([])
   const [showWarning, setShowWarning] = useState(false)
@@ -55,7 +55,7 @@ export default function NewReportForm({
 
   // Estados para envío a API
   const [title, setTitle] = useState("")
-  const [reportDate, setReportDate] = useState(TODAY)
+  const [reportDate, setReportDate] = useState(today)
   const [description, setDescription] = useState("")
   const [hoursCount, setHoursCount] = useState("")
   const [company, setCompany] = useState("")
@@ -109,7 +109,7 @@ export default function NewReportForm({
 
     const date = new Date(form.fecha)
     const today = new Date(form.created_at)
-    const limit = new Date(FIVE_YEARS_AGO)
+    const limit = new Date(fiveYearsAgo)
 
     if (date > today) return 'La fecha no puede ser mayor a la actual.'
     if (date < limit) return 'La fecha no puede ser anterior a 5 años.'
@@ -202,7 +202,7 @@ export default function NewReportForm({
   }
   const resetForm = () => {
     setTitle("")
-    setReportDate(TODAY)
+    setReportDate(today)
     setDescription("")
     setHoursCount("")
     setCompany("")
@@ -222,7 +222,7 @@ export default function NewReportForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const form:FormType = {
-      created_at: new Date(TODAY),
+      created_at: new Date(today),
       titulo: title,
       fecha: reportDate,
       descripcion: description,
@@ -502,7 +502,7 @@ export default function NewReportForm({
       {showWarning && 
       <Alert type="warning" message="Tenga en cuanta la siguiente información.">
         <ul className="text-sm list-disc">
-          {warning.map(m => <li key={m.length}>{m}</li>)}
+          {warning.map(m => <li key={m}>{m}</li>)}
         </ul>
         <div className="flex gap-2 mt-2">
           <button

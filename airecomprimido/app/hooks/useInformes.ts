@@ -74,16 +74,16 @@ export function useInformes(filters: InformesFilters = {}) {
         query = query.eq('equipo', activeFilters.equipo)
       }
       if (activeFilters.year && activeFilters.month) {
-        const { from, to } = getMonthDateRange(activeFilters.year, activeFilters.month)
-        query = query.gte('fecha', from).lte('fecha', to)
+        const { from: dateFrom, to: dateTo } = getMonthDateRange(activeFilters.year, activeFilters.month)
+        query = query.gte('fecha', dateFrom).lte('fecha', dateTo)
       } else if (activeFilters.year) {
         query = query
           .gte('fecha', `${activeFilters.year}-01-01`)
           .lte('fecha', `${activeFilters.year}-12-31`)
       } else if (activeFilters.month) {
         const orParts = getFilterYearRange().map((year) => {
-          const { from, to } = getMonthDateRange(year, activeFilters.month!)
-          return `and(fecha.gte.${from},fecha.lte.${to})`
+          const { from: dateFrom, to: dateTo } = getMonthDateRange(year, activeFilters.month!)
+          return `and(fecha.gte.${dateFrom},fecha.lte.${dateTo})`
         })
         query = query.or(orParts.join(','))
       }

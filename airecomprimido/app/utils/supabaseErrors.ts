@@ -24,7 +24,6 @@ export function getSupabaseErrorMessage(
   const status = String(statusCode ?? '')
 
   // Autenticación
-  console.log(getErrorPayload(err))
   if (
     code === 'invalid_credentials' ||
     text.includes('invalid login credentials') ||

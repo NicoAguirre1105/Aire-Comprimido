@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: 'AIRECOMPRIMIDO EC S.A.S',
     images: [
       {
-        url: 'https://airecomprimido.com/og-image.png',
+        url: 'https://airecomprimidoec.com/og-image.png',
         width: 630,
         height: 630,
         alt: 'Logo AIRECOMPRIMIDO EC',

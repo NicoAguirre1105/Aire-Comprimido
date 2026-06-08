@@ -13,13 +13,11 @@ import Loader from '@/app/_components/loader'
 import Alert from '@/app/_components/Alert'
 import { useAlert } from '@/app/hooks/useAlert'
 import { companyColumns, areaColumns, deviceColumns } from '@/app/_components/table/tableProps'
+import type { Informe } from '@/app/types/database'
 
 const SEARCH_DEBOUNCE_MS = 400
 
-function HistorialContent() {
-  const searchParams = useSearchParams()
-  const uuid = searchParams.get('uuid')
-
+function HistorialContent({ uuid }: { uuid: string }) {
   const { entityResult, loading: entityLoading, error: entityError } = useEntityByUuid(uuid)
 
   const [searchInput, setSearchInput] = useState('')
@@ -77,9 +75,9 @@ function HistorialContent() {
   } = useInformes(informesFilters)
 
   useEffect(() => {
-    const err = informesError || areasError || equiposError
+    const err = entityError || informesError || areasError || equiposError
     if (err) showAlert('error', err)
-  }, [informesError, areasError, equiposError, showAlert])
+  }, [entityError, informesError, areasError, equiposError, showAlert])
 
   const handleAreaChange = useCallback(
     (areaName: string) => {
@@ -98,9 +96,7 @@ function HistorialContent() {
 
   if (entityLoading) return <Loader />
 
-  if (!uuid || !entityResult) {
-    notFound()
-  }
+  if (!entityResult) notFound()
 
   const { entityType, entity } = entityResult
 
@@ -148,7 +144,7 @@ function HistorialContent() {
       {loading ? (
         <Loader />
       ) : (
-        <DataTable
+        <DataTable<Informe>
           columns={columns}
           data={informes}
           pagination={{
@@ -165,10 +161,19 @@ function HistorialContent() {
   )
 }
 
+function HistorialRouter() {
+  const searchParams = useSearchParams()
+  const uuid = searchParams.get('uuid')
+
+  if (!uuid) notFound()
+
+  return <HistorialContent uuid={uuid} />
+}
+
 export default function HistorialPage() {
   return (
     <Suspense fallback={<Loader />}>
-      <HistorialContent />
+      <HistorialRouter />
     </Suspense>
   )
 }

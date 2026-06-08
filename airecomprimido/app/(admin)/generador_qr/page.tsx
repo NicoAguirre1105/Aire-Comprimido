@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+
+const BASE_URL = 'https://www.airecomprimidoec.com'
 import Aside from '../_components/aside'
 import Header from '../_components/header'
 import { useEmpresas } from '@/app/hooks/useEmpresas'
@@ -28,10 +30,7 @@ const TYPE_LABEL: Record<QRItem['type'], string> = {
 
 export default function GeneradorQR() {
   const [isAsideOpen, setIsAsideOpen] = useState(false)
-  const [origin, setOrigin] = useState('')
   const { alert, showAlert } = useAlert()
-
-  useEffect(() => { setOrigin(window.location.origin) }, [])
 
   // ── Scope ──────────────────────────────────────────────────────────────────
   const [scopeType, setScopeType] = useState<ScopeType>('todos')
@@ -181,7 +180,7 @@ export default function GeneradorQR() {
 
   // ── PDF download ───────────────────────────────────────────────────────────
   const handleDownloadPDF = useCallback(async () => {
-    if (displayItems.length === 0 || !origin) return
+    if (displayItems.length === 0) return
 
     try {
       const [QRCodeLib, { jsPDF }] = await Promise.all([
@@ -237,7 +236,7 @@ export default function GeneradorQR() {
         const qrX = cellX + (cellW - qrSize) / 2
         const qrY = cellY + 1.5
 
-        const url = `${origin}/historial?uuid=${item.uuid}`
+        const url = `${BASE_URL}/historial?uuid=${item.uuid}`
         const dataUrl = await QRCodeLib.default.toDataURL(url, { width: 300, margin: 1 })
 
         pdf.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
@@ -506,7 +505,7 @@ export default function GeneradorQR() {
             </p>
             <button
               onClick={handleDownloadPDF}
-              disabled={displayItems.length === 0 || !origin}
+              disabled={displayItems.length === 0}
               className="bg-(--dark-blue) text-white px-4 py-2 rounded text-sm font-semibold hover:opacity-85 disabled:opacity-40 transition-all cursor-pointer disabled:cursor-not-allowed"
             >
               Descargar PDF
@@ -542,15 +541,11 @@ export default function GeneradorQR() {
                   </button>
 
                   <div className="w-full p-1">
-                    {origin ? (
-                      <QRCode
-                        value={`${origin}/historial?uuid=${item.uuid}`}
-                        style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-                        viewBox="0 0 256 256"
-                      />
-                    ) : (
-                      <div className="aspect-square w-full bg-gray-100 rounded animate-pulse" />
-                    )}
+                    <QRCode
+                      value={`${BASE_URL}/historial?uuid=${item.uuid}`}
+                      style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
+                      viewBox="0 0 256 256"
+                    />
                   </div>
 
                   <div className="text-center w-full">

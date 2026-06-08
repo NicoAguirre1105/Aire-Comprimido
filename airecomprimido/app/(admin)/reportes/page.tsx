@@ -6,8 +6,17 @@ import { useState, useCallback, useMemo, useEffect } from "react"
 import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
 import Image from "next/image"
-import NewReportForm from "../_components/newReportForm"
-import EditReportForm from "../_components/editReportForm"
+import dynamic from "next/dynamic"
+import { Spinner } from "@/app/_components/Spinner"
+
+const NewReportForm = dynamic(() => import("../_components/newReportForm"), {
+  loading: () => <div className="flex justify-center py-20"><Spinner size="lg" variant="ring" /></div>,
+  ssr: false,
+})
+const EditReportForm = dynamic(() => import("../_components/editReportForm"), {
+  loading: () => <div className="flex justify-center py-20"><Spinner size="lg" variant="ring" /></div>,
+  ssr: false,
+})
 import Loader from "@/app/_components/loader"
 import Alert from "@/app/_components/Alert"
 import ReportFilters from "@/app/_components/ReportFilters"
@@ -155,13 +164,23 @@ export default function Reportes() {
       const url = deletingInforme.filepath
       const marker = '/storage/v1/object/public/Informes/'
       const idx = url.indexOf(marker)
-      if (idx !== -1) {
-        const filePath = url.slice(idx + marker.length)
-        await supabase.storage.from('Informes').remove([filePath])
+
+      if (idx === -1) {
+        showAlert('error', 'No se pudo determinar la ruta del archivo. Eliminación cancelada.')
+        return
       }
-      const { error } = await supabase.from('informes').delete().eq('id', deletingInforme.id)
-      if (error) {
-        showAlert('error', getSupabaseErrorMessage(error, 'No se pudo eliminar el reporte.'))
+
+      const filePath = url.slice(idx + marker.length)
+      const { error: storageError } = await supabase.storage.from('Informes').remove([filePath])
+
+      if (storageError) {
+        showAlert('error', getSupabaseErrorMessage(storageError, 'No se pudo eliminar el archivo del reporte. Intente nuevamente.'))
+        return
+      }
+
+      const { error: dbError } = await supabase.from('informes').delete().eq('id', deletingInforme.id)
+      if (dbError) {
+        showAlert('error', getSupabaseErrorMessage(dbError, 'No se pudo eliminar el reporte.'))
       } else {
         showAlert('success', 'El reporte ha sido eliminado.')
         resetToFirstPage()
@@ -174,14 +193,12 @@ export default function Reportes() {
     }
   }, [deletingInforme, resetToFirstPage, showAlert])
 
-  if (loading) return <Loader />
+  const toggleAside = useCallback(() => {
+    setIsAsideOpen((prev) => !prev)
+  }, [])
 
-  const toggleAside = () => {
-    setIsAsideOpen((prev) => (!prev))
-  }
-
-  const handleNewReport = () => {
-    setIsNewReportOpen((prev) => (!prev))
+  const handleNewReport = useCallback(() => {
+    setIsNewReportOpen((prev) => !prev)
     setSearchInput("")
     setCompanyFilter("")
     setAreaFilter("")
@@ -190,7 +207,9 @@ export default function Reportes() {
     setMonthFilter("")
     areasRefetch()
     equiposRefetch()
-  }
+  }, [areasRefetch, equiposRefetch])
+
+  if (loading) return <Loader />
 
   return (
     <div className="flex min-h-full flex-1">
@@ -287,8 +306,8 @@ export default function Reportes() {
               onPageChange: setPage,
               isLoading: isPaginating,
             }}
-            onEdit={(item) => setEditingInforme(item as Informe)}
-            onDelete={(item) => setDeletingInforme(item as Informe)}
+            onEdit={(item) => setEditingInforme(item)}
+            onDelete={(item) => setDeletingInforme(item)}
           />
         </>
         }
