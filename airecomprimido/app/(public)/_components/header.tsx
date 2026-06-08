@@ -25,6 +25,11 @@ export default function Header() {
     }
   }, [isMobile]);
 
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen]);
+
   return (
     <>
       <header className="fixed top-0 w-full bg-(--light-blue) flex h-16 px-10 py-2.5 z-50 max-sm:px-5">
@@ -59,7 +64,7 @@ export default function Header() {
           className="h-14 w-auto fixed right-10 fill-white top-0 z-60 my-1 max-sm:right-5 cursor-pointer"
           onClick={toggleMenu}
         />
-        <div className={`${isOpen ? "top-15" : "-top-full"} fixed flex flex-col transition-[top] duration-700 ease-in-out w-full h-screen bg-(--dark-blue) left-0 z-40 text-lg items-center`}>
+        <div className={`${isOpen ? "translate-y-0" : "-translate-y-full"} fixed top-0 flex flex-col transition-transform duration-700 ease-in-out w-full h-screen bg-(--dark-blue) left-0 z-40 text-lg items-center`}>
           <nav className="flex flex-col text-center items-center gap-5 my-10">
             <Link href="/" onClick={toggleMenu} className={linkMobile}>Inicio</Link>
             <Link href="/equipos" onClick={toggleMenu} className={linkMobile}>Equipos</Link>
