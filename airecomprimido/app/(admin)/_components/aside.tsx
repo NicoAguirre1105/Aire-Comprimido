@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import { useViewport } from "@/app/_context/ViewportContext"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/app/utils/supabaseClient"
@@ -42,7 +41,7 @@ export default function Aside({
 
   return (
     <aside className={`${isOpen || !isMobile ? 'left-0' : '-left-full'} ${asideStyle} bg-(--dark-blue) flex flex-col transition-all duration-200 ease-in-out sm:px-10 md:w-2/5 md:max-w-80 md:min-w-60`}>
-      <div className="md:fixed flex flex-col h-dvh px-10 py-8 md:px-0 md:py-10">
+      <div className="md:fixed md:z-10 flex flex-col h-dvh px-10 py-8 md:px-0 md:py-10">
         <Image
           src="/icons/right_arrow_white.svg"
           alt="Right arrow icon"
@@ -59,7 +58,7 @@ export default function Aside({
           className="h-15 w-fit mb-20"
         />
         <nav className="text-white flex flex-col text-xl font-semibold gap-7 py-5">
-          <Link href='/reportes' className={hyperStyle}>
+          <a href='/reportes' className={hyperStyle}>
             <Image
               src="/icons/docs.svg"
               alt="Docs icon"
@@ -68,8 +67,8 @@ export default function Aside({
               className={hyperIconStyle}
             />
             Reportes
-          </Link>
-          <Link href='/generador_qr' className={hyperStyle}>
+          </a>
+          <a href='/generador_qr' className={hyperStyle}>
             <Image
               src="/icons/qr_code.svg"
               alt="QR code icon"
@@ -78,7 +77,7 @@ export default function Aside({
               className={hyperIconStyle}
             />
             Generador QR
-          </Link>
+          </a>
         </nav>
         <button 
           onClick={handleLogout}

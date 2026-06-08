@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useViewport } from "@/app/_context/ViewportContext";
 import Image from "next/image";
 
@@ -110,7 +109,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
             )}
           })}
           <div className="flex gap-2 mt-4 w-full justify-center">
-            <Link className="text-white bg-(--dark-blue) w-full py-1 font-semibold text-center transition-[scale] ease-in-out rounded-sm hover:scale-102 max-w-75" href={String(informe['filepath'] ?? '')} target="_blank">Abrir</Link>
+            <a className="text-white bg-(--dark-blue) w-full py-1 font-semibold text-center transition-[scale] ease-in-out rounded-sm hover:scale-102 max-w-75" href={String(informe['filepath'] ?? '')} target="_blank" rel="noopener noreferrer">Abrir</a>
             <button type="button" onClick={() => onEdit?.(informe)} className="bg-(--light-blue) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
               <Image
                 src="/icons/edit_white.svg"
@@ -171,9 +170,10 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
                 })}
                 <td className={`${tdStyle}`}>
                   <div className="flex justify-center">
-                    <Link
+                    <a
                     href={String(informe['filepath'] ?? '')}
-                    target="_blank">
+                    target="_blank"
+                    rel="noopener noreferrer">
                       <Image
                         src="/icons/open_link_blue.svg"
                         alt="Abrir reporte"
@@ -181,7 +181,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
                         height={150}
                         className="hover:scale-110 cursor-pointer w-auto mx-auto"
                       />
-                    </Link>
+                    </a>
                     <button type="button" onClick={() => onEdit?.(informe)} className="cursor-pointer">
                       <Image
                         src="/icons/edit.svg"
