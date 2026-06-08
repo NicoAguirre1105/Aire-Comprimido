@@ -110,24 +110,28 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
           })}
           <div className="flex gap-2 mt-4 w-full justify-center">
             <a className="text-white bg-(--dark-blue) w-full py-1 font-semibold text-center transition-[scale] ease-in-out rounded-sm hover:scale-102 max-w-75" href={String(informe['filepath'] ?? '')} target="_blank" rel="noopener noreferrer">Abrir</a>
-            <button type="button" onClick={() => onEdit?.(informe)} className="bg-(--light-blue) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
-              <Image
-                src="/icons/edit_white.svg"
-                alt="Editar reporte"
-                width={150}
-                height={150}
-                className="cursor-pointer w-auto"
-              />
-            </button>
-            <button type="button" onClick={() => onDelete?.(informe)} className="bg-(--red) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
-              <Image
-                src="/icons/delete_white.svg"
-                alt="Eliminar reporte"
-                width={150}
-                height={150}
-                className="cursor-pointer w-auto"
-              />
-            </button>
+            {onEdit && (
+              <button type="button" onClick={() => onEdit(informe)} className="bg-(--light-blue) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
+                <Image
+                  src="/icons/edit_white.svg"
+                  alt="Editar reporte"
+                  width={150}
+                  height={150}
+                  className="cursor-pointer w-auto"
+                />
+              </button>
+            )}
+            {onDelete && (
+              <button type="button" onClick={() => onDelete(informe)} className="bg-(--red) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
+                <Image
+                  src="/icons/delete_white.svg"
+                  alt="Eliminar reporte"
+                  width={150}
+                  height={150}
+                  className="cursor-pointer w-auto"
+                />
+              </button>
+            )}
           </div>
         </article>
       ))}
@@ -182,24 +186,28 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
                         className="hover:scale-110 cursor-pointer w-auto mx-auto"
                       />
                     </a>
-                    <button type="button" onClick={() => onEdit?.(informe)} className="cursor-pointer">
-                      <Image
-                        src="/icons/edit.svg"
-                        alt="Editar reporte"
-                        width={150}
-                        height={150}
-                        className="hover:scale-110 w-auto mx-auto"
-                      />
-                    </button>
-                    <button type="button" onClick={() => onDelete?.(informe)} className="cursor-pointer">
-                      <Image
-                        src="/icons/delete.svg"
-                        alt="Eliminar reporte"
-                        width={150}
-                        height={150}
-                        className="hover:scale-105 w-auto mx-auto"
-                      />
-                    </button>
+                    {onEdit && (
+                      <button type="button" onClick={() => onEdit(informe)} className="cursor-pointer">
+                        <Image
+                          src="/icons/edit.svg"
+                          alt="Editar reporte"
+                          width={150}
+                          height={150}
+                          className="hover:scale-110 w-auto mx-auto"
+                        />
+                      </button>
+                    )}
+                    {onDelete && (
+                      <button type="button" onClick={() => onDelete(informe)} className="cursor-pointer">
+                        <Image
+                          src="/icons/delete.svg"
+                          alt="Eliminar reporte"
+                          width={150}
+                          height={150}
+                          className="hover:scale-105 w-auto mx-auto"
+                        />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

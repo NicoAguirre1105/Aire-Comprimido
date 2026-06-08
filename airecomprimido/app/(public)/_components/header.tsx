@@ -28,17 +28,16 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-0 w-full bg-(--light-blue) flex h-16 px-10 py-2.5 z-50 max-sm:px-5">
-        <Link href="/" onClick={toggleMenu}>
+        <Link href="/" onClick={toggleMenu} className="flex items-center">
           <Image 
-            src="/logos/logo.png"
+            src="/logos/company_white.png"
             alt="AireComprimido EC S.A.S"
             width={1383}
             height={1598}
-            className="h-full w-auto"
+            className="md:h-full md:w-auto h-auto w-50"
             priority
           />
         </Link>
-        <h2 className="text-white text-xs font-medium self-end">AireComprimido Ec S.A.S</h2>
         {!isMobile && 
           <div className="mr-5 ml-auto flex">
             <nav className="flex items-center gap-10 mr-15">

@@ -10,8 +10,12 @@
   --hover-red: #c21703;
 }
 
+body {
+  background-color: white;
+}
+
 main { /* Header uses that space with fixed position */
-  margin-top: 4rem;  
+  margin-top: 4rem;
 }
 
 .window-title {
