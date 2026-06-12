@@ -180,7 +180,7 @@ export default function GeneradorQR() {
 
   // ── PDF download ───────────────────────────────────────────────────────────
   const handleDownloadPDF = useCallback(async () => {
-    if (displayItems.length === 0) return
+    if (displayItems.length === 0 || !origin) return
 
     try {
       const [QRCodeLib, { jsPDF }] = await Promise.all([
@@ -188,8 +188,8 @@ export default function GeneradorQR() {
         import('jspdf'),
       ])
 
-      // Load logo as data URL once
-      const logoDataUrl = await fetch('/logos/logo_blue.png')
+      // Load logo_white
+      const logoDataUrl = await fetch('/logos/logo_white.png')
         .then(r => r.blob())
         .then(blob => new Promise<string>((resolve, reject) => {
           const reader = new FileReader()
@@ -198,7 +198,6 @@ export default function GeneradorQR() {
           reader.readAsDataURL(blob)
         }))
 
-      // Pre-compute logo dimensions constrained to a max box
       const logoImg = new Image()
       await new Promise<void>(resolve => {
         logoImg.onload = () => resolve()
@@ -206,88 +205,127 @@ export default function GeneradorQR() {
       })
       const logoAspect = logoImg.naturalWidth / logoImg.naturalHeight
 
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-
-      const pageW = 210
-      const pageH = 297
+      // ── Layout constants ────────────────────────────────────────────────────
+      const pageW = 210, pageH = 297
       const margin = 12
-      const cols = 3
-      const rows = 4
-      const cellW = (pageW - margin * 2) / cols
-      const cellH = (pageH - margin * 2) / rows
-      const qrSize = cellW * 0.76
+      const cardW  = Math.round(pageW * 0.60)           // 60% de A4 = 126 mm
+      const cardX0 = (pageW - cardW) / 2               // centrado horizontal
+      const vPad   = 3.5                  // vertical padding inside card
+      const hPad   = 4                    // horizontal padding inside card
+      const elemGap = 5                   // gap between QR | logo | text
+      const cardGap = 4                   // vertical gap between cards
 
-      // Bottom info strip layout
-      const leftColW = cellW * 0.38          // logo column
-      const rightColX_offset = leftColW + 2  // text column starts here (relative to cellX + padding)
-      const cellPad = 2
+      const qrH = 28                      // QR height (and target logo height)
+      const cardH = qrH + 2 * vPad       // ≈ 35mm
+
+      // Logo: 2 mm shorter each side than QR (= 4 mm less total), centered vertically
+      const logoH = qrH - 4
+      const logoMaxW = 52
+      let logoW = logoH * logoAspect
+      if (logoW > logoMaxW) logoW = logoMaxW
+
+      // Text column starts after QR + logo + gaps
+      const textStartOffset = hPad + qrH + elemGap + logoW + elemGap
+      const textColW = cardW - textStartOffset - hPad
+
+      // Font sizes (fixed, not proportional to card)
+      const fsType = 6.5, fsName = 10, fsSub = 7
+      const mmPt   = 0.3528
+      const lineType = fsType * mmPt + 1.0
+      const lineName = fsName * mmPt + 1.5
+      const lineSub  = fsSub  * mmPt + 1.2
+
+      // Cards per page
+      const cardsPerPage = Math.floor((pageH - 2 * margin + cardGap) / (cardH + cardGap))
+
+      // ── Pre-render card background once using Canvas 2D ─────────────────────
+      // Canvas API handles gradient + border-radius natively and reliably.
+      const BG_SCALE = 4           // px per mm (≈150 dpi)
+      const cvW = Math.round(cardW * BG_SCALE)
+      const cvH = Math.round(cardH * BG_SCALE)
+      const cvR = 3 * BG_SCALE     // corner radius in px
+
+      const bgCanvas = document.createElement('canvas')
+      bgCanvas.width  = cvW
+      bgCanvas.height = cvH
+      const ctx = bgCanvas.getContext('2d')!
+
+      // Rounded rect clip path
+      ctx.beginPath()
+      ctx.roundRect(0, 0, cvW, cvH, cvR)
+      ctx.clip()
+
+      // Linear gradient: #0F172A → #1E3A8A → #3B82F6
+      const grad = ctx.createLinearGradient(0, 0, cvW, 0)
+      grad.addColorStop(0,    '#0F172A')
+      grad.addColorStop(0.50, '#1E3A8A')
+      grad.addColorStop(1,    '#3B82F6')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, cvW, cvH)
+
+      const bgDataUrl = bgCanvas.toDataURL('image/png')
+
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
 
       for (let i = 0; i < displayItems.length; i++) {
         const item = displayItems[i]
-        const perPage = cols * rows
-        const cellIndex = i % perPage
-        const col = cellIndex % cols
-        const row = Math.floor(cellIndex / cols)
+        const cardIndex = i % cardsPerPage
 
-        if (i > 0 && cellIndex === 0) pdf.addPage()
+        if (i > 0 && cardIndex === 0) pdf.addPage()
 
-        const cellX = margin + col * cellW
-        const cellY = margin + row * cellH
-        const qrX = cellX + (cellW - qrSize) / 2
-        const qrY = cellY + 1.5
+        const cardX = cardX0
+        const cardY = margin + cardIndex * (cardH + cardGap)
 
-        const url = `${BASE_URL}/historial?uuid=${item.uuid}`
-        const dataUrl = await QRCodeLib.default.toDataURL(url, { width: 300, margin: 1 })
+        // ── Background image (gradient + rounded corners) ─────────────────────
+        pdf.addImage(bgDataUrl, 'PNG', cardX, cardY, cardW, cardH)
 
-        pdf.addImage(dataUrl, 'PNG', qrX, qrY, qrSize, qrSize)
+        // Rounded border (light blue, thin)
+        pdf.setDrawColor(99, 160, 250)
+        pdf.setLineWidth(0.25)
+        pdf.roundedRect(cardX, cardY, cardW, cardH, 3, 3, 'S')
 
-        // Thin separator between QR and info strip
-        const stripY = qrY + qrSize + 1.5
-        pdf.setDrawColor(220, 220, 220)
-        pdf.setLineWidth(0.2)
-        pdf.line(cellX + cellPad, stripY, cellX + cellW - cellPad, stripY)
+        // ── QR (white modules on #0F172A background) ─────────────────────────
+        const qrX = cardX + hPad
+        const qrY = cardY + vPad
+        const url = `${origin}/historial?uuid=${item.uuid}`
+        const qrDataUrl = await QRCodeLib.default.toDataURL(url, {
+          width: 300, margin: 1,
+          color: { dark: '#FFFFFF', light: '#0F172A' },
+        })
+        pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrH, qrH)
 
-        const stripH = cellY + cellH - stripY - 1.5
-        const logoMaxW = leftColW - 3
-        const logoMaxH = stripH - 3
-        let logoW = logoMaxH * logoAspect
-        let logoH = logoMaxH
-        if (logoW > logoMaxW) { logoW = logoMaxW; logoH = logoMaxW / logoAspect }
-
-        // Logo: centered in left column, vertically centered in strip
-        const logoX = cellX + cellPad + (leftColW - logoW) / 2
-        const logoY = stripY + (stripH - logoH) / 2
+        // ── Logo (white, same height as QR) ──────────────────────────────────
+        const logoX = qrX + qrH + elemGap
+        const logoY = qrY + (qrH - logoH) / 2
         pdf.addImage(logoDataUrl, 'PNG', logoX, logoY, logoW, logoH)
 
-        // Text: right column
-        const textX = cellX + cellPad + rightColX_offset
-        const textMaxW = cellW - cellPad - rightColX_offset - cellPad
+        // ── Text (white / light blue tones) ──────────────────────────────────
+        const tx = cardX + textStartOffset
+        const hasSub = item.type !== 'empresa'
+        const textBlockH = lineType + lineName + (hasSub ? lineSub : 0)
+        let ty = qrY + (qrH - textBlockH) / 2
 
-        const typeY = stripY + 3.5
-        pdf.setFontSize(5)
+        pdf.setFontSize(fsType)
         pdf.setFont('helvetica', 'normal')
-        pdf.setTextColor(140, 140, 140)
-        pdf.text(TYPE_LABEL[item.type].toUpperCase(), textX, typeY)
+        pdf.setTextColor(200, 220, 255)   // blanco-azulado suave — tipo label
+        pdf.text(TYPE_LABEL[item.type].toUpperCase(), tx, ty)
+        ty += lineType
 
-        pdf.setFontSize(7.5)
+        pdf.setFontSize(fsName)
         pdf.setFont('helvetica', 'bold')
-        pdf.setTextColor(25, 25, 25)
-        pdf.text(item.name, textX, typeY + 4, { maxWidth: textMaxW })
+        pdf.setTextColor(255, 255, 255)   // blanco — nombre
+        pdf.text(item.name, tx, ty, { maxWidth: textColW })
+        ty += lineName
 
-        if (item.type !== 'empresa') {
+        if (hasSub) {
           const subParts = item.subtitle.split(' · ').slice(1)
           if (subParts.length > 0) {
-            pdf.setFontSize(5.5)
+            pdf.setFontSize(fsSub)
             pdf.setFont('helvetica', 'normal')
-            pdf.setTextColor(110, 110, 110)
-            pdf.text(subParts.join('\n'), textX, typeY + 8.5, { maxWidth: textMaxW })
+            pdf.setTextColor(255, 255, 255)   // blanco — subtítulo
+            pdf.text(subParts.join('\n'), tx, ty, { maxWidth: textColW })
           }
         }
-
-        // cell border
-        pdf.setDrawColor(210, 210, 210)
-        pdf.setLineWidth(0.3)
-        pdf.rect(cellX + 1, cellY + 1, cellW - 2, cellH - 2)
       }
 
       pdf.save('qr-historial.pdf')
