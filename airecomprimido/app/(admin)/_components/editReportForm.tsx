@@ -404,10 +404,10 @@ export default function EditReportForm({
             />
           </div>
           <div>
-            <label htmlFor="report-device">Equipo<strong>*</strong>: </label>
+            <label htmlFor="report-device">Serie<strong>*</strong>: </label>
             <DataList
               options={equipos}
-              placeholder="Ingrese equipo"
+              placeholder="Número de serie (único)"
               state={device}
               handleChange={handleDeviceSelection}
               id="report-device"
