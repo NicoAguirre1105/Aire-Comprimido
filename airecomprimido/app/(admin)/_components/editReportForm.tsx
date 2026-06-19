@@ -407,7 +407,7 @@ export default function EditReportForm({
             <label htmlFor="report-device">Serie<strong>*</strong>: </label>
             <DataList
               options={equipos}
-              placeholder="Número de serie (único)"
+              placeholder="Número de serie"
               state={device}
               handleChange={handleDeviceSelection}
               id="report-device"
