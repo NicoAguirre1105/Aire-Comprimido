@@ -12,6 +12,11 @@
 
 body {
   background-color: white;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lexend', sans-serif;
 }
 
 main { /* Header uses that space with fixed position */
@@ -45,6 +50,24 @@ main { /* Header uses that space with fixed position */
 }
 
 @layer utilities {
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100% - var(--gap))); }
+  }
+
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - var(--gap))); }
+  }
+
+  .animate-marquee {
+    animation: marquee var(--duration) linear infinite;
+  }
+
+  .animate-marquee-vertical {
+    animation: marquee-vertical var(--duration) linear infinite;
+  }
+
   @keyframes blink {
     0%, 100% { opacity: 0.2; }
     50% { opacity: 0.8; }

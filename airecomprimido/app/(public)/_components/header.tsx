@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import ContactCard from "./contactCard";
 import { useViewport } from "../../_context/ViewportContext";
 import { useState, useEffect } from "react";
 import { useContactVisibility } from "../../_context/ContactVisibilityContext";
@@ -13,7 +12,7 @@ export default function Header() {
 
   const { isMobile } = useViewport()
   const [isOpen, setIsOpen] = useState(false)
-  const {isVisible, toggleContact} = useContactVisibility()
+  const { isVisible, toggleContact } = useContactVisibility()
 
   const toggleMenu = () => {
     setIsOpen((prev) => (!prev))
@@ -74,11 +73,10 @@ export default function Header() {
           <button onClick={() => {
             toggleContact()
             toggleMenu()
-            }} 
+            }}
             className="button-style bg-(--light-blue) text-white">Contáctanos</button>
         </div>
       </>)}
-      { isVisible && <ContactCard /> }
     </>
   );
 }
