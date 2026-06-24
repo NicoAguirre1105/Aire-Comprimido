@@ -115,12 +115,12 @@ function HistorialContent({ uuid }: { uuid: string }) {
   const loading = informesLoading && informes.length === 0
 
   return (
-    <main className="flex flex-col px-5 py-16 sm:px-10 max-w-280 mx-auto min-h-screen">
+    <main className="flex flex-col px-5 py-16 sm:px-10 max-w-[70rem] mx-auto min-h-screen">
       {alert && <Alert type={alert.type} message={alert.message} />}
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-(--dark-blue)">{entity.name}</h1>
-        <p className="text-sm text-(--dark-blue)/60">
+        <h1 className="text-2xl font-bold text-dark-blue">{entity.name}</h1>
+        <p className="text-sm text-dark-blue/60">
           {entityType === 'area' ? 'Área' : entityType === 'empresa' ? 'Empresa' : 'Equipo'}
         </p>
       </div>

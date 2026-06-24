@@ -10,7 +10,7 @@ const stats = [
 
 export function StatsClient() {
   return (
-    <section className="bg-[var(--light-blue)] py-12 px-6">
+    <section className="bg-light-blue py-12 px-6">
       <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-8">
         {stats.map((s) => (
           <div key={s.label} className="text-center">

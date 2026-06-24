@@ -44,7 +44,7 @@ function TablePaginationControls({ pagination }: { pagination: TablePagination }
       className="flex flex-col items-center gap-3 mt-6 sm:flex-row sm:justify-between"
       aria-label="Paginación de reportes"
     >
-      <p className="text-sm text-(--dark-blue)/70">
+      <p className="text-sm text-dark-blue/70">
         {totalCount === 0
           ? 'Sin reportes'
           : `Mostrando ${from}–${to} de ${totalCount}`}
@@ -54,7 +54,7 @@ function TablePaginationControls({ pagination }: { pagination: TablePagination }
           type="button"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1 || isLoading}
-          className="px-3 py-1 rounded-sm font-semibold bg-(--grey-blue) disabled:opacity-40 disabled:cursor-not-allowed hover:bg-(--light-blue) hover:text-white transition-colors cursor-pointer"
+          className="px-3 py-1 rounded-sm font-semibold bg-grey-blue disabled:opacity-40 disabled:cursor-not-allowed hover:bg-light-blue hover:text-white transition-colors cursor-pointer"
         >
           Anterior
         </button>
@@ -65,7 +65,7 @@ function TablePaginationControls({ pagination }: { pagination: TablePagination }
           type="button"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages || isLoading}
-          className="px-3 py-1 rounded-sm font-semibold bg-(--grey-blue) disabled:opacity-40 disabled:cursor-not-allowed hover:bg-(--light-blue) hover:text-white transition-colors cursor-pointer"
+          className="px-3 py-1 rounded-sm font-semibold bg-grey-blue disabled:opacity-40 disabled:cursor-not-allowed hover:bg-light-blue hover:text-white transition-colors cursor-pointer"
         >
           Siguiente
         </button>
@@ -82,7 +82,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
   const contentClass = pagination?.isLoading ? "opacity-50 pointer-events-none" : ""
 
   if (data.length === 0) return (
-    <div className="w-full mt-10 flex flex-col items-center justify-center py-20 gap-3 text-(--dark-blue)/50 border-2 border-dashed border-(--dark-blue)/20 rounded-lg">
+    <div className="w-full mt-10 flex flex-col items-center justify-center py-20 gap-3 text-dark-blue/50 border-2 border-dashed border-dark-blue/20 rounded-lg">
       <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
@@ -95,7 +95,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
     <>
     <section className={`flex flex-col gap-5 my-7 items-center ${contentClass}`}>
       {data.map((informe) => (
-        <article key={informe.id} className="flex flex-col bg-(--grey-blue) p-5 rounded-sm sm:px-10 w-full max-w-100">
+        <article key={informe.id} className="flex flex-col bg-grey-blue p-5 rounded-sm sm:px-10 w-full max-w-[25rem]">
           <h2 className="font-bold text-xl">{String(informe['titulo'] ?? '')}</h2>
           <p className="my-1 font-light">{String(informe['descripcion'] ?? '')}</p>
           {columns.flatMap((col) => {
@@ -109,9 +109,9 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
             )}
           })}
           <div className="flex gap-2 mt-4 w-full justify-center">
-            <a className="text-white bg-(--dark-blue) w-full py-1 font-semibold text-center transition-[scale] ease-in-out rounded-sm hover:scale-102 max-w-75" href={String(informe['filepath'] ?? '')} target="_blank" rel="noopener noreferrer">Abrir</a>
+            <a className="text-white bg-dark-blue w-full py-1 font-semibold text-center transition-transform ease-in-out rounded-sm hover:scale-[1.02] max-w-[18.75rem]" href={String(informe['filepath'] ?? '')} target="_blank" rel="noopener noreferrer">Abrir</a>
             {onEdit && (
-              <button type="button" onClick={() => onEdit(informe)} className="bg-(--light-blue) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
+              <button type="button" onClick={() => onEdit(informe)} className="bg-light-blue px-1 transition-transform ease-in-out rounded-sm hover:scale-105 w-10">
                 <Image
                   src="/icons/edit_white.svg"
                   alt="Editar reporte"
@@ -122,7 +122,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
               </button>
             )}
             {onDelete && (
-              <button type="button" onClick={() => onDelete(informe)} className="bg-(--red) px-1 transition-[scale] ease-in-out rounded-sm hover:scale-105 w-10">
+              <button type="button" onClick={() => onDelete(informe)} className="bg-brand-red px-1 transition-transform ease-in-out rounded-sm hover:scale-105 w-10">
                 <Image
                   src="/icons/delete_white.svg"
                   alt="Eliminar reporte"
@@ -142,14 +142,14 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
 
   return (
     <>
-    <div className={`w-full mt-10 rounded-lg border-3 border-(--dark-blue) overflow-hidden ${contentClass}`}>
+    <div className={`w-full mt-10 rounded-lg border-[3px] border-dark-blue overflow-hidden ${contentClass}`}>
       <div className="w-full overflow-x-auto relative">
-        <table className="min-w-200 w-full">
-          <thead className="bg-(--grey-blue)">
+        <table className="min-w-[50rem] w-full">
+          <thead className="bg-grey-blue">
             <tr>
               {columns.map((col, idx) => (
                 <th
-                  className={`px-4 py-3 ${idx == 0 ? "sticky left-0 z-10 max-w-40 border-r-3 bg-(--grey-blue)" : ""}`}
+                  className={`px-4 py-3 ${idx == 0 ? "sticky left-0 z-10 max-w-40 border-r-[3px] bg-grey-blue" : ""}`}
                   key={col.key}
                 >
                   {col.label}
@@ -159,12 +159,12 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
           </thead>
           <tbody className="bg-white">
             {data.map(informe => (
-              <tr key={informe.id} className="border-b-3">
+              <tr key={informe.id} className="border-b-[3px]">
                 {columns.flatMap((col, idx) => {
                   if (col.key !== 'filepath') {
                     return (
                       <td
-                        className={`${tdStyle} ${idx == 0 ? "sticky left-0 z-10 bg-white max-w-40 border-r-3" : ""}`}
+                        className={`${tdStyle} ${idx == 0 ? "sticky left-0 z-10 bg-white max-w-40 border-r-[3px]" : ""}`}
                         key={col.key}
                       >
                         {renderCell(informe[col.key])}

@@ -6,10 +6,10 @@ import { useForm, ValidationError } from "@formspree/react"
 import { Spinner } from "../../_components/Spinner"
 
 const inputStyle =
-  "w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[var(--light-blue)] transition-colors"
+  "w-full bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-light-blue transition-colors"
 
 const inputStyleDark =
-  "w-full bg-slate-800 border border-slate-700 px-4 py-2.5 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-[var(--light-blue)] transition-colors"
+  "w-full bg-slate-800 border border-slate-700 px-4 py-2.5 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-light-blue transition-colors"
 
 export function ContactForm({ dark = false }: { dark?: boolean }) {
   const [state, handleSubmit, reset] = useForm("xdayjngo")
@@ -26,7 +26,7 @@ export function ContactForm({ dark = false }: { dark?: boolean }) {
         </p>
         <button
           onClick={() => reset()}
-          className="mt-1 px-6 py-2.5 bg-[var(--light-blue)] text-white rounded-full font-medium hover:bg-blue-500 transition-colors cursor-pointer"
+          className="mt-1 px-6 py-2.5 bg-light-blue text-white rounded-full font-medium hover:bg-blue-500 transition-colors cursor-pointer"
         >
           Enviar otro
         </button>
@@ -81,7 +81,7 @@ export function ContactForm({ dark = false }: { dark?: boolean }) {
       </div>
       <button
         type="submit"
-        className="self-start px-8 py-3 bg-[var(--light-blue)] text-white font-semibold rounded-full hover:bg-blue-500 transition-colors cursor-pointer"
+        className="self-start px-8 py-3 bg-light-blue text-white font-semibold rounded-full hover:bg-blue-500 transition-colors cursor-pointer"
       >
         Enviar mensaje
       </button>

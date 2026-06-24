@@ -8,7 +8,7 @@ export default function Loader() {
         alt="AIRECOMPRIMIDO EC logo"
         width={150}
         height={150}
-        className="loader-animation w-50 h-auto m-auto"
+        className="loader-animation w-[12.5rem] h-auto m-auto"
       />
     </div>
   )

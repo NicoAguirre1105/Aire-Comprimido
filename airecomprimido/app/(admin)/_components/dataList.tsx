@@ -21,7 +21,7 @@ export default function DataList({
 
   return (
     <>
-      <input type="search" required={required} placeholder={placeholder} list={id} value={state} className="border-b-3 border-(--dark-blue) focus:border-(--light-blue)" onChange={(e) =>  {
+      <input type="search" required={required} placeholder={placeholder} list={id} value={state} className="border-b-[3px] border-dark-blue focus:border-light-blue" onChange={(e) =>  {
               handleChange(e.target.value)
             }}/>
       <datalist id={id}>

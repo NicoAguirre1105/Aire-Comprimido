@@ -216,12 +216,12 @@ export default function Reportes() {
       <Aside isOpen={isAsideOpen} toggleAside={toggleAside}/>
       <div className="flex w-full flex-col overflow-x-hidden">
         <Header title="Reportes" toggleAside={toggleAside}/>
-        <main className="relative flex flex-col  mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400 md:pt-0">
+        <main className="relative flex flex-col  mt-[4.5rem] px-5 py-10 md:mt-0 sm:px-10 max-w-[100rem] md:pt-0">
         {alert && <Alert type={alert.type} message={alert.message} />}
         {deletingInforme && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
             <div className="bg-white rounded-md p-6 max-w-sm w-full flex flex-col gap-4 shadow-xl">
-              <h3 className="text-lg font-semibold text-(--dark-blue)">Eliminar reporte</h3>
+              <h3 className="text-lg font-semibold text-dark-blue">Eliminar reporte</h3>
               <p className="text-sm text-gray-600">
                 ¿Estás seguro de que deseas eliminar el reporte{' '}
                 <strong>&quot;{deletingInforme.titulo}&quot;</strong>? Esta acción no se puede deshacer.
@@ -239,7 +239,7 @@ export default function Reportes() {
                   type="button"
                   disabled={isDeleting}
                   onClick={handleDeleteConfirm}
-                  className="bg-(--red) text-white px-4 py-2 rounded text-sm hover:opacity-85 disabled:opacity-50 cursor-pointer"
+                  className="bg-brand-red text-white px-4 py-2 rounded text-sm hover:opacity-85 disabled:opacity-50 cursor-pointer"
                 >
                   {isDeleting ? 'Eliminando...' : 'Eliminar'}
                 </button>
@@ -282,7 +282,7 @@ export default function Reportes() {
               />
               <button
                 type="button"
-                className="bg-(--light-blue) fixed rounded-4xl p-2 bottom-10 right-10 z-40 cursor-pointer md:relative md:w-fit md:mr-0 md:ml-auto md:right-0 md:bottom-0 md:px-4 md:rounded-sm md:font-semibold hover:bg-(--dark-blue) transition-all duration-200 ease-in-out md:py-2"
+                className="bg-light-blue fixed rounded-[2rem] p-2 bottom-10 right-10 z-40 cursor-pointer md:relative md:w-fit md:mr-0 md:ml-auto md:right-0 md:bottom-0 md:px-4 md:rounded-sm md:font-semibold hover:bg-dark-blue transition-all duration-200 ease-in-out md:py-2"
                 onClick={handleNewReport}
               >
                 <Image

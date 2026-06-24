@@ -1,6 +1,6 @@
 export default function Footer() 
 {
-  const textStyle = "text-white font-light text-md max-sm:text-sm"
+  const textStyle = "text-white font-light text-base max-sm:text-sm"
 
   return (
     <footer className="bg-black flex flex-col py-10 px-10 text-center items-center max-sm:py-7">

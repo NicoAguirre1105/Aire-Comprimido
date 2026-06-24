@@ -31,7 +31,7 @@ export default function Equipos() {
     <main className="overflow-x-hidden">
 
       {/* Hero */}
-      <section className="bg-[var(--dark-blue)] py-20 px-6 overflow-hidden relative">
+      <section className="bg-dark-blue py-20 px-6 overflow-hidden relative">
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -40,7 +40,7 @@ export default function Equipos() {
           }}
         />
         <div className="relative max-w-4xl mx-auto text-center mb-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
             Catálogo
           </p>
           <h1 className="text-5xl font-bold text-white mb-4 max-sm:text-4xl">
@@ -66,8 +66,8 @@ export default function Equipos() {
               </div>
             ))}
           </Marquee>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[var(--dark-blue)]" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[var(--dark-blue)]" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-linear-to-r from-dark-blue" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-linear-to-l from-dark-blue" />
         </div>
       </section>
 
@@ -90,7 +90,7 @@ export default function Equipos() {
 
                   {/* Content */}
                   <div className="flex flex-col flex-1 p-6">
-                    <h2 className="text-lg font-semibold text-[var(--dark-blue)] mb-4 leading-snug">
+                    <h2 className="text-lg font-semibold text-dark-blue mb-4 leading-snug">
                       {product.name}
                     </h2>
                     <dl className="flex flex-col gap-2 flex-1">
@@ -105,7 +105,7 @@ export default function Equipos() {
 
                   {/* Footer tag */}
                   <div className="px-6 pb-5">
-                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[var(--light-blue)] bg-blue-50 px-3 py-1 rounded-full">
+                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-light-blue bg-blue-50 px-3 py-1 rounded-full">
                       Consultar disponibilidad
                     </span>
                   </div>

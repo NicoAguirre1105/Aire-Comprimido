@@ -158,10 +158,10 @@ export default function Home() {
         {/* ── CLIENTES ─────────────────────────────────────────── */}
         <section className="bg-slate-50 py-16 px-6">
           <FadeIn className="max-w-5xl mx-auto text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+            <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
               Empresas que confían en nosotros
             </p>
-            <h2 className="text-3xl font-bold text-[var(--dark-blue)] mb-12">
+            <h2 className="text-3xl font-bold text-dark-blue mb-12">
               La industria ecuatoriana nos respalda
             </h2>
             <div className="flex flex-wrap items-center justify-center gap-14">
@@ -181,9 +181,9 @@ export default function Home() {
         </section>
 
         {/* ── MARCAS ───────────────────────────────────────────── */}
-        <section className="bg-[var(--dark-blue)] py-14 overflow-hidden">
+        <section className="bg-dark-blue py-14 overflow-hidden">
           <FadeIn className="text-center mb-10 px-6">
-            <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-2">
+            <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-2">
               Marcas
             </p>
             <h2 className="text-3xl font-bold text-white">
@@ -204,8 +204,8 @@ export default function Home() {
                 </div>
               ))}
             </Marquee>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[var(--dark-blue)]" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[var(--dark-blue)]" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-linear-to-r from-dark-blue" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-linear-to-l from-dark-blue" />
           </div>
         </section>
 
@@ -213,10 +213,10 @@ export default function Home() {
         <section id="servicios" className="py-24 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
             <FadeIn className="text-center mb-16">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+              <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
                 Lo que ofrecemos
               </p>
-              <h2 className="text-4xl font-bold text-[var(--dark-blue)]">
+              <h2 className="text-4xl font-bold text-dark-blue">
                 Soluciones integrales para su industria
               </h2>
             </FadeIn>
@@ -224,14 +224,14 @@ export default function Home() {
               {services.map((s, i) => (
                 <FadeIn key={s.title} delay={i * 0.1}>
                   <div className="group flex flex-col h-full rounded-2xl border border-slate-100 bg-white p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-default">
-                    <div className="w-14 h-14 rounded-xl bg-[var(--dark-blue)] text-[var(--light-blue)] flex items-center justify-center mb-6">
+                    <div className="w-14 h-14 rounded-xl bg-dark-blue text-light-blue flex items-center justify-center mb-6">
                       {s.icon}
                     </div>
-                    <h3 className="text-xl font-semibold text-[var(--dark-blue)] mb-3">{s.title}</h3>
+                    <h3 className="text-xl font-semibold text-dark-blue mb-3">{s.title}</h3>
                     <p className="text-slate-600 font-light leading-relaxed flex-1">{s.description}</p>
                     <Link
                       href={s.link}
-                      className="mt-6 inline-flex items-center gap-2 text-[var(--light-blue)] font-medium hover:gap-3 transition-all duration-200 cursor-pointer"
+                      className="mt-6 inline-flex items-center gap-2 text-light-blue font-medium hover:gap-3 transition-all duration-200 cursor-pointer"
                     >
                       {s.cta}
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,10 +249,10 @@ export default function Home() {
         <section className="py-24 px-6 bg-slate-50">
           <div className="max-w-6xl mx-auto">
             <FadeIn className="text-center mb-16">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+              <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
                 Nuestra metodología
               </p>
-              <h2 className="text-4xl font-bold text-[var(--dark-blue)] mb-4">
+              <h2 className="text-4xl font-bold text-dark-blue mb-4">
                 Mantenimiento que protege su producción
               </h2>
               <p className="text-slate-600 text-lg font-light max-w-2xl mx-auto">
@@ -266,7 +266,7 @@ export default function Home() {
                     <span className="text-5xl font-bold text-slate-100 leading-none mb-4 select-none">
                       {step.number}
                     </span>
-                    <h3 className="text-base font-semibold text-[var(--dark-blue)] mb-2">{step.title}</h3>
+                    <h3 className="text-base font-semibold text-dark-blue mb-2">{step.title}</h3>
                     <p className="text-slate-500 text-sm font-light leading-relaxed">{step.description}</p>
                   </div>
                 </FadeIn>
@@ -276,10 +276,10 @@ export default function Home() {
         </section>
 
         {/* ── HISTORIAL DIGITAL / QR ───────────────────────────── */}
-        <section className="py-24 px-6 bg-[var(--dark-blue)]">
+        <section className="py-24 px-6 bg-dark-blue">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <FadeIn direction="left">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+              <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
                 Innovación digital
               </p>
               <h2 className="text-4xl font-bold text-white mb-6">
@@ -296,7 +296,7 @@ export default function Home() {
                   'Disponible para clientes con contrato anual',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3 text-slate-200 font-light">
-                    <svg className="w-5 h-5 text-[var(--light-blue)] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-light-blue mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {item}
@@ -338,12 +338,12 @@ export default function Home() {
             <FadeIn direction="left" className="order-2 lg:order-1">
               <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-100">
                 <Image
-                  src="/img/mantenimiento1.jpg"
+                  src="/img/general.webp"
                   alt="Técnico de AIRECOMPRIMIDO EC realizando mantenimiento"
                   fill
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--dark-blue)]/60 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-dark-blue/60 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <p className="text-white font-semibold text-lg">Técnicos especializados</p>
                   <p className="text-slate-300 text-sm">Más de 25 años de experiencia en compresores industriales</p>
@@ -351,10 +351,10 @@ export default function Home() {
               </div>
             </FadeIn>
             <FadeIn direction="right" className="order-1 lg:order-2">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+              <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
                 Sobre nosotros
               </p>
-              <h2 className="text-4xl font-bold text-[var(--dark-blue)] mb-6">
+              <h2 className="text-4xl font-bold text-dark-blue mb-6">
                 Una empresa ecuatoriana comprometida con su industria
               </h2>
               <p className="text-slate-600 font-light text-lg leading-relaxed mb-6">
@@ -371,10 +371,10 @@ export default function Home() {
         <section className="py-24 px-6 bg-slate-50">
           <div className="max-w-6xl mx-auto">
             <FadeIn className="text-center mb-16">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+              <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
                 Responsabilidad ambiental
               </p>
-              <h2 className="text-4xl font-bold text-[var(--dark-blue)] mb-4">
+              <h2 className="text-4xl font-bold text-dark-blue mb-4">
                 Comprometidos con el medioambiente
               </h2>
               <p className="text-slate-600 text-lg font-light max-w-2xl mx-auto">
@@ -388,7 +388,7 @@ export default function Home() {
                     <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-5">
                       {item.icon}
                     </div>
-                    <h3 className="text-lg font-semibold text-[var(--dark-blue)] mb-3">{item.title}</h3>
+                    <h3 className="text-lg font-semibold text-dark-blue mb-3">{item.title}</h3>
                     <p className="text-slate-500 font-light leading-relaxed text-sm">{item.description}</p>
                   </div>
                 </FadeIn>

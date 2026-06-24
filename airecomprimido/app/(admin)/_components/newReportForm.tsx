@@ -378,7 +378,7 @@ export default function NewReportForm({
   }
 
   return (
-    <div className={`${styles.formContainer} flex flex-col w-full max-w-150 self-center px-5 md:px-0`}>
+    <div className={`${styles.formContainer} flex flex-col w-full max-w-[37.5rem] self-center px-5 md:px-0`}>
       <div className="flex gap-1 items-center md:w-full">
         <Image
           src="/icons/left_arrow_blue.svg"
@@ -399,14 +399,14 @@ export default function NewReportForm({
         />
       </div>
       {!uploadMessage && 
-      <form className="flex flex-col gap-3 mt-5 font-(--dark-blue)" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-3 mt-5 text-dark-blue" onSubmit={handleSubmit}>
         <div className="flex flex-col">
           <label htmlFor="title">Título:<strong>*</strong></label>
-          <input type="text" name="title" placeholder="Mantenimiento mensual" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className=" text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)"/>
+          <input type="text" name="title" placeholder="Mantenimiento mensual" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className=" text-base border-b-[3px] border-dark-blue focus:border-light-blue"/>
         </div>
         <div className="">
           <label htmlFor="report-date">Fecha del reporte<strong>*</strong>:</label>
-          <input type="date" name="report-date" id="report-date" value={reportDate} onChange={(e) => setReportDate(e.target.value.trim())} className="font-extralight border-b-3 border-(--dark-blue) focus:border-(--light-blue)"/>
+          <input type="date" name="report-date" id="report-date" value={reportDate} onChange={(e) => setReportDate(e.target.value.trim())} className="font-extralight border-b-[3px] border-dark-blue focus:border-light-blue"/>
         </div>
         <div className="flex flex-col">
           <label htmlFor="title">Descripción:</label>
@@ -418,13 +418,13 @@ export default function NewReportForm({
             className="
             w-full
             border-2
-            border-(--dark-blue)
+            border-dark-blue
             rounded-sm
             text-base
             p-3
             resize-none
             focus:outline-none
-            focus:border-(--light-blue)
+            focus:border-light-blue
             focus:ring-blue-500
             "
             placeholder="Escribe aquí..."
@@ -435,9 +435,9 @@ export default function NewReportForm({
         </div>
         <div className="inline-flex flex-wrap items-center gap-2">
           <label htmlFor="hours-count">Conteo de horas:</label>
-          <span className="inline-flex items-center border-b-3 border-(--dark-blue) focus-within:border-(--light-blue)">
+          <span className="inline-flex items-center border-b-[3px] border-dark-blue focus-within:border-light-blue">
             <input type="number" name="hours-count" id="hours-count" min={0} value={hoursCount} onChange={(e) => setHoursCount(e.target.value.trim())} placeholder="0" className="no-spinner w-fit border-0 bg-transparent text-center focus:outline-none"/>
-            <span className="text-(--dark-blue)">hrs</span>
+            <span className="text-dark-blue">hrs</span>
           </span>
         </div>
         <div>
@@ -476,24 +476,24 @@ export default function NewReportForm({
         
         <div>
           <label htmlFor="report-model">Modelo<strong>*</strong>: </label>
-          <input type="text" name="report-model" id="report-model" placeholder="Modelo" value={model} onChange={(e) => setModel(e.target.value)} className="text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)" required autoComplete="off"/>
+          <input type="text" name="report-model" id="report-model" placeholder="Modelo" value={model} onChange={(e) => setModel(e.target.value)} className="text-base border-b-[3px] border-dark-blue focus:border-light-blue" required autoComplete="off"/>
         </div>
         
         <div className="">
-          <h3 className="text-md font-medium inline self-center">Archivo<strong>*</strong>:</h3>
-          <label className="bg-(--dark-blue) w-fit px-3 py-1 text-white cursor-pointer hover:opacity-85 ml-3">
+          <h3 className="text-base font-medium inline self-center">Archivo<strong>*</strong>:</h3>
+          <label className="bg-dark-blue w-fit px-3 py-1 text-white cursor-pointer hover:opacity-85 ml-3">
             {file ? "Cambiar archivo" : "Seleccionar archivo"}
             <input id="report-file" ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFileChange}/>
           </label>
         </div>
         <span className="ml-3 font-light">{fileName}</span>
         <div className="mt-10 flex justify-evenly">
-          <button type="button" onClick={resetForm} className="border-red-500 border-3 w-fit text-red-500 self-center font-semibold px-6 py-2 rounded-4xl text-lg cursor-pointer hover:opacity-85 hover:bg-red-500 hover:text-white" >Reset</button>
-          <button type="submit" className="bg-(--light-blue) w-fit text-white self-center font-semibold px-6 py-2 rounded-4xl border-3 border-(--light-blue) hover:border-(--dark-blue) text-lg cursor-pointer hover:bg-(--dark-blue)">Crear reporte</button>
+          <button type="button" onClick={resetForm} className="border-red-500 border-[3px] w-fit text-red-500 self-center font-semibold px-6 py-2 rounded-[2rem] text-lg cursor-pointer hover:opacity-85 hover:bg-red-500 hover:text-white" >Reset</button>
+          <button type="submit" className="bg-light-blue w-fit text-white self-center font-semibold px-6 py-2 rounded-[2rem] border-[3px] border-light-blue hover:border-dark-blue text-lg cursor-pointer hover:bg-dark-blue">Crear reporte</button>
         </div>
       </form>}
       {uploadMessage && 
-      <div className="w-full h-full flex flex-col items-center py-40 text-(--dark-blue)">
+      <div className="w-full h-full flex flex-col items-center py-40 text-dark-blue">
         <Spinner size="lg" variant="ring"/>
         <p>{uploadMessage}</p>
       </div>

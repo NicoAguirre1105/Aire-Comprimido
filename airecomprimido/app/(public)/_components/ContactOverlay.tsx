@@ -27,10 +27,10 @@ export function ContactOverlay() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
           transition={{ duration: 0.28, ease: "easeOut" }}
-          className="fixed inset-0 z-[90] bg-[var(--dark-blue)] flex flex-col overflow-y-auto"
+          className="fixed inset-0 z-[90] bg-dark-blue flex flex-col overflow-y-auto"
         >
           {/* Top bar */}
-          <div className="sticky top-0 z-10 flex items-center justify-between px-6 sm:px-10 py-4 border-b border-slate-700 bg-[var(--dark-blue)]">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-6 sm:px-10 py-4 border-b border-slate-700 bg-dark-blue">
             <button
               onClick={toggleContact}
               className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors cursor-pointer"
@@ -53,7 +53,7 @@ export function ContactOverlay() {
           <div className="flex-1 px-6 sm:px-10 py-12 max-w-5xl mx-auto w-full">
 
             <div className="text-center mb-12">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+              <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
                 Contáctenos
               </p>
               <h2 className="text-4xl font-bold text-white mb-3">
@@ -74,13 +74,13 @@ export function ContactOverlay() {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-4 bg-slate-800 hover:bg-slate-700 rounded-2xl p-5 transition-colors duration-200 cursor-pointer"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-[var(--dark-blue)] border border-slate-600 flex items-center justify-center shrink-0 group-hover:border-[var(--light-blue)] transition-colors">
+                  <div className="w-11 h-11 rounded-xl bg-dark-blue border border-slate-600 flex items-center justify-center shrink-0 group-hover:border-light-blue transition-colors">
                     <Image src="/icons/location.svg" alt="Ubicación" width={24} height={24} className="h-5 w-auto brightness-0 invert" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1">Dirección</p>
                     <p className="text-white font-medium text-sm leading-snug">José Mogro Oe10D s/n y Matilde Hidalgo, Quito</p>
-                    <p className="text-[var(--light-blue)] text-xs mt-1">Abrir en el mapa →</p>
+                    <p className="text-light-blue text-xs mt-1">Abrir en el mapa →</p>
                   </div>
                 </Link>
 
@@ -90,13 +90,13 @@ export function ContactOverlay() {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-4 bg-slate-800 hover:bg-slate-700 rounded-2xl p-5 transition-colors duration-200 cursor-pointer"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-[var(--dark-blue)] border border-slate-600 flex items-center justify-center shrink-0 group-hover:border-[var(--light-blue)] transition-colors">
+                  <div className="w-11 h-11 rounded-xl bg-dark-blue border border-slate-600 flex items-center justify-center shrink-0 group-hover:border-light-blue transition-colors">
                     <Image src="/icons/whatsapp.svg" alt="WhatsApp" width={24} height={24} className="h-5 w-auto brightness-0 invert" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1">WhatsApp</p>
                     <p className="text-white font-medium text-sm">+593 991 848 293</p>
-                    <p className="text-[var(--light-blue)] text-xs mt-1">Escribir por WhatsApp →</p>
+                    <p className="text-light-blue text-xs mt-1">Escribir por WhatsApp →</p>
                   </div>
                 </Link>
               </div>

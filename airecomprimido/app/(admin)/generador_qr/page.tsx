@@ -339,12 +339,12 @@ export default function GeneradorQR() {
   const canIncludeAreas = scopeType !== 'equipo'
   const loading = empLoading || areasLoading || equiposLoading
 
-  const selectStyle = 'border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus:outline-none focus:border-(--dark-blue)'
+  const selectStyle = 'border border-gray-300 rounded px-2 py-1.5 text-sm bg-white focus:outline-none focus:border-dark-blue'
   const chipBtn = (active: boolean) =>
     `px-3 py-1.5 rounded text-sm font-medium border transition-all cursor-pointer ${
       active
-        ? 'bg-(--dark-blue) text-white border-(--dark-blue)'
-        : 'bg-white text-(--dark-blue) border-gray-300 hover:border-(--dark-blue)'
+        ? 'bg-dark-blue text-white border-dark-blue'
+        : 'bg-white text-dark-blue border-gray-300 hover:border-dark-blue'
     }`
 
   if (loading) return <Loader />
@@ -357,7 +357,7 @@ export default function GeneradorQR() {
       <div className="flex w-full flex-col overflow-x-hidden">
         <Header title="Generador QR" toggleAside={toggleAside} />
 
-        <main className="relative flex flex-col mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400">
+        <main className="relative flex flex-col mt-[4.5rem] px-5 py-10 md:mt-0 sm:px-10 max-w-[100rem]">
           {alert && <Alert type={alert.type} message={alert.message} />}
 
           <div className="flex flex-col gap-5 mb-6 lg:flex-row lg:gap-6">
@@ -420,7 +420,7 @@ export default function GeneradorQR() {
                         type="checkbox"
                         checked={inclEmpresas}
                         onChange={e => setInclEmpresas(e.target.checked)}
-                        className="accent-(--dark-blue) w-3.5 h-3.5"
+                        className="accent-dark-blue w-3.5 h-3.5"
                       />
                       <span className="text-sm font-medium">Empresas</span>
                     </label>
@@ -438,7 +438,7 @@ export default function GeneradorQR() {
                         type="checkbox"
                         checked={inclAreas}
                         onChange={e => setInclAreas(e.target.checked)}
-                        className="accent-(--dark-blue) w-3.5 h-3.5"
+                        className="accent-dark-blue w-3.5 h-3.5"
                       />
                       <span className="text-sm font-medium">Áreas</span>
                     </label>
@@ -471,7 +471,7 @@ export default function GeneradorQR() {
                       type="checkbox"
                       checked={inclEquipos}
                       onChange={e => setInclEquipos(e.target.checked)}
-                      className="accent-(--dark-blue) w-3.5 h-3.5"
+                      className="accent-dark-blue w-3.5 h-3.5"
                     />
                     <span className="text-sm font-medium">Equipos</span>
                   </label>
@@ -530,12 +530,12 @@ export default function GeneradorQR() {
           {/* ── Barra de acciones ─────────────────────────────────────────────── */}
           <div className="flex items-center justify-between mb-5">
             <p className="text-sm text-gray-500">
-              <span className="font-medium text-(--dark-blue)">{displayItems.length}</span>{' '}
+              <span className="font-medium text-dark-blue">{displayItems.length}</span>{' '}
               código{displayItems.length !== 1 ? 's' : ''} seleccionado{displayItems.length !== 1 ? 's' : ''}
               {removedUuids.size > 0 && (
                 <button
                   onClick={restoreAll}
-                  className="ml-3 text-(--light-blue) underline text-xs cursor-pointer hover:opacity-75"
+                  className="ml-3 text-light-blue underline text-xs cursor-pointer hover:opacity-75"
                 >
                   Restaurar {removedUuids.size} eliminado{removedUuids.size !== 1 ? 's' : ''}
                 </button>
@@ -544,7 +544,7 @@ export default function GeneradorQR() {
             <button
               onClick={handleDownloadPDF}
               disabled={displayItems.length === 0}
-              className="bg-(--dark-blue) text-white px-4 py-2 rounded text-sm font-semibold hover:opacity-85 disabled:opacity-40 transition-all cursor-pointer disabled:cursor-not-allowed"
+              className="bg-dark-blue text-white px-4 py-2 rounded text-sm font-semibold hover:opacity-85 disabled:opacity-40 transition-all cursor-pointer disabled:cursor-not-allowed"
             >
               Descargar PDF
             </button>
@@ -590,7 +590,7 @@ export default function GeneradorQR() {
                     <span className="inline-block text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">
                       {TYPE_LABEL[item.type]}
                     </span>
-                    <p className="text-xs font-semibold text-(--dark-blue) leading-tight line-clamp-2">{item.name}</p>
+                    <p className="text-xs font-semibold text-dark-blue leading-tight line-clamp-2">{item.name}</p>
                     {item.type !== 'empresa' && (
                       <p className="text-[10px] text-gray-400 leading-tight line-clamp-1 mt-0.5">
                         {item.subtitle.split(' · ').slice(1).join(' · ')}

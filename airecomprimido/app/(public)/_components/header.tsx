@@ -31,26 +31,26 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 w-full bg-(--light-blue) flex h-16 px-10 py-2.5 z-50 max-sm:px-5">
+      <header className="fixed top-0 w-full bg-light-blue flex h-16 px-10 py-2.5 z-50 max-sm:px-5">
         <Link href="/" onClick={toggleMenu} className="flex items-center">
           <Image 
             src="/logos/company_white.png"
             alt="AireComprimido EC S.A.S"
             width={1383}
             height={1598}
-            className="md:h-full md:w-auto h-auto w-50"
+            className="md:h-full md:w-auto h-auto w-[12.5rem]"
             priority
           />
         </Link>
         {!isMobile && 
           <div className="mr-5 ml-auto flex">
-            <nav className="flex items-center gap-10 mr-15">
+            <nav className="flex items-center gap-10 mr-[3.75rem]">
               <Link href="/" className={linkStyle}>Inicio</Link>
               <Link href="/equipos" className={linkStyle}>Equipos</Link>
               <Link href="/repuestos" className={linkStyle}>Repuestos</Link>
               <Link href="/mantenimiento" className={linkStyle}>Mantenimiento</Link>
             </nav>
-            <button onClick={toggleContact} className="bg-white text-(--dark-blue) rounded-4xl px-5 my-0.5 text-lg font-medium hover:bg-(--dark-blue) hover:text-white transition-all duration-300 hover:cursor-pointer">Contáctanos</button>
+            <button onClick={toggleContact} className="bg-white text-dark-blue rounded-[2rem] px-5 my-0.5 text-lg font-medium hover:bg-dark-blue hover:text-white transition-all duration-300 hover:cursor-pointer">Contáctanos</button>
           </div>}
       </header>
       {isMobile && (
@@ -60,10 +60,10 @@ export default function Header() {
           alt="Menu Icon"
           width={24}
           height={24} 
-          className="h-14 w-auto fixed right-10 fill-white top-0 z-60 my-1 max-sm:right-5 cursor-pointer"
+          className="h-14 w-auto fixed right-10 fill-white top-0 z-[60] my-1 max-sm:right-5 cursor-pointer"
           onClick={toggleMenu}
         />
-        <div className={`${isOpen ? "translate-y-0" : "-translate-y-full"} fixed top-0 flex flex-col transition-transform duration-700 ease-in-out w-full h-screen bg-(--dark-blue) left-0 z-40 text-lg items-center`}>
+        <div className={`${isOpen ? "translate-y-0" : "-translate-y-full"} fixed top-0 flex flex-col transition-transform duration-700 ease-in-out w-full h-screen bg-dark-blue left-0 z-40 text-lg items-center`}>
           <nav className="flex flex-col text-center items-center gap-5 my-10">
             <Link href="/" onClick={toggleMenu} className={linkMobile}>Inicio</Link>
             <Link href="/equipos" onClick={toggleMenu} className={linkMobile}>Equipos</Link>
@@ -74,7 +74,7 @@ export default function Header() {
             toggleContact()
             toggleMenu()
             }}
-            className="button-style bg-(--light-blue) text-white">Contáctanos</button>
+            className="button-style bg-light-blue text-white">Contáctanos</button>
         </div>
       </>)}
     </>

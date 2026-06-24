@@ -18,9 +18,9 @@ export default function ContactCard()
 
   return (
     <>
-    <div className={`${isVisible ? "fixed" : "hidden"} w-full h-full top-0 left-0 z-100 md:bg-black/40 md:backdrop-blur-xs`}>
-      <div className="overflow-y-auto flex flex-col w-full h-full bg-(--dark-blue) px-10 py-20 text-sm text-white sm:px-20
-      md:absolute md:w-2/3 md:max-w-120 md:max-h-9/10 md:h-fit md:top-1/2 left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:bg-white md:rounded-lg md:p-10 md:text-(--dark-blue) md:text-base">
+    <div className={`${isVisible ? "fixed" : "hidden"} w-full h-full top-0 left-0 z-[100] md:bg-black/40 md:backdrop-blur-sm`}>
+      <div className="overflow-y-auto flex flex-col w-full h-full bg-dark-blue px-10 py-20 text-sm text-white sm:px-20
+      md:absolute md:w-2/3 md:max-w-[30rem] md:max-h-[90%] md:h-fit md:top-1/2 left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:bg-white md:rounded-lg md:p-10 md:text-dark-blue md:text-base">
         <Image
           src="/icons/close_blue.svg"
           alt="Close Icon"

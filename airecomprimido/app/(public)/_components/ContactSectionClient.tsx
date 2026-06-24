@@ -34,10 +34,10 @@ export function ContactSectionClient() {
     <section id="contacto" className="py-24 px-6 bg-white">
       <div className="max-w-6xl mx-auto">
         <FadeIn className="text-center mb-16">
-          <p className="text-sm font-semibold uppercase tracking-widest text-[var(--light-blue)] mb-3">
+          <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
             Contáctenos
           </p>
-          <h2 className="text-4xl font-bold text-[var(--dark-blue)] mb-4">
+          <h2 className="text-4xl font-bold text-dark-blue mb-4">
             Solicite su cotización hoy
           </h2>
           <p className="text-slate-600 text-lg font-light max-w-xl mx-auto">
@@ -57,12 +57,12 @@ export function ContactSectionClient() {
                   rel="noopener noreferrer"
                   className="flex items-start gap-4 group cursor-pointer"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-[var(--dark-blue)] text-[var(--light-blue)] flex items-center justify-center shrink-0 group-hover:bg-[var(--light-blue)] group-hover:text-white transition-colors duration-200">
+                  <div className="w-10 h-10 rounded-xl bg-dark-blue text-light-blue flex items-center justify-center shrink-0 group-hover:bg-light-blue group-hover:text-white transition-colors duration-200">
                     {item.icon}
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">{item.label}</p>
-                    <p className="text-slate-700 font-medium group-hover:text-[var(--light-blue)] transition-colors duration-200">{item.value}</p>
+                    <p className="text-slate-700 font-medium group-hover:text-light-blue transition-colors duration-200">{item.value}</p>
                   </div>
                 </Link>
               ))}
@@ -82,7 +82,7 @@ export function ContactSectionClient() {
           {/* Form */}
           <FadeIn direction="right" className="lg:col-span-3">
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
-              <h3 className="text-xl font-semibold text-[var(--dark-blue)] mb-6">Envíenos un mensaje</h3>
+              <h3 className="text-xl font-semibold text-dark-blue mb-6">Envíenos un mensaje</h3>
               <ContactForm />
             </div>
           </FadeIn>
