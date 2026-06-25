@@ -1,7 +1,5 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from "react"
-import Image from "next/image"
-import styles from "../_styles/newReport.module.css"
 import DataList from "./dataList"
 import { useEquipos } from "@/app/hooks/useEquipos"
 import { useEmpresas } from "@/app/hooks/useEmpresas"
@@ -53,7 +51,6 @@ export default function NewReportForm({
   const resolveWarningRef = useRef<((accepted: boolean) => void) | null>(null)
   const pendingRefetchRef = useRef(false)
 
-  // Estados para envío a API
   const [title, setTitle] = useState("")
   const [reportDate, setReportDate] = useState(today)
   const [description, setDescription] = useState("")
@@ -63,7 +60,8 @@ export default function NewReportForm({
   const [device, setDevice] = useState("")
   const [model, setModel] = useState("")
   const [file, setFile] = useState<File | null>(null)
-  const [fileName, setFileName] = useState("No se ha seleccionado un archivo")
+  const [fileName, setFileName] = useState("")
+  const [isDragging, setIsDragging] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -102,7 +100,7 @@ export default function NewReportForm({
     if (!form.equipo.trim()) return 'Ingrese el equipo asociado al reporte.'
     if (!form.modelo.trim()) return 'Ingrese el modelo del equipo asociado al reporte.'
     if (!form.file) return 'Adjunte el reporte en formato PDF.'
-  
+
     if (form.descripcion.length > 180) {
       return 'La descripción debe tener menos de 180 caracteres.'
     }
@@ -133,7 +131,7 @@ export default function NewReportForm({
 
   function checkFormWarnings(form: FormType): { insertItems: itemsCreation; warnings: string[] } {
     const new_warning: string[] = []
-  
+
     const insertItems:itemsCreation = {
       company: false,
       area: false,
@@ -143,14 +141,14 @@ export default function NewReportForm({
     const area_check = areas.find(a => a.name === form.area)
     const equipo_check = equipos.find(e => e.name === form.equipo)
     const empresa_check = empresas.find(e => e.name === form.empresa)
-  
+
     if(!form.descripcion) new_warning.push('El reporte no tiene descripción.')
 
     if (empresa_check && !area_check && form.area === "") {
       areasRefetch({ empresa: empresa_check.name || "" })
       if (areas.length > 0) new_warning.push("La empresa asignada tiene áreas disponibles, pero ninguna ha sido seleccionada para este reporte.")
     }
-  
+
     if (!empresa_check) {
       new_warning.push(`Se crearán nuevos elementos: ${form.empresa} , ${form.area}, ${form.equipo}.`)
       insertItems.company = true
@@ -172,7 +170,7 @@ export default function NewReportForm({
       setWarning([])
       setShowWarning(false)
     }
-  
+
     return { insertItems, warnings: new_warning }
   }
 
@@ -181,7 +179,7 @@ export default function NewReportForm({
       resolveWarningRef.current = resolve
     })
   }
-  
+
   const handleWarningAccept = () => {
     setShowWarning(false)
     setWarning([])
@@ -189,17 +187,28 @@ export default function NewReportForm({
     resolveWarningRef.current = null
     resolve?.(true)
   }
-  
+
+  const applyFile = (f: File) => {
+    setFile(f)
+    setFileName(f.name)
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const f = e.target.files[0]
-      setFile(f)
-      setFileName(f.name)
+      applyFile(e.target.files[0])
     } else {
       setFile(null)
-      setFileName("No se ha seleccionado un archivo")
+      setFileName("")
     }
   }
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const f = e.dataTransfer.files[0]
+    if (f) applyFile(f)
+  }
+
   const resetForm = () => {
     setTitle("")
     setReportDate(today)
@@ -210,7 +219,7 @@ export default function NewReportForm({
     setDevice("")
     setModel("")
     setFile(null)
-    setFileName("No se ha seleccionado un archivo")
+    setFileName("")
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
@@ -232,7 +241,7 @@ export default function NewReportForm({
       modelo: model,
       conteo_horas: hoursCount === '' ? '0' : hoursCount,
       file: file,
-      fileName: fileName 
+      fileName: fileName
     }
 
     const validationError = validateForm(form)
@@ -360,9 +369,9 @@ export default function NewReportForm({
 
   const handleAreaSelection = (new_area:string) => {
     setArea(new_area)
-    const area = areas.find(a => a.name === new_area)
-    if (area) {
-      setCompany(area?.empresa || "")
+    const found = areas.find(a => a.name === new_area)
+    if (found) {
+      setCompany(found?.empresa || "")
     }
     equiposRefetch({area:new_area})
   }
@@ -377,150 +386,264 @@ export default function NewReportForm({
     }
   }
 
+  const inputClass = "w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-dark-blue placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-light-blue focus:border-transparent transition-all duration-150"
+  const labelClass = "block text-sm font-medium text-slate-700 mb-1"
+
   return (
-    <div className={`${styles.formContainer} flex flex-col w-full max-w-[37.5rem] self-center px-5 md:px-0`}>
-      <div className="flex gap-1 items-center md:w-full">
-        <Image
-          src="/icons/left_arrow_blue.svg"
-          alt="Return"
-          width={150}
-          height={150}
-          className="h-6 w-fit cursor-pointer align-baseline md:hidden"
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          type="button"
           onClick={handleClose}
-        />
-        <h2 className="text-2xl font-semibold">Nuevo reporte</h2>
-        <Image
-          src="/icons/close_blue.svg"
-          alt="Cerrar"
-          width={150}
-          height={150}
-          className="hidden md:block md:h-8 md:w-fit md:cursor-pointer md:ml-auto md:hover:scale-110"
-          onClick={handleClose}
-        />
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 hover:bg-slate-100 cursor-pointer transition-colors duration-150"
+          aria-label="Volver"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+        <h2 className="text-xl font-semibold text-dark-blue">Nuevo reporte</h2>
       </div>
-      {!uploadMessage && 
-      <form className="flex flex-col gap-3 mt-5 text-dark-blue" onSubmit={handleSubmit}>
-        <div className="flex flex-col">
-          <label htmlFor="title">Título:<strong>*</strong></label>
-          <input type="text" name="title" placeholder="Mantenimiento mensual" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className=" text-base border-b-[3px] border-dark-blue focus:border-light-blue"/>
+
+      {uploadMessage ? (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-16 flex flex-col items-center gap-4 text-dark-blue">
+          <Spinner size="lg" variant="ring" />
+          <p className="text-sm font-medium text-slate-600">{uploadMessage}</p>
         </div>
-        <div className="">
-          <label htmlFor="report-date">Fecha del reporte<strong>*</strong>:</label>
-          <input type="date" name="report-date" id="report-date" value={reportDate} onChange={(e) => setReportDate(e.target.value.trim())} className="font-extralight border-b-[3px] border-dark-blue focus:border-light-blue"/>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="title">Descripción:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            maxLength={180}
-            rows={3}
-            className="
-            w-full
-            border-2
-            border-dark-blue
-            rounded-sm
-            text-base
-            p-3
-            resize-none
-            focus:outline-none
-            focus:border-light-blue
-            focus:ring-blue-500
-            "
-            placeholder="Escribe aquí..."
-          />
-          <div className="text-right text-sm text-gray-500 self-end">
-            {description.length}/180
+      ) : (
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          {/* Información básica */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Información básica</h3>
+
+            <div>
+              <label htmlFor="title" className={labelClass}>
+                Título <span className="text-light-blue">*</span>
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Mantenimiento mensual"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="report-date" className={labelClass}>
+                  Fecha del reporte <span className="text-light-blue">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="report-date"
+                  id="report-date"
+                  value={reportDate}
+                  onChange={(e) => setReportDate(e.target.value.trim())}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="hours-count" className={labelClass}>Conteo de horas</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    name="hours-count"
+                    id="hours-count"
+                    min={0}
+                    value={hoursCount}
+                    onChange={(e) => setHoursCount(e.target.value.trim())}
+                    placeholder="0"
+                    className={`${inputClass} pr-10 no-spinner`}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 font-medium pointer-events-none">hrs</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="description" className={labelClass}>Descripción</label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={180}
+                rows={3}
+                placeholder="Escribe aquí..."
+                className={`${inputClass} resize-none`}
+              />
+              <p className="text-right text-xs text-slate-400 mt-1">{description.length}/180</p>
+            </div>
           </div>
-        </div>
-        <div className="inline-flex flex-wrap items-center gap-2">
-          <label htmlFor="hours-count">Conteo de horas:</label>
-          <span className="inline-flex items-center border-b-[3px] border-dark-blue focus-within:border-light-blue">
-            <input type="number" name="hours-count" id="hours-count" min={0} value={hoursCount} onChange={(e) => setHoursCount(e.target.value.trim())} placeholder="0" className="no-spinner w-fit border-0 bg-transparent text-center focus:outline-none"/>
-            <span className="text-dark-blue">hrs</span>
-          </span>
-        </div>
-        <div>
-          <label htmlFor="report-company">Empresa<strong>*</strong>: </label>
-          <DataList 
-            options={empresas} 
-            placeholder="Ingrese empresa" 
-            state={company} 
-            handleChange={handleCompanySelection} 
-            id="report-company"
-            key="empresa" 
-            required/>
-        </div>
-        <div>
-          <label htmlFor="report-area">Área<strong>*</strong>: </label>
-          <DataList 
-          options={areas} 
-          placeholder="Ingrese área" 
-          state={area} 
-          handleChange={handleAreaSelection} 
-          id="report-area"
-          key="area"
-          required/>
-        </div>
-        <div>
-          <label htmlFor="report-device">Serie<strong>*</strong>: </label>
-          <DataList 
-          options={equipos} 
-          placeholder="Número de serie" 
-          state={device} 
-          handleChange={handleDeviceSelection} 
-          id="report-device"
-          key="equipo" 
-          required/>
-        </div>
-        
-        <div>
-          <label htmlFor="report-model">Modelo<strong>*</strong>: </label>
-          <input type="text" name="report-model" id="report-model" placeholder="Modelo" value={model} onChange={(e) => setModel(e.target.value)} className="text-base border-b-[3px] border-dark-blue focus:border-light-blue" required autoComplete="off"/>
-        </div>
-        
-        <div className="">
-          <h3 className="text-base font-medium inline self-center">Archivo<strong>*</strong>:</h3>
-          <label className="bg-dark-blue w-fit px-3 py-1 text-white cursor-pointer hover:opacity-85 ml-3">
-            {file ? "Cambiar archivo" : "Seleccionar archivo"}
-            <input id="report-file" ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={handleFileChange}/>
-          </label>
-        </div>
-        <span className="ml-3 font-light">{fileName}</span>
-        <div className="mt-10 flex justify-evenly">
-          <button type="button" onClick={resetForm} className="border-red-500 border-[3px] w-fit text-red-500 self-center font-semibold px-6 py-2 rounded-[2rem] text-lg cursor-pointer hover:opacity-85 hover:bg-red-500 hover:text-white" >Reset</button>
-          <button type="submit" className="bg-light-blue w-fit text-white self-center font-semibold px-6 py-2 rounded-[2rem] border-[3px] border-light-blue hover:border-dark-blue text-lg cursor-pointer hover:bg-dark-blue">Crear reporte</button>
-        </div>
-      </form>}
-      {uploadMessage && 
-      <div className="w-full h-full flex flex-col items-center py-40 text-dark-blue">
-        <Spinner size="lg" variant="ring"/>
-        <p>{uploadMessage}</p>
-      </div>
-      }
+
+          {/* Ubicación */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Ubicación y equipo</h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="report-company" className={labelClass}>
+                  Empresa <span className="text-light-blue">*</span>
+                </label>
+                <DataList
+                  options={empresas}
+                  placeholder="Ingrese empresa"
+                  state={company}
+                  handleChange={handleCompanySelection}
+                  id="report-company"
+                  key="empresa"
+                  required
+                  inputClass={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="report-area" className={labelClass}>
+                  Área <span className="text-light-blue">*</span>
+                </label>
+                <DataList
+                  options={areas}
+                  placeholder="Ingrese área"
+                  state={area}
+                  handleChange={handleAreaSelection}
+                  id="report-area"
+                  key="area"
+                  required
+                  inputClass={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="report-device" className={labelClass}>
+                  Serie <span className="text-light-blue">*</span>
+                </label>
+                <DataList
+                  options={equipos}
+                  placeholder="Número de serie"
+                  state={device}
+                  handleChange={handleDeviceSelection}
+                  id="report-device"
+                  key="equipo"
+                  required
+                  inputClass={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="report-model" className={labelClass}>
+                  Modelo <span className="text-light-blue">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="report-model"
+                  id="report-model"
+                  placeholder="Modelo"
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  className={inputClass}
+                  required
+                  autoComplete="off"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Archivo */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex flex-col gap-3">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+              Archivo <span className="text-light-blue">*</span>
+            </h3>
+            <div
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer transition-colors duration-150 ${
+                isDragging
+                  ? 'border-light-blue bg-blue-50'
+                  : file
+                  ? 'border-green-400 bg-green-50'
+                  : 'border-slate-300 hover:border-light-blue hover:bg-slate-50'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className={`w-8 h-8 ${file ? 'text-green-500' : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                {file ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                )}
+              </svg>
+              <div className="text-center">
+                {file ? (
+                  <>
+                    <p className="text-sm font-medium text-green-700">{fileName}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Haz clic para cambiar el archivo</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-slate-600">Arrastra un PDF aquí o haz clic para seleccionar</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Solo archivos PDF</p>
+                  </>
+                )}
+              </div>
+              <input
+                id="report-file"
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-between items-center pt-1 pb-4">
+            <button
+              type="button"
+              onClick={resetForm}
+              className="text-sm font-medium text-slate-500 hover:text-brand-red transition-colors duration-150 cursor-pointer flex items-center gap-1.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+              Limpiar formulario
+            </button>
+            <button
+              type="submit"
+              className="bg-light-blue hover:bg-dark-blue text-white font-semibold text-sm px-6 py-2.5 rounded-lg cursor-pointer transition-colors duration-200"
+            >
+              Crear reporte
+            </button>
+          </div>
+        </form>
+      )}
+
       {alert && <Alert type={alert.type} message={alert.message} />}
-      {showWarning && 
-      <Alert type="warning" message="Tenga en cuanta la siguiente información.">
-        <ul className="text-sm list-disc">
-          {warning.map(m => <li key={m}>{m}</li>)}
-        </ul>
-        <div className="flex gap-2 mt-2">
-          <button
-            type="button"
-            onClick={handleWarningAccept}
-            className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
-          >
-            Continuar
-          </button>
-          <button
-            type="button"
-            onClick={handleWarningDecline}
-            className="border-yellow-600 border text-yellow-700 px-3 py-1 rounded text-sm hover:bg-yellow-100"
-          >
-            Cancelar
-          </button>
-        </div>
-      </Alert>}
+
+      {showWarning && (
+        <Alert type="warning" message="Tenga en cuenta la siguiente información.">
+          <ul className="text-sm list-disc pl-1 space-y-0.5">
+            {warning.map(m => <li key={m}>{m}</li>)}
+          </ul>
+          <div className="flex gap-2 mt-3">
+            <button
+              type="button"
+              onClick={handleWarningAccept}
+              className="bg-yellow-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-yellow-600 cursor-pointer transition-colors duration-150"
+            >
+              Continuar
+            </button>
+            <button
+              type="button"
+              onClick={handleWarningDecline}
+              className="border border-yellow-600 text-yellow-700 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-yellow-50 cursor-pointer transition-colors duration-150"
+            >
+              Cancelar
+            </button>
+          </div>
+        </Alert>
+      )}
     </div>
   )
 }

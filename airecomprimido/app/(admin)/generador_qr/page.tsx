@@ -566,17 +566,22 @@ export default function GeneradorQR() {
               {displayItems.map(item => (
                 <div
                   key={item.uuid}
-                  className="relative border border-gray-200 rounded-lg p-3 flex flex-col items-center gap-2 group hover:border-gray-300 transition-colors"
+                  className="border border-gray-200 rounded-lg p-3 flex flex-col items-center gap-2 hover:border-gray-300 transition-colors"
                 >
-                  <button
-                    onClick={() => removeItem(item.uuid)}
-                    title="Quitar de la selección"
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-500 cursor-pointer"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+                      {TYPE_LABEL[item.type]}
+                    </span>
+                    <button
+                      onClick={() => removeItem(item.uuid)}
+                      title="Quitar de la selección"
+                      className="text-brand-red hover:text-red-700 cursor-pointer transition-colors duration-150"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
 
                   <div className="w-full p-1">
                     <QRCode
@@ -587,9 +592,6 @@ export default function GeneradorQR() {
                   </div>
 
                   <div className="text-center w-full">
-                    <span className="inline-block text-[10px] font-semibold uppercase tracking-wide text-gray-400 mb-0.5">
-                      {TYPE_LABEL[item.type]}
-                    </span>
                     <p className="text-xs font-semibold text-dark-blue leading-tight line-clamp-2">{item.name}</p>
                     {item.type !== 'empresa' && (
                       <p className="text-[10px] text-gray-400 leading-tight line-clamp-1 mt-0.5">
