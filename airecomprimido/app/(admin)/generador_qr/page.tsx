@@ -14,6 +14,8 @@ import Loader from '@/app/_components/loader'
 import QRCode from 'react-qr-code'
 
 type ScopeType = 'todos' | 'empresa' | 'area' | 'equipo'
+type LabelType = 'rectangular' | 'square'
+type SquarePerPage = 4 | 6 | 12
 
 type QRItem = {
   uuid: string
@@ -26,6 +28,27 @@ const TYPE_LABEL: Record<QRItem['type'], string> = {
   empresa: 'Empresa',
   area: 'Área',
   equipo: 'Equipo',
+}
+
+// Shared gradient background canvas generator
+async function makeGradientBg(widthMm: number, heightMm: number, scale = 4): Promise<string> {
+  const cvW = Math.round(widthMm * scale)
+  const cvH = Math.round(heightMm * scale)
+  const cvR = 3 * scale
+  const canvas = document.createElement('canvas')
+  canvas.width = cvW
+  canvas.height = cvH
+  const ctx = canvas.getContext('2d')!
+  ctx.beginPath()
+  ctx.roundRect(0, 0, cvW, cvH, cvR)
+  ctx.clip()
+  const grad = ctx.createLinearGradient(0, 0, cvW, 0)
+  grad.addColorStop(0,    '#0F172A')
+  grad.addColorStop(0.50, '#1E3A8A')
+  grad.addColorStop(1,    '#3B82F6')
+  ctx.fillStyle = grad
+  ctx.fillRect(0, 0, cvW, cvH)
+  return canvas.toDataURL('image/png')
 }
 
 export default function GeneradorQR() {
@@ -46,10 +69,14 @@ export default function GeneradorQR() {
   const [filterEquipoEmpresa, setFilterEquipoEmpresa] = useState('')
   const [filterEquipoArea, setFilterEquipoArea] = useState('')
 
+  // ── Label config ───────────────────────────────────────────────────────────
+  const [labelType, setLabelType] = useState<LabelType>('rectangular')
+  const [squarePerPage, setSquarePerPage] = useState<SquarePerPage>(6)
+
   // ── Removed items ──────────────────────────────────────────────────────────
   const [removedUuids, setRemovedUuids] = useState<Set<string>>(new Set())
 
-  // ── Data (always fetch everything, filter client-side) ─────────────────────
+  // ── Data ──────────────────────────────────────────────────────────────────
   const { data: empresas, loading: empLoading, error: empError } = useEmpresas()
   const { data: areas, loading: areasLoading, error: areasError } = useAreas()
   const { data: equipos, loading: equiposLoading, error: equiposError } = useEquipos()
@@ -71,7 +98,6 @@ export default function GeneradorQR() {
     return list
   }, [equipos, scopeEmpresa, scopeArea])
 
-  // ── Type filter dropdown options ───────────────────────────────────────────
   const filterEquipoAreaOptions = useMemo(
     () => filterEquipoEmpresa ? areas.filter(a => a.empresa === filterEquipoEmpresa) : areas,
     [areas, filterEquipoEmpresa]
@@ -178,9 +204,228 @@ export default function GeneradorQR() {
 
   const restoreAll = useCallback(() => setRemovedUuids(new Set()), [])
 
-  // ── PDF download ───────────────────────────────────────────────────────────
+  // ── PDF: etiqueta rectangular ──────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const generateRectangularPDF = useCallback(async (
+    QRCodeLib: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    jsPDF: any,
+    logoDataUrl: string,
+    logoAspect: number,
+  ) => {
+    const pageW = 210, pageH = 297
+    const margin = 12
+    const cardW  = Math.round(pageW * 0.60)
+    const cardX0 = (pageW - cardW) / 2
+    const vPad   = 3.5
+    const hPad   = 4
+    const elemGap = 5
+    const cardGap = 4
+    const qrH = 28
+    const cardH = qrH + 2 * vPad
+
+    const logoH = qrH - 4
+    const logoMaxW = 52
+    let logoW = logoH * logoAspect
+    if (logoW > logoMaxW) logoW = logoMaxW
+
+    const textStartOffset = hPad + qrH + elemGap + logoW + elemGap
+    const textColW = cardW - textStartOffset - hPad
+
+    const fsType = 6.5, fsName = 10, fsSub = 7
+    const mmPt   = 0.3528
+    const lineType = fsType * mmPt + 1.0
+    const lineName = fsName * mmPt + 1.5
+    const lineSub  = fsSub  * mmPt + 1.2
+
+    const cardsPerPage = Math.floor((pageH - 2 * margin + cardGap) / (cardH + cardGap))
+
+    const bgDataUrl = await makeGradientBg(cardW, cardH)
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+
+    for (let i = 0; i < displayItems.length; i++) {
+      const item = displayItems[i]
+      const cardIndex = i % cardsPerPage
+      if (i > 0 && cardIndex === 0) pdf.addPage()
+
+      const cardX = cardX0
+      const cardY = margin + cardIndex * (cardH + cardGap)
+
+      pdf.addImage(bgDataUrl, 'PNG', cardX, cardY, cardW, cardH)
+      pdf.setDrawColor(99, 160, 250)
+      pdf.setLineWidth(0.25)
+      pdf.roundedRect(cardX, cardY, cardW, cardH, 3, 3, 'S')
+
+      const qrX = cardX + hPad
+      const qrY = cardY + vPad
+      const url = `${origin}/historial?uuid=${item.uuid}`
+      const qrDataUrl = await QRCodeLib.default.toDataURL(url, {
+        width: 300, margin: 1,
+        color: { dark: '#FFFFFF', light: '#0F172A' },
+      })
+      pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrH, qrH)
+
+      const logoX = qrX + qrH + elemGap
+      const logoY = qrY + (qrH - logoH) / 2
+      pdf.addImage(logoDataUrl, 'PNG', logoX, logoY, logoW, logoH)
+
+      const tx = cardX + textStartOffset
+      const hasSub = item.type !== 'empresa'
+      const textBlockH = lineType + lineName + (hasSub ? lineSub : 0)
+      let ty = qrY + (qrH - textBlockH) / 2
+
+      pdf.setFontSize(fsType)
+      pdf.setFont('helvetica', 'normal')
+      pdf.setTextColor(200, 220, 255)
+      pdf.text(TYPE_LABEL[item.type].toUpperCase(), tx, ty)
+      ty += lineType
+
+      pdf.setFontSize(fsName)
+      pdf.setFont('helvetica', 'bold')
+      pdf.setTextColor(255, 255, 255)
+      pdf.text(item.name, tx, ty, { maxWidth: textColW })
+      ty += lineName
+
+      if (hasSub) {
+        const subParts = item.subtitle.split(' · ').slice(1)
+        if (subParts.length > 0) {
+          pdf.setFontSize(fsSub)
+          pdf.setFont('helvetica', 'normal')
+          pdf.setTextColor(255, 255, 255)
+          pdf.text(subParts.join('\n'), tx, ty, { maxWidth: textColW })
+        }
+      }
+    }
+
+    pdf.save('qr-etiquetas-rectangular.pdf')
+  }, [displayItems])
+
+  // ── PDF: etiqueta cuadrada ─────────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const generateSquarePDF = useCallback(async (
+    QRCodeLib: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    jsPDF: any,
+    logoDataUrl: string,
+    logoAspect: number,
+  ) => {
+    const pageW = 210, pageH = 297
+    const margin = 10
+    const gap = 4
+
+    const cols = squarePerPage === 12 ? 3 : 2
+    const rows = squarePerPage === 4 ? 2 : squarePerPage === 6 ? 3 : 4
+
+    const cardW = (pageW - 2 * margin - (cols - 1) * gap) / cols
+    const cardH = (pageH - 2 * margin - (rows - 1) * gap) / rows
+
+    const cardsPerPage = cols * rows
+
+    // Padding interior de la card (proporcional al tamaño)
+    const pad = cardW * 0.06          // ~6% del ancho → escala con el tamaño
+
+    // Franja inferior: 30% del alto de la card
+    const stripH = cardH * 0.30
+
+    // Área del QR: todo el alto menos la franja y el padding superior
+    const qrAreaH = cardH - stripH - pad
+    // QR cuadrado: ocupa el ancho interior completo, limitado por la altura disponible
+    const qrActualSize = Math.min(cardW - 2 * pad, qrAreaH)
+
+    // Logo dentro de la franja — con padding interno en los 4 lados
+    const logoPad = pad * 0.8
+    const logoMaxH = stripH - 2 * logoPad
+    const logoMaxW = cardW * 0.42
+    let logoW = logoMaxH * logoAspect
+    if (logoW > logoMaxW) logoW = logoMaxW
+    const logoH = logoW / logoAspect
+
+    // Fuentes proporcionales al cardW (en pt directamente)
+    const fsType = Math.round(cardW * 0.110 * 10) / 10   // label tipo
+    const fsName = Math.round(cardW * 0.150 * 10) / 10   // nombre
+    const fsSub  = Math.round(cardW * 0.100 * 10) / 10   // subtítulo
+    const mmPt   = 0.3528
+    const lineType = fsType * mmPt + 1.0
+    const lineName = fsName * mmPt + 1.2
+    const lineSub2 = fsSub  * mmPt + 0.8
+
+    // Pre-calcular background (igual para todas las cards de este tamaño)
+    const bgDataUrl = await makeGradientBg(cardW, cardH)
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+
+    for (let i = 0; i < displayItems.length; i++) {
+      const item = displayItems[i]
+      const cardIndex = i % cardsPerPage
+      const col = cardIndex % cols
+      const row = Math.floor(cardIndex / cols)
+
+      if (i > 0 && cardIndex === 0) pdf.addPage()
+
+      const cardX = margin + col * (cardW + gap)
+      const cardY = margin + row * (cardH + gap)
+
+      // Fondo con gradiente
+      pdf.addImage(bgDataUrl, 'PNG', cardX, cardY, cardW, cardH)
+      pdf.setDrawColor(99, 160, 250)
+      pdf.setLineWidth(0.25)
+      pdf.roundedRect(cardX, cardY, cardW, cardH, 3, 3, 'S')
+
+      // QR — centrado horizontal y verticalmente en el área superior
+      const url = `${origin}/historial?uuid=${item.uuid}`
+      const qrDataUrl = await QRCodeLib.default.toDataURL(url, {
+        width: 512, margin: 1,
+        color: { dark: '#FFFFFF', light: '#0F172A' },
+      })
+      const qrX = cardX + (cardW - qrActualSize) / 2
+      const qrY = cardY + pad + (qrAreaH - qrActualSize) / 2
+      pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrActualSize, qrActualSize)
+
+      // Franja inferior
+      const stripY = cardY + cardH - stripH
+
+      // Logo — izquierda con padding uniforme
+      const logoX = cardX + logoPad
+      const logoY = stripY + (stripH - logoH) / 2
+      pdf.addImage(logoDataUrl, 'PNG', logoX, logoY, logoW, logoH)
+
+      // Texto — derecha, alineado a la derecha
+      const textX = cardX + cardW - logoPad
+      const textMaxW = cardW - logoW - logoPad * 3
+
+      const hasSub = item.type !== 'empresa'
+      const textBlockH = lineType + lineName + (hasSub ? lineSub2 : 0)
+      // Alinear desde arriba con padding fijo para evitar desbordamiento inferior
+      let ty = stripY + logoPad + (stripH - 2 * logoPad - textBlockH) / 2
+
+      pdf.setFontSize(fsType)
+      pdf.setFont('helvetica', 'normal')
+      pdf.setTextColor(200, 220, 255)
+      pdf.text(TYPE_LABEL[item.type].toUpperCase(), textX, ty, { align: 'right', maxWidth: textMaxW })
+      ty += lineType
+
+      pdf.setFontSize(fsName)
+      pdf.setFont('helvetica', 'bold')
+      pdf.setTextColor(255, 255, 255)
+      pdf.text(item.name, textX, ty, { align: 'right', maxWidth: textMaxW })
+      ty += lineName
+
+      if (hasSub) {
+        const subParts = item.subtitle.split(' · ').slice(1)
+        if (subParts.length > 0) {
+          pdf.setFontSize(fsSub)
+          pdf.setFont('helvetica', 'normal')
+          pdf.setTextColor(200, 220, 255)
+          pdf.text(subParts.join(' · '), textX, ty, { align: 'right', maxWidth: textMaxW })
+        }
+      }
+    }
+
+    pdf.save('qr-etiquetas-cuadrado.pdf')
+  }, [displayItems, squarePerPage])
+
+  // ── PDF download dispatcher ────────────────────────────────────────────────
   const handleDownloadPDF = useCallback(async () => {
-    if (displayItems.length === 0 || !origin) return
+    if (displayItems.length === 0) return
 
     try {
       const [QRCodeLib, { jsPDF }] = await Promise.all([
@@ -188,7 +433,6 @@ export default function GeneradorQR() {
         import('jspdf'),
       ])
 
-      // Load logo_white
       const logoDataUrl = await fetch('/logos/logo_white.png')
         .then(r => r.blob())
         .then(blob => new Promise<string>((resolve, reject) => {
@@ -205,134 +449,15 @@ export default function GeneradorQR() {
       })
       const logoAspect = logoImg.naturalWidth / logoImg.naturalHeight
 
-      // ── Layout constants ────────────────────────────────────────────────────
-      const pageW = 210, pageH = 297
-      const margin = 12
-      const cardW  = Math.round(pageW * 0.60)           // 60% de A4 = 126 mm
-      const cardX0 = (pageW - cardW) / 2               // centrado horizontal
-      const vPad   = 3.5                  // vertical padding inside card
-      const hPad   = 4                    // horizontal padding inside card
-      const elemGap = 5                   // gap between QR | logo | text
-      const cardGap = 4                   // vertical gap between cards
-
-      const qrH = 28                      // QR height (and target logo height)
-      const cardH = qrH + 2 * vPad       // ≈ 35mm
-
-      // Logo: 2 mm shorter each side than QR (= 4 mm less total), centered vertically
-      const logoH = qrH - 4
-      const logoMaxW = 52
-      let logoW = logoH * logoAspect
-      if (logoW > logoMaxW) logoW = logoMaxW
-
-      // Text column starts after QR + logo + gaps
-      const textStartOffset = hPad + qrH + elemGap + logoW + elemGap
-      const textColW = cardW - textStartOffset - hPad
-
-      // Font sizes (fixed, not proportional to card)
-      const fsType = 6.5, fsName = 10, fsSub = 7
-      const mmPt   = 0.3528
-      const lineType = fsType * mmPt + 1.0
-      const lineName = fsName * mmPt + 1.5
-      const lineSub  = fsSub  * mmPt + 1.2
-
-      // Cards per page
-      const cardsPerPage = Math.floor((pageH - 2 * margin + cardGap) / (cardH + cardGap))
-
-      // ── Pre-render card background once using Canvas 2D ─────────────────────
-      // Canvas API handles gradient + border-radius natively and reliably.
-      const BG_SCALE = 4           // px per mm (≈150 dpi)
-      const cvW = Math.round(cardW * BG_SCALE)
-      const cvH = Math.round(cardH * BG_SCALE)
-      const cvR = 3 * BG_SCALE     // corner radius in px
-
-      const bgCanvas = document.createElement('canvas')
-      bgCanvas.width  = cvW
-      bgCanvas.height = cvH
-      const ctx = bgCanvas.getContext('2d')!
-
-      // Rounded rect clip path
-      ctx.beginPath()
-      ctx.roundRect(0, 0, cvW, cvH, cvR)
-      ctx.clip()
-
-      // Linear gradient: #0F172A → #1E3A8A → #3B82F6
-      const grad = ctx.createLinearGradient(0, 0, cvW, 0)
-      grad.addColorStop(0,    '#0F172A')
-      grad.addColorStop(0.50, '#1E3A8A')
-      grad.addColorStop(1,    '#3B82F6')
-      ctx.fillStyle = grad
-      ctx.fillRect(0, 0, cvW, cvH)
-
-      const bgDataUrl = bgCanvas.toDataURL('image/png')
-
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-
-      for (let i = 0; i < displayItems.length; i++) {
-        const item = displayItems[i]
-        const cardIndex = i % cardsPerPage
-
-        if (i > 0 && cardIndex === 0) pdf.addPage()
-
-        const cardX = cardX0
-        const cardY = margin + cardIndex * (cardH + cardGap)
-
-        // ── Background image (gradient + rounded corners) ─────────────────────
-        pdf.addImage(bgDataUrl, 'PNG', cardX, cardY, cardW, cardH)
-
-        // Rounded border (light blue, thin)
-        pdf.setDrawColor(99, 160, 250)
-        pdf.setLineWidth(0.25)
-        pdf.roundedRect(cardX, cardY, cardW, cardH, 3, 3, 'S')
-
-        // ── QR (white modules on #0F172A background) ─────────────────────────
-        const qrX = cardX + hPad
-        const qrY = cardY + vPad
-        const url = `${origin}/historial?uuid=${item.uuid}`
-        const qrDataUrl = await QRCodeLib.default.toDataURL(url, {
-          width: 300, margin: 1,
-          color: { dark: '#FFFFFF', light: '#0F172A' },
-        })
-        pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrH, qrH)
-
-        // ── Logo (white, same height as QR) ──────────────────────────────────
-        const logoX = qrX + qrH + elemGap
-        const logoY = qrY + (qrH - logoH) / 2
-        pdf.addImage(logoDataUrl, 'PNG', logoX, logoY, logoW, logoH)
-
-        // ── Text (white / light blue tones) ──────────────────────────────────
-        const tx = cardX + textStartOffset
-        const hasSub = item.type !== 'empresa'
-        const textBlockH = lineType + lineName + (hasSub ? lineSub : 0)
-        let ty = qrY + (qrH - textBlockH) / 2
-
-        pdf.setFontSize(fsType)
-        pdf.setFont('helvetica', 'normal')
-        pdf.setTextColor(200, 220, 255)   // blanco-azulado suave — tipo label
-        pdf.text(TYPE_LABEL[item.type].toUpperCase(), tx, ty)
-        ty += lineType
-
-        pdf.setFontSize(fsName)
-        pdf.setFont('helvetica', 'bold')
-        pdf.setTextColor(255, 255, 255)   // blanco — nombre
-        pdf.text(item.name, tx, ty, { maxWidth: textColW })
-        ty += lineName
-
-        if (hasSub) {
-          const subParts = item.subtitle.split(' · ').slice(1)
-          if (subParts.length > 0) {
-            pdf.setFontSize(fsSub)
-            pdf.setFont('helvetica', 'normal')
-            pdf.setTextColor(255, 255, 255)   // blanco — subtítulo
-            pdf.text(subParts.join('\n'), tx, ty, { maxWidth: textColW })
-          }
-        }
+      if (labelType === 'rectangular') {
+        await generateRectangularPDF(QRCodeLib, jsPDF, logoDataUrl, logoAspect)
+      } else {
+        await generateSquarePDF(QRCodeLib, jsPDF, logoDataUrl, logoAspect)
       }
-
-      pdf.save('qr-historial.pdf')
     } catch {
       showAlert('error', 'No se pudo generar el PDF. Intente nuevamente.')
     }
-  }, [displayItems, origin, showAlert])
+  }, [displayItems, labelType, generateRectangularPDF, generateSquarePDF, showAlert])
 
   // ── Derived UI flags ───────────────────────────────────────────────────────
   const canIncludeEmpresas = scopeType === 'todos' || scopeType === 'empresa'
@@ -412,16 +537,10 @@ export default function GeneradorQR() {
 
               <div className="flex flex-col gap-3.5">
 
-                {/* Empresas */}
                 {canIncludeEmpresas && (
                   <div className="flex items-center gap-3 flex-wrap">
                     <label className="flex items-center gap-2 w-24 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={inclEmpresas}
-                        onChange={e => setInclEmpresas(e.target.checked)}
-                        className="accent-dark-blue w-3.5 h-3.5"
-                      />
+                      <input type="checkbox" checked={inclEmpresas} onChange={e => setInclEmpresas(e.target.checked)} className="accent-dark-blue w-3.5 h-3.5" />
                       <span className="text-sm font-medium">Empresas</span>
                     </label>
                     {inclEmpresas && scopeType === 'empresa' && scopeEmpresa && (
@@ -430,26 +549,16 @@ export default function GeneradorQR() {
                   </div>
                 )}
 
-                {/* Áreas */}
                 {canIncludeAreas && (
                   <div className="flex items-center gap-3 flex-wrap">
                     <label className="flex items-center gap-2 w-24 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={inclAreas}
-                        onChange={e => setInclAreas(e.target.checked)}
-                        className="accent-dark-blue w-3.5 h-3.5"
-                      />
+                      <input type="checkbox" checked={inclAreas} onChange={e => setInclAreas(e.target.checked)} className="accent-dark-blue w-3.5 h-3.5" />
                       <span className="text-sm font-medium">Áreas</span>
                     </label>
                     {inclAreas && scopeType === 'todos' && (
                       <div className="flex items-center gap-1.5 text-sm text-gray-500">
                         <span>de</span>
-                        <select
-                          value={filterAreaEmpresa}
-                          onChange={e => setFilterAreaEmpresa(e.target.value)}
-                          className={selectStyle}
-                        >
+                        <select value={filterAreaEmpresa} onChange={e => setFilterAreaEmpresa(e.target.value)} className={selectStyle}>
                           <option value="">Todas las empresas</option>
                           {empresas.map(e => <option key={e.id} value={e.name}>{e.name}</option>)}
                         </select>
@@ -464,37 +573,23 @@ export default function GeneradorQR() {
                   </div>
                 )}
 
-                {/* Equipos */}
                 <div className="flex items-center gap-3 flex-wrap">
                   <label className="flex items-center gap-2 w-24 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={inclEquipos}
-                      onChange={e => setInclEquipos(e.target.checked)}
-                      className="accent-dark-blue w-3.5 h-3.5"
-                    />
+                    <input type="checkbox" checked={inclEquipos} onChange={e => setInclEquipos(e.target.checked)} className="accent-dark-blue w-3.5 h-3.5" />
                     <span className="text-sm font-medium">Equipos</span>
                   </label>
 
                   {inclEquipos && scopeType === 'todos' && (
                     <div className="flex items-center gap-1.5 text-sm text-gray-500 flex-wrap">
                       <span>de</span>
-                      <select
-                        value={filterEquipoEmpresa}
-                        onChange={e => { setFilterEquipoEmpresa(e.target.value); setFilterEquipoArea('') }}
-                        className={selectStyle}
-                      >
+                      <select value={filterEquipoEmpresa} onChange={e => { setFilterEquipoEmpresa(e.target.value); setFilterEquipoArea('') }} className={selectStyle}>
                         <option value="">Todas las empresas</option>
                         {empresas.map(e => <option key={e.id} value={e.name}>{e.name}</option>)}
                       </select>
                       {filterEquipoEmpresa && (
                         <>
                           <span>/</span>
-                          <select
-                            value={filterEquipoArea}
-                            onChange={e => setFilterEquipoArea(e.target.value)}
-                            className={selectStyle}
-                          >
+                          <select value={filterEquipoArea} onChange={e => setFilterEquipoArea(e.target.value)} className={selectStyle}>
                             <option value="">Todas las áreas</option>
                             {filterEquipoAreaOptions.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
                           </select>
@@ -506,12 +601,7 @@ export default function GeneradorQR() {
                   {inclEquipos && scopeType === 'empresa' && (
                     <div className="flex items-center gap-1.5 text-sm text-gray-500 flex-wrap">
                       {scopeEmpresa && <span className="text-xs text-gray-400">de {scopeEmpresa} /</span>}
-                      <select
-                        value={filterEquipoArea}
-                        onChange={e => setFilterEquipoArea(e.target.value)}
-                        disabled={!scopeEmpresa}
-                        className={`${selectStyle} disabled:opacity-40`}
-                      >
+                      <select value={filterEquipoArea} onChange={e => setFilterEquipoArea(e.target.value)} disabled={!scopeEmpresa} className={`${selectStyle} disabled:opacity-40`}>
                         <option value="">Todas las áreas</option>
                         {scopeAreaOptions.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
                       </select>
@@ -525,6 +615,82 @@ export default function GeneradorQR() {
 
               </div>
             </section>
+
+            {/* ── Panel: Configuración de etiqueta ──────────────────────────── */}
+            <section className="border border-gray-200 rounded-lg p-4 flex-1">
+              <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Tipo de etiqueta</h2>
+
+              <div className="flex flex-col gap-4">
+                {/* Selector de tipo */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setLabelType('rectangular')}
+                    className={`flex-1 flex flex-col items-center gap-1.5 border rounded-lg p-3 cursor-pointer transition-all ${
+                      labelType === 'rectangular'
+                        ? 'border-dark-blue bg-dark-blue/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    {/* Rectangular preview */}
+                    <div className={`w-14 h-7 rounded flex items-center gap-1 px-1 ${labelType === 'rectangular' ? 'bg-dark-blue' : 'bg-gray-200'}`}>
+                      <div className="w-5 h-5 bg-white/30 rounded-sm shrink-0" />
+                      <div className="flex flex-col gap-0.5 flex-1">
+                        <div className="h-1 bg-white/40 rounded-full w-full" />
+                        <div className="h-1 bg-white/25 rounded-full w-3/4" />
+                      </div>
+                    </div>
+                    <span className={`text-xs font-medium ${labelType === 'rectangular' ? 'text-dark-blue' : 'text-gray-500'}`}>Rectangular</span>
+                  </button>
+
+                  <button
+                    onClick={() => setLabelType('square')}
+                    className={`flex-1 flex flex-col items-center gap-1.5 border rounded-lg p-3 cursor-pointer transition-all ${
+                      labelType === 'square'
+                        ? 'border-dark-blue bg-dark-blue/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    {/* Square preview */}
+                    <div className={`w-9 h-9 rounded flex flex-col items-center gap-0.5 p-1 ${labelType === 'square' ? 'bg-dark-blue' : 'bg-gray-200'}`}>
+                      <div className="w-full flex-1 bg-white/30 rounded-sm" />
+                      <div className="w-full flex gap-0.5 items-center">
+                        <div className="h-2 bg-white/40 rounded-sm flex-1" />
+                        <div className="h-2 bg-white/25 rounded-sm flex-1" />
+                      </div>
+                    </div>
+                    <span className={`text-xs font-medium ${labelType === 'square' ? 'text-dark-blue' : 'text-gray-500'}`}>Cuadrado</span>
+                  </button>
+                </div>
+
+                {/* QR por página (solo cuadrado) */}
+                {labelType === 'square' && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-2">QR por página</p>
+                    <div className="flex gap-2">
+                      {([4, 6, 12] as SquarePerPage[]).map(n => (
+                        <button
+                          key={n}
+                          onClick={() => setSquarePerPage(n)}
+                          className={`flex-1 py-1.5 rounded border text-sm font-semibold cursor-pointer transition-all ${
+                            squarePerPage === n
+                              ? 'bg-dark-blue text-white border-dark-blue'
+                              : 'bg-white text-gray-600 border-gray-300 hover:border-dark-blue'
+                          }`}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1.5">
+                      {squarePerPage === 4 ? '2 columnas × 2 filas'
+                        : squarePerPage === 6 ? '2 columnas × 3 filas'
+                        : '3 columnas × 4 filas'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+
           </div>
 
           {/* ── Barra de acciones ─────────────────────────────────────────────── */}
