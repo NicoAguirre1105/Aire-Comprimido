@@ -123,7 +123,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
   if (isMobile) {
     return (
       <div className={contentClass}>
-        <div className="flex flex-col divide-y divide-slate-100">
+        <div className="flex flex-col gap-3 p-3">
           {data.map((informe) => {
             const titulo = String(informe['titulo'] ?? '')
             const descripcion = informe['descripcion'] ? String(informe['descripcion']) : null
@@ -134,10 +134,10 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
             )
 
             return (
-              <article key={informe.id} className="p-4 hover:bg-slate-50 transition-colors duration-150">
+              <article key={informe.id} className="p-4 rounded-xl border border-slate-200 bg-white shadow-sm hover:border-slate-300 transition-colors duration-150">
                 {/* Title + date row */}
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <h2 className="font-semibold text-dark-blue text-sm leading-snug">{titulo}</h2>
+                  <h2 className="font-semibold text-dark-blue text-sm leading-snug break-words">{titulo}</h2>
                   {!!informe['fecha'] && (
                     <span className="text-xs text-slate-400 whitespace-nowrap shrink-0">{String(informe['fecha'])}</span>
                   )}
@@ -145,7 +145,7 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
 
                 {/* Description */}
                 {descripcion && (
-                  <p className="text-xs text-slate-500 mb-2 line-clamp-2">{descripcion}</p>
+                  <p className="text-xs text-slate-500 mb-2">{descripcion}</p>
                 )}
 
                 {/* Meta chips */}
@@ -232,13 +232,13 @@ export default function DataTable<T extends Record<string, unknown> & { id: numb
                 {dataColumns.map((col, idx) => (
                   <td
                     key={col.key}
-                    className={`px-4 py-3 text-slate-700 align-middle
+                    className={`px-4 py-3 text-slate-700 align-top
                       ${idx === 0
-                        ? 'sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-100 max-w-[10rem] font-medium text-dark-blue'
-                        : 'max-w-[12rem]'}
+                        ? 'sticky left-0 z-10 bg-white group-hover:bg-slate-50 border-r border-slate-100 font-medium text-dark-blue'
+                        : ''}
                     `}
                   >
-                    <span className="block truncate" title={informe[col.key] ? String(informe[col.key]) : undefined}>
+                    <span className={`block ${col.key === 'titulo' || col.key === 'descripcion' ? 'whitespace-normal break-words min-w-[10rem]' : 'whitespace-nowrap'}`}>
                       {renderCell(informe[col.key])}
                     </span>
                   </td>

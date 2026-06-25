@@ -63,7 +63,7 @@ export default function Header() {
           className="h-14 w-auto fixed right-10 fill-white top-0 z-[60] my-1 max-sm:right-5 cursor-pointer"
           onClick={toggleMenu}
         />
-        <div className={`${isOpen ? "translate-y-0" : "-translate-y-full"} fixed top-0 flex flex-col transition-transform duration-700 ease-in-out w-full h-screen bg-dark-blue left-0 z-40 text-lg items-center`}>
+        <div className={`${isOpen ? "translate-y-0" : "-translate-y-full"} fixed top-0 flex flex-col transition-transform duration-700 ease-in-out w-full h-screen bg-dark-blue left-0 z-40 text-lg items-center pt-16`}>
           <nav className="flex flex-col text-center items-center gap-5 my-10">
             <Link href="/" onClick={toggleMenu} className={linkMobile}>Inicio</Link>
             <Link href="/equipos" onClick={toggleMenu} className={linkMobile}>Equipos</Link>
