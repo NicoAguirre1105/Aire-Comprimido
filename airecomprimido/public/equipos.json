@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Compresores de aire exentos de aceite",
-    "src": "/img/compresor1.jpg",
+    "src": "/img/compresor1.webp",
     "props": [
       {"title": "Marca", "description": "Atlas Copco, Kaeser, Ingersoll Rand, Quincy"},
       {"title": "Tipo", "description": "Tornillo Rotativo / Uña Rotativa"},
@@ -15,7 +15,7 @@
   {
     "id": 2,
     "name": "Compresores de aire lubricados de tornillo rotativo",
-    "src": "/img/compresorTornillo.png",
+    "src": "/img/compresorTornillo.webp",
     "props": [
       {"title": "Marca", "description": "Atlas Copco, Kaeser, Ingersoll Rand, Quincy"},
       {"title": "Tipo", "description": "Tornillo Rotativo"},
@@ -52,7 +52,7 @@
   {
     "id": 5,
     "name": "Generadores de nitrógeno",
-    "src": "/img/generadorNitrogeno.jpg",
+    "src": "/img/generadorNitrogeno.webp",
     "props": [
       {"title": "Marca", "description": "Atlas Copco"},
       {"title": "Tipo", "description": "Generador de Nitrógeno"},
@@ -66,7 +66,7 @@
   {
     "id": 6,
     "name": "Generadores de oxígeno",
-    "src": "/img/generadorOxigeno.jpg",
+    "src": "/img/generadorOxigeno.webp",
     "props": [
       {"title": "Marca", "description": "Atlas Copco"},
       {"title": "Tipo", "description": "Generador de Oxígeno"},

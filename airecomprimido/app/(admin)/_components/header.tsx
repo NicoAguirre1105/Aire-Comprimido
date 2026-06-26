@@ -8,7 +8,7 @@ export default function Header({
   toggleAside: () => void
 }) {
   return(
-    <div className="bg-(--dark-blue) fixed md:relative top-0 w-full h-fit flex items-center text-white px-5 py-4 gap-7 sm:px-10 sm:gap-12 md:bg-white md:text-(--dark-blue) md:pt-10 md:pl-20 z-40">
+    <div className="bg-dark-blue fixed md:relative top-0 w-full h-fit flex items-center text-white px-5 py-4 gap-7 sm:px-10 sm:gap-12 md:bg-white md:text-dark-blue md:pt-10 md:pl-20 z-40">
       <Image
         src="/icons/menu.svg"
         alt="Menu icon"

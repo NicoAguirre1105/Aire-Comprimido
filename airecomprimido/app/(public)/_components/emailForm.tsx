@@ -25,7 +25,7 @@ export default function EmailForm({
   }
 
   const subtitleStyle = 'text-xl font-medium'
-  const inputStyle = 'bg-(--grey-blue) px-2 py-1 text-(--dark-blue) rounded-md font-semibold placeholder:text-(--dark-blue) placeholder:italic placeholder:font-normal focus:outline-(--light-blue)'
+  const inputStyle = 'bg-grey-blue px-2 py-1 text-dark-blue rounded-md font-semibold placeholder:text-dark-blue placeholder:italic placeholder:font-normal focus:outline-light-blue'
 
   const { isMobile } = useViewport()
 
@@ -78,12 +78,12 @@ export default function EmailForm({
         <textarea name="message" id="message" rows={5} placeholder='Quiero agendar una visita técnica en...'
         className={`${inputStyle} resize-none h-fit`}></textarea>
         <ValidationError field="message" prefix="message" errors={state.errors}></ValidationError>
-        <button type="submit" className='button-style bg-(--light-blue) text-white w-30 self-center'>Enviar</button>
+        <button type="submit" className='button-style bg-light-blue text-white w-[7.5rem] self-center'>Enviar</button>
       </form>
       }
 
       {state.submitting && 
-      <div className="flex justify-center items-center h-100">
+      <div className="flex justify-center items-center h-[25rem]">
         <Spinner size='lg' variant='dots'/>
       </div>
       }
@@ -98,7 +98,7 @@ export default function EmailForm({
           className="h-3/5 w-fit mx-auto"
         />
         <p className="text-center py-5 px-5 text-xl font-light">El correo ha sido enviado exitosamente!</p>
-        <button onClick={handleReturn} className="button-style bg-(--light-blue) text-white w-30 self-center">Hecho</button>
+        <button onClick={handleReturn} className="button-style bg-light-blue text-white w-[7.5rem] self-center">Hecho</button>
       </>
       }
     </>

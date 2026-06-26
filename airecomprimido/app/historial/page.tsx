@@ -115,47 +115,58 @@ function HistorialContent({ uuid }: { uuid: string }) {
   const loading = informesLoading && informes.length === 0
 
   return (
-    <main className="flex flex-col px-5 py-16 sm:px-10 max-w-280 mx-auto min-h-screen">
+    <main className="flex flex-col px-4 py-16 sm:px-8 max-w-[70rem] mx-auto min-h-screen gap-5">
       {alert && <Alert type={alert.type} message={alert.message} />}
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-(--dark-blue)">{entity.name}</h1>
-        <p className="text-sm text-(--dark-blue)/60">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
           {entityType === 'area' ? 'Área' : entityType === 'empresa' ? 'Empresa' : 'Equipo'}
         </p>
+        <h1 className="text-2xl font-bold text-dark-blue">{entity.name}</h1>
       </div>
 
-      <ReportFilters
-        show={showFilters}
-        searchValue={searchInput}
-        onSearchChange={setSearchInput}
-        monthValue={monthFilter}
-        onMonthChange={setMonthFilter}
-        yearValue={yearFilter}
-        onYearChange={setYearFilter}
-        areas={areas}
-        areaValue={areaFilter}
-        onAreaChange={handleAreaChange}
-        equipos={equipos}
-        equipoValue={equipoFilter}
-        onEquipoChange={handleEquipoChange}
-      />
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col gap-4">
+        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Filtros</h2>
+        <ReportFilters
+          show={showFilters}
+          searchValue={searchInput}
+          onSearchChange={setSearchInput}
+          monthValue={monthFilter}
+          onMonthChange={setMonthFilter}
+          yearValue={yearFilter}
+          onYearChange={setYearFilter}
+          areas={areas}
+          areaValue={areaFilter}
+          onAreaChange={handleAreaChange}
+          equipos={equipos}
+          equipoValue={equipoFilter}
+          onEquipoChange={handleEquipoChange}
+        />
+      </div>
+
+      {!loading && (
+        <p className="text-sm text-slate-500 px-1">
+          {totalCount} {totalCount === 1 ? 'reporte encontrado' : 'reportes encontrados'}
+        </p>
+      )}
 
       {loading ? (
         <Loader />
       ) : (
-        <DataTable<Informe>
-          columns={columns}
-          data={informes}
-          pagination={{
-            page,
-            totalPages,
-            totalCount,
-            pageSize,
-            onPageChange: setPage,
-            isLoading: isPaginating,
-          }}
-        />
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <DataTable<Informe>
+            columns={columns}
+            data={informes}
+            pagination={{
+              page,
+              totalPages,
+              totalCount,
+              pageSize,
+              onPageChange: setPage,
+              isLoading: isPaginating,
+            }}
+          />
+        </div>
       )}
     </main>
   )

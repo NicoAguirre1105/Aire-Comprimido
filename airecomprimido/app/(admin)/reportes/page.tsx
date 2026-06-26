@@ -5,7 +5,6 @@ import Header from "../_components/header"
 import { useState, useCallback, useMemo, useEffect } from "react"
 import { adminColumns } from "@/app/_components/table/tableProps"
 import DataTable from "@/app/_components/table/dataTable"
-import Image from "next/image"
 import dynamic from "next/dynamic"
 import { Spinner } from "@/app/_components/Spinner"
 
@@ -78,6 +77,7 @@ export default function Reportes() {
   const loading =
     (informesLoading && informes.length === 0) ||
     (empresasLoading && empresas.length === 0)
+
   useEffect(() => {
     if (informesError) {
       showAlert('error', informesError)
@@ -212,105 +212,135 @@ export default function Reportes() {
   if (loading) return <Loader />
 
   return (
-    <div className="flex min-h-full flex-1">
-      <Aside isOpen={isAsideOpen} toggleAside={toggleAside}/>
+    <div className="flex min-h-full flex-1 bg-slate-50">
+      <Aside isOpen={isAsideOpen} toggleAside={toggleAside} />
       <div className="flex w-full flex-col overflow-x-hidden">
-        <Header title="Reportes" toggleAside={toggleAside}/>
-        <main className="relative flex flex-col  mt-18 px-5 py-10 md:mt-0 sm:px-10 max-w-400 md:pt-0">
-        {alert && <Alert type={alert.type} message={alert.message} />}
-        {deletingInforme && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
-            <div className="bg-white rounded-md p-6 max-w-sm w-full flex flex-col gap-4 shadow-xl">
-              <h3 className="text-lg font-semibold text-(--dark-blue)">Eliminar reporte</h3>
-              <p className="text-sm text-gray-600">
-                ¿Estás seguro de que deseas eliminar el reporte{' '}
-                <strong>&quot;{deletingInforme.titulo}&quot;</strong>? Esta acción no se puede deshacer.
-              </p>
-              <div className="flex justify-end gap-3 mt-2">
-                <button
-                  type="button"
-                  disabled={isDeleting}
-                  onClick={() => setDeletingInforme(null)}
-                  className="border border-gray-400 text-gray-600 px-4 py-2 rounded text-sm hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  disabled={isDeleting}
-                  onClick={handleDeleteConfirm}
-                  className="bg-(--red) text-white px-4 py-2 rounded text-sm hover:opacity-85 disabled:opacity-50 cursor-pointer"
-                >
-                  {isDeleting ? 'Eliminando...' : 'Eliminar'}
-                </button>
+        <Header title="Reportes" toggleAside={toggleAside} />
+
+        <main className="flex flex-col mt-[4.5rem] px-4 py-6 md:mt-0 sm:px-8 max-w-[100rem] md:pt-6 gap-5">
+          {alert && <Alert type={alert.type} message={alert.message} />}
+
+          {/* Delete confirmation modal */}
+          {deletingInforme && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+              <div className="bg-white rounded-xl p-6 max-w-sm w-full flex flex-col gap-4 shadow-2xl border border-slate-100">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-brand-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-dark-blue">Eliminar reporte</h3>
+                    <p className="text-sm text-slate-500 mt-1">
+                      ¿Estás seguro de que deseas eliminar{' '}
+                      <span className="font-medium text-dark-blue">&quot;{deletingInforme.titulo}&quot;</span>?
+                      Esta acción no se puede deshacer.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    disabled={isDeleting}
+                    onClick={() => setDeletingInforme(null)}
+                    className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 border border-slate-200 hover:bg-slate-50 disabled:opacity-50 cursor-pointer transition-colors duration-150"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isDeleting}
+                    onClick={handleDeleteConfirm}
+                    className="px-4 py-2 rounded-lg text-sm font-medium bg-brand-red text-white hover:opacity-85 disabled:opacity-50 cursor-pointer transition-opacity duration-150 flex items-center gap-2"
+                  >
+                    {isDeleting ? (
+                      <>
+                        <Spinner size="sm" variant="ring" />
+                        Eliminando...
+                      </>
+                    ) : 'Eliminar'}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        { isNewReportOpen ?
-          <NewReportForm handleNewReport={handleNewReport} onReportCreated={handleReportCreated} />
-        : editingInforme ?
-          <EditReportForm
-            informe={editingInforme}
-            onClose={() => setEditingInforme(null)}
-            onReportUpdated={() => {
-              setEditingInforme(null)
-              handleReportUpdated()
-              showAlert('success', 'El reporte ha sido actualizado correctamente.')
-            }}
-          />
-        :
-          <>
-            <div className="w-full flex flex-col gap-4 md:flex-row md:flex-wrap md:items-start">
-              <ReportFilters
-                show={{ search: true, date: true, empresa: true, area: true, equipo: true }}
-                searchValue={searchInput}
-                onSearchChange={setSearchInput}
-                monthValue={monthFilter}
-                onMonthChange={setMonthFilter}
-                yearValue={yearFilter}
-                onYearChange={setYearFilter}
-                empresas={empresas}
-                empresaValue={companyFilter}
-                onEmpresaChange={handleCompanyFilterChange}
-                areas={areas}
-                areaValue={areaFilter}
-                onAreaChange={handleAreaFilterChange}
-                equipos={equipos}
-                equipoValue={deviceFilter}
-                onEquipoChange={handleDeviceFilterChange}
-              />
-              <button
-                type="button"
-                className="bg-(--light-blue) fixed rounded-4xl p-2 bottom-10 right-10 z-40 cursor-pointer md:relative md:w-fit md:mr-0 md:ml-auto md:right-0 md:bottom-0 md:px-4 md:rounded-sm md:font-semibold hover:bg-(--dark-blue) transition-all duration-200 ease-in-out md:py-2"
-                onClick={handleNewReport}
-              >
-                <Image
-                  src="/icons/add.svg"
-                  alt="Crear reporte"
-                  width={150}
-                  height={150}
-                  className="h-9 w-auto cursor-pointer md:hidden"
+          )}
+
+          {isNewReportOpen ? (
+            <NewReportForm handleNewReport={handleNewReport} onReportCreated={handleReportCreated} />
+          ) : editingInforme ? (
+            <EditReportForm
+              informe={editingInforme}
+              onClose={() => setEditingInforme(null)}
+              onReportUpdated={() => {
+                setEditingInforme(null)
+                handleReportUpdated()
+                showAlert('success', 'El reporte ha sido actualizado correctamente.')
+              }}
+            />
+          ) : (
+            <>
+              {/* Toolbar */}
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Filtros</h2>
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 bg-light-blue hover:bg-dark-blue text-white text-sm font-semibold px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200"
+                    onClick={handleNewReport}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Nuevo reporte
+                  </button>
+                </div>
+                <ReportFilters
+                  show={{ search: true, date: true, empresa: true, area: true, equipo: true }}
+                  searchValue={searchInput}
+                  onSearchChange={setSearchInput}
+                  monthValue={monthFilter}
+                  onMonthChange={setMonthFilter}
+                  yearValue={yearFilter}
+                  onYearChange={setYearFilter}
+                  empresas={empresas}
+                  empresaValue={companyFilter}
+                  onEmpresaChange={handleCompanyFilterChange}
+                  areas={areas}
+                  areaValue={areaFilter}
+                  onAreaChange={handleAreaFilterChange}
+                  equipos={equipos}
+                  equipoValue={deviceFilter}
+                  onEquipoChange={handleDeviceFilterChange}
                 />
-                <p className="hidden text-white md:inline">Crear reporte</p>
-              </button>
-            </div>
-          <DataTable
-            columns={adminColumns}
-            data={informes}
-            pagination={{
-              page,
-              totalPages,
-              totalCount,
-              pageSize,
-              onPageChange: setPage,
-              isLoading: isPaginating,
-            }}
-            onEdit={(item) => setEditingInforme(item)}
-            onDelete={(item) => setDeletingInforme(item)}
-          />
-        </>
-        }
+              </div>
+
+              {/* Results count */}
+              {!informesLoading && (
+                <p className="text-sm text-slate-500 px-1">
+                  {totalCount} {totalCount === 1 ? 'reporte encontrado' : 'reportes encontrados'}
+                </p>
+              )}
+
+              {/* Table */}
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <DataTable
+                  columns={adminColumns}
+                  data={informes}
+                  pagination={{
+                    page,
+                    totalPages,
+                    totalCount,
+                    pageSize,
+                    onPageChange: setPage,
+                    isLoading: isPaginating,
+                  }}
+                  onEdit={(item) => setEditingInforme(item)}
+                  onDelete={(item) => setDeletingInforme(item)}
+                />
+              </div>
+            </>
+          )}
         </main>
       </div>
     </div>

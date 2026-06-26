@@ -1,7 +1,5 @@
 'use client'
 import { useState, useRef, useEffect, useCallback, useMemo } from "react"
-import Image from "next/image"
-import styles from "../_styles/newReport.module.css"
 import DataList from "./dataList"
 import { useEquipos } from "@/app/hooks/useEquipos"
 import { useEmpresas } from "@/app/hooks/useEmpresas"
@@ -62,7 +60,6 @@ export default function EditReportForm({
   const [company, setCompany] = useState(informe.empresa)
   const [area, setArea] = useState(informe.area)
   const [device, setDevice] = useState(informe.equipo)
-  // modelOverride: user-typed value; null means derive from equipos
   const [modelOverride, setModelOverride] = useState<string | null>(null)
 
   const { data: empresas, error: empresasError } = useEmpresas()
@@ -88,10 +85,6 @@ export default function EditReportForm({
     resolveWarningRef.current = null
     resolve?.(false)
   }, [])
-
-  const handleClose = () => {
-    onClose()
-  }
 
   function validateForm(form: FormType): string | null {
     if (!form.titulo.trim()) return 'Complete el título del reporte.'
@@ -322,140 +315,212 @@ export default function EditReportForm({
     if (equipo) {
       setCompany(equipo.empresa || "")
       setArea(equipo.area || "")
-      setModelOverride(null) // let autoModel derive from equipos
+      setModelOverride(null)
     }
   }
 
+  const inputClass = "w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-dark-blue placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-light-blue focus:border-transparent transition-all duration-150"
+  const labelClass = "block text-sm font-medium text-slate-700 mb-1"
+
   return (
-    <div className={`${styles.formContainer} flex flex-col w-full max-w-150 self-center px-5 md:px-0`}>
-      <div className="flex gap-1 items-center md:w-full">
-        <Image
-          src="/icons/left_arrow_blue.svg"
-          alt="Return"
-          width={150}
-          height={150}
-          className="h-6 w-fit cursor-pointer align-baseline md:hidden"
-          onClick={handleClose}
-        />
-        <h2 className="text-2xl font-semibold">Editar reporte</h2>
-        <Image
-          src="/icons/close_blue.svg"
-          alt="Cerrar"
-          width={150}
-          height={150}
-          className="hidden md:block md:h-8 md:w-fit md:cursor-pointer md:ml-auto md:hover:scale-110"
-          onClick={handleClose}
-        />
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          type="button"
+          onClick={onClose}
+          className="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 hover:bg-slate-100 cursor-pointer transition-colors duration-150"
+          aria-label="Volver"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+        <div>
+          <h2 className="text-xl font-semibold text-dark-blue">Editar reporte</h2>
+          <p className="text-xs text-slate-400 mt-0.5 truncate max-w-[18rem]">{informe.titulo}</p>
+        </div>
       </div>
-      {!uploadMessage &&
-        <form className="flex flex-col gap-3 mt-5 font-(--dark-blue)" onSubmit={handleSubmit}>
-          <div className="flex flex-col">
-            <label htmlFor="title">Título:<strong>*</strong></label>
-            <input type="text" name="title" placeholder="Mantenimiento mensual" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)" />
-          </div>
-          <div>
-            <label htmlFor="report-date">Fecha del reporte<strong>*</strong>:</label>
-            <input type="date" name="report-date" id="report-date" value={reportDate} onChange={(e) => setReportDate(e.target.value.trim())} className="font-extralight border-b-3 border-(--dark-blue) focus:border-(--light-blue)" />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="description">Descripción:</label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={180}
-              rows={3}
-              className="w-full border-2 border-(--dark-blue) rounded-sm text-base p-3 resize-none focus:outline-none focus:border-(--light-blue) focus:ring-blue-500"
-              placeholder="Escribe aquí..."
-            />
-            <div className="text-right text-sm text-gray-500 self-end">
-              {description.length}/180
+
+      {uploadMessage ? (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-16 flex flex-col items-center gap-4">
+          <Spinner size="lg" variant="ring" />
+          <p className="text-sm font-medium text-slate-600">{uploadMessage}</p>
+        </div>
+      ) : (
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          {/* Información básica */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Información básica</h3>
+
+            <div>
+              <label htmlFor="title" className={labelClass}>
+                Título <span className="text-light-blue">*</span>
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder="Mantenimiento mensual"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="report-date" className={labelClass}>
+                  Fecha del reporte <span className="text-light-blue">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="report-date"
+                  id="report-date"
+                  value={reportDate}
+                  onChange={(e) => setReportDate(e.target.value.trim())}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="hours-count" className={labelClass}>Conteo de horas</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    name="hours-count"
+                    id="hours-count"
+                    min={0}
+                    value={hoursCount}
+                    onChange={(e) => setHoursCount(e.target.value.trim())}
+                    placeholder="0"
+                    className={`${inputClass} pr-10 no-spinner`}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 font-medium pointer-events-none">hrs</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="description" className={labelClass}>Descripción</label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={180}
+                rows={3}
+                placeholder="Escribe aquí..."
+                className={`${inputClass} resize-none`}
+              />
+              <p className="text-right text-xs text-slate-400 mt-1">{description.length}/180</p>
             </div>
           </div>
-          <div className="inline-flex flex-wrap items-center gap-2">
-            <label htmlFor="hours-count">Conteo de horas:</label>
-            <span className="inline-flex items-center border-b-3 border-(--dark-blue) focus-within:border-(--light-blue)">
-              <input type="number" name="hours-count" id="hours-count" min={0} value={hoursCount} onChange={(e) => setHoursCount(e.target.value.trim())} placeholder="0" className="no-spinner w-fit border-0 bg-transparent text-center focus:outline-none" />
-              <span className="text-(--dark-blue)">hrs</span>
-            </span>
+
+          {/* Ubicación y equipo */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Ubicación y equipo</h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="report-company" className={labelClass}>
+                  Empresa <span className="text-light-blue">*</span>
+                </label>
+                <DataList
+                  options={empresas}
+                  placeholder="Ingrese empresa"
+                  state={company}
+                  handleChange={handleCompanySelection}
+                  id="report-company"
+                  key="empresa"
+                  required
+                  inputClass={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="report-area" className={labelClass}>
+                  Área <span className="text-light-blue">*</span>
+                </label>
+                <DataList
+                  options={areas}
+                  placeholder="Ingrese área"
+                  state={area}
+                  handleChange={handleAreaSelection}
+                  id="report-area"
+                  key="area"
+                  required
+                  inputClass={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="report-device" className={labelClass}>
+                  Serie <span className="text-light-blue">*</span>
+                </label>
+                <DataList
+                  options={equipos}
+                  placeholder="Número de serie"
+                  state={device}
+                  handleChange={handleDeviceSelection}
+                  id="report-device"
+                  key="equipo"
+                  required
+                  inputClass={inputClass}
+                />
+              </div>
+              <div>
+                <label htmlFor="report-model" className={labelClass}>
+                  Modelo <span className="text-light-blue">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="report-model"
+                  id="report-model"
+                  placeholder="Modelo"
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  className={inputClass}
+                  required
+                  autoComplete="off"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <label htmlFor="report-company">Empresa<strong>*</strong>: </label>
-            <DataList
-              options={empresas}
-              placeholder="Ingrese empresa"
-              state={company}
-              handleChange={handleCompanySelection}
-              id="report-company"
-              key="empresa"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="report-area">Área<strong>*</strong>: </label>
-            <DataList
-              options={areas}
-              placeholder="Ingrese área"
-              state={area}
-              handleChange={handleAreaSelection}
-              id="report-area"
-              key="area"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="report-device">Serie<strong>*</strong>: </label>
-            <DataList
-              options={equipos}
-              placeholder="Número de serie"
-              state={device}
-              handleChange={handleDeviceSelection}
-              id="report-device"
-              key="equipo"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="report-model">Modelo<strong>*</strong>: </label>
-            <input type="text" name="report-model" id="report-model" placeholder="Modelo" value={model} onChange={(e) => setModel(e.target.value)} className="text-base border-b-3 border-(--dark-blue) focus:border-(--light-blue)" required autoComplete="off" />
-          </div>
-          <div className="mt-10 flex justify-end">
-            <button type="submit" className="bg-(--light-blue) w-fit text-white self-center font-semibold px-6 py-2 rounded-4xl border-3 border-(--light-blue) hover:border-(--dark-blue) text-lg cursor-pointer hover:bg-(--dark-blue)">
+
+          {/* Actions */}
+          <div className="flex justify-end pb-4">
+            <button
+              type="submit"
+              className="bg-light-blue hover:bg-dark-blue text-white font-semibold text-sm px-6 py-2.5 rounded-lg cursor-pointer transition-colors duration-200"
+            >
               Guardar cambios
             </button>
           </div>
         </form>
-      }
-      {uploadMessage &&
-        <div className="w-full h-full flex flex-col items-center py-40 text-(--dark-blue)">
-          <Spinner size="lg" variant="ring" />
-          <p>{uploadMessage}</p>
-        </div>
-      }
+      )}
+
       {alert && <Alert type={alert.type} message={alert.message} />}
-      {showWarning &&
+
+      {showWarning && (
         <Alert type="warning" message="Tenga en cuenta la siguiente información.">
-          <ul className="text-sm list-disc">
+          <ul className="text-sm list-disc pl-1 space-y-0.5">
             {warning.map((m) => <li key={m}>{m}</li>)}
           </ul>
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-3">
             <button
               type="button"
               onClick={handleWarningAccept}
-              className="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
+              className="bg-yellow-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-yellow-600 cursor-pointer transition-colors duration-150"
             >
               Continuar
             </button>
             <button
               type="button"
               onClick={handleWarningDecline}
-              className="border-yellow-600 border text-yellow-700 px-3 py-1 rounded text-sm hover:bg-yellow-100"
+              className="border border-yellow-600 text-yellow-700 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-yellow-50 cursor-pointer transition-colors duration-150"
             >
               Cancelar
             </button>
           </div>
         </Alert>
-      }
+      )}
     </div>
   )
 }

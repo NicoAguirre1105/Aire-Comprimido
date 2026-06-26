@@ -23,7 +23,7 @@ const CURRENT_YEAR = new Date().getFullYear()
 const YEAR_OPTIONS = Array.from({ length: INFORMES_YEAR_SPAN }, (_, i) => CURRENT_YEAR - i)
 
 const selectClass =
-  'bg-(--grey-blue) pl-3 py-1 appearance-none w-30 rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-(--light-blue) pr-7'
+  'bg-grey-blue pl-3 py-1 appearance-none w-[7.5rem] rounded-sm font-semibold md:py-2 cursor-pointer focus:outline-light-blue pr-7'
 
 type ShowFilters = {
   search?: boolean
@@ -77,7 +77,7 @@ export default function ReportFilters({
       role="search"
     >
       {show.search && (
-        <span className="w-full max-w-140 flex bg-(--grey-blue) px-2 py-1 rounded-sm gap-2 md:py-2">
+        <span className="w-full max-w-[35rem] flex bg-grey-blue px-2 py-1 rounded-sm gap-2 md:py-2">
           <Image
             src="/icons/search.svg"
             alt="Buscar"

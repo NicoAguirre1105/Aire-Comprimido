@@ -22,7 +22,7 @@ export default function ContactInfo({
     <h3 className="window-title">Información de contacto</h3>
     <h4 className={titleStyle}>Dirección</h4>
     <p className={infoStyle}>José Mogro Oe10D s/n y Matilde Hidalgo</p>
-    <Link href={locationUrl} target="_blank" className="button-style self-center my-3 bg-(--light-blue) text-white">
+    <Link href={locationUrl} target="_blank" className="button-style self-center my-3 bg-light-blue text-white">
       <Image
         src="/icons/location.svg"
         alt="Location"
@@ -35,10 +35,10 @@ export default function ContactInfo({
     </Link>
     <h4 className={titleStyle}>Números de contacto</h4>
     <p className={infoStyle}>(02) 2021262 / (+593) 991848293</p>
-    <div className="w-full border-t-3 mt-7 pt-4">
+    <div className="w-full border-t-[3px] mt-7 pt-4">
       <p className="text-center text-xl">Escríbenos</p>
-      <div className="flex justify-center items-center px-5 my-3 gap-15 max-sm:flex-col max-sm:gap-5">
-        <Link href={WAUrl} target="_blank" className=" button-style w-40 bg-(--green) text-white">
+      <div className="flex justify-center items-center px-5 my-3 gap-[3.75rem] max-sm:flex-col max-sm:gap-5">
+        <Link href={WAUrl} target="_blank" className=" button-style w-40 bg-brand-green text-white">
           <Image
             src="/icons/whatsapp.svg"
             alt="WhatsApp"
@@ -48,7 +48,7 @@ export default function ContactInfo({
           />
           WhatsApp
         </Link>
-        <button onClick={() => handleWindowState('email-form')} className="bg-(--red) button-style w-40 text-white">
+        <button onClick={() => handleWindowState('email-form')} className="bg-brand-red button-style w-40 text-white">
           <Image
             src="/icons/mail.svg"
             alt="Mail"

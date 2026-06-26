@@ -14,7 +14,7 @@ export default function Aside({
 }) {
 
   const { isMobile } = useViewport()
-  const hyperStyle = 'flex items-center gap-2 opacity-75 hover:opacity-100 hover:scale-103 transition-all duration-200'
+  const hyperStyle = 'flex items-center gap-2 opacity-75 hover:opacity-100 hover:scale-[1.03] transition-all duration-200'
   const hyperIconStyle = 'h-8 w-fit'
 
   const router = useRouter()
@@ -40,7 +40,7 @@ export default function Aside({
   }
 
   return (
-    <aside className={`${isOpen || !isMobile ? 'left-0' : '-left-full'} ${asideStyle} bg-(--dark-blue) flex flex-col transition-all duration-200 ease-in-out sm:px-10 md:w-2/5 md:max-w-80 md:min-w-60`}>
+    <aside className={`${isOpen || !isMobile ? 'left-0' : '-left-full'} ${asideStyle} bg-dark-blue flex flex-col transition-all duration-200 ease-in-out sm:px-10 md:w-2/5 md:max-w-80 md:min-w-60`}>
       <div className="md:fixed md:z-10 flex flex-col h-dvh px-10 py-8 md:px-0 md:py-10">
         <Image
           src="/icons/right_arrow_white.svg"
@@ -55,7 +55,7 @@ export default function Aside({
           alt="AIRECOMPRIMIDO EC logo"
           width={150}
           height={150}
-          className="h-15 w-fit mb-20"
+          className="h-[3.75rem] w-fit mb-20"
         />
         <nav className="text-white flex flex-col text-xl font-semibold gap-7 py-5">
           <a href='/reportes' className={hyperStyle}>
@@ -81,7 +81,7 @@ export default function Aside({
         </nav>
         <button 
           onClick={handleLogout}
-          className="text-(--red) font-medium text-left mt-auto mb-5 flex items-center gap-1 cursor-pointer transition-[scale] ease-in-out hover:scale-105"
+          className="text-brand-red font-medium text-left mt-auto mb-5 flex items-center gap-1 cursor-pointer transition-transform ease-in-out hover:scale-105"
         >
           <Image
               src="/icons/exit_red.svg"

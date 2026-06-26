@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+  --color-light-blue: #3B82F6;
+  --color-dark-blue: #0F172A;
+  --color-grey-blue: #CBD5E1;
+  --color-brand-green: #00bb2d;
+  --color-brand-red: #db4a39;
+}
+
 :root {
   --light-blue: #3B82F6;
   --dark-blue: #0F172A;
@@ -12,10 +20,24 @@
 
 body {
   background-color: white;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lexend', sans-serif;
 }
 
 main { /* Header uses that space with fixed position */
   margin-top: 4rem;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px) translateX(-50%); }
+  to   { opacity: 1; transform: translateY(0)    translateX(-50%); }
+}
+
+.alert-enter {
+  animation: slideDown 0.25s ease-out both;
 }
 
 .window-title {
@@ -45,6 +67,24 @@ main { /* Header uses that space with fixed position */
 }
 
 @layer utilities {
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100% - var(--gap))); }
+  }
+
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - var(--gap))); }
+  }
+
+  .animate-marquee {
+    animation: marquee var(--duration) linear infinite;
+  }
+
+  .animate-marquee-vertical {
+    animation: marquee-vertical var(--duration) linear infinite;
+  }
+
   @keyframes blink {
     0%, 100% { opacity: 0.2; }
     50% { opacity: 0.8; }

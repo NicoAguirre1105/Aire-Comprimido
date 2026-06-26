@@ -1,5 +1,4 @@
 import type { Empresa, Equipo, Area } from "@/app/types/database"
-import { Dispatch, SetStateAction } from "react"
 
 export default function DataList({
   options,
@@ -7,32 +6,35 @@ export default function DataList({
   state,
   handleChange,
   id,
-  required=false,
-}:{
-  options: Empresa[] | Equipo[] | Area[],
-  placeholder: string,
-  state: string,
-  handleChange: (name: string) => void,
-  id: string,
-  required?:boolean
+  required = false,
+  inputClass,
+}: {
+  options: Empresa[] | Equipo[] | Area[]
+  placeholder: string
+  state: string
+  handleChange: (name: string) => void
+  id: string
+  required?: boolean
+  inputClass?: string
 }) {
-
-
-
   return (
     <>
-      <input type="search" required={required} placeholder={placeholder} list={id} value={state} className="border-b-3 border-(--dark-blue) focus:border-(--light-blue)" onChange={(e) =>  {
-              handleChange(e.target.value)
-            }}/>
+      <input
+        type="search"
+        required={required}
+        placeholder={placeholder}
+        list={id}
+        value={state}
+        className={inputClass ?? "border-b-[3px] border-dark-blue focus:border-light-blue focus:outline-none"}
+        onChange={(e) => handleChange(e.target.value)}
+      />
       <datalist id={id}>
-        {
-          options.map(opt => (
-            <option key={opt.id} value={String(opt.name)}
-            >{opt.name}</option>
-          ))
-        }
+        {options.map((opt) => (
+          <option key={opt.id} value={String(opt.name)}>
+            {opt.name}
+          </option>
+        ))}
       </datalist>
     </>
   )
-
 }
