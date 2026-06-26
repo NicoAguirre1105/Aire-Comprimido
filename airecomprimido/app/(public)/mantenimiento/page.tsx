@@ -5,7 +5,7 @@ const maintenanceServices = [
   {
     title: "Mantenimiento Básico",
     description: "Cambio de filtros de aire, aceite y separadores. Revisión de correas, presóstatos y ajuste general del equipo.",
-    image: "/img/motor.webp",
+    image: "/img/filtros.webp",
   },
   {
     title: "Mantenimiento de Válvulas",
@@ -15,7 +15,12 @@ const maintenanceServices = [
   {
     title: "Reparación de Módulos Electrónicos",
     description: "Diagnóstico y reparación de controladores electrónicos, variadores de velocidad, PLCs y sistemas de arranque.",
-    image: "/img/plc.webp",
+    image: "/img/plcs.webp",
+  },
+  {
+    title: "Mantenimiento y Reparación de Unidades Compresoras",
+    description: "Mantenimiento completo de cabezales y unidades compresoras de tornillo y pistón multimarca. Reemplazo de rodamientos, sellos, rotores y válvulas con repuestos originales.",
+    image: "/img/tornillo.webp",
   },
 ]
 
@@ -102,7 +107,7 @@ export default function Mantenimiento() {
             </h2>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {maintenanceServices.map((s, i) => (
               <FadeIn key={s.title} delay={i * 0.1}>
                 <div className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">

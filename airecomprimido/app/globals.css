@@ -31,6 +31,15 @@ main { /* Header uses that space with fixed position */
   margin-top: 4rem;
 }
 
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px) translateX(-50%); }
+  to   { opacity: 1; transform: translateY(0)    translateX(-50%); }
+}
+
+.alert-enter {
+  animation: slideDown 0.25s ease-out both;
+}
+
 .window-title {
   text-align: center;
   font-size: xx-large;

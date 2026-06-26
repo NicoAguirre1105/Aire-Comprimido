@@ -43,6 +43,9 @@ const clients = [
   { src: '/logos/favorita_logo.svg', alt: 'Corporación Favorita' },
   { src: '/logos/gira_logo.svg', alt: 'Gira' },
   { src: '/logos/north_logo.svg', alt: 'North' },
+  { src: '/logos/confiteca.svg', alt: 'Confiteca' },
+  { src: '/logos/rayo.svg', alt: 'Rayo' },
+  { src: '/logos/grafitext.svg', alt: 'Grafitext' },
 ]
 
 const services = [
@@ -157,7 +160,7 @@ export default function Home() {
 
         {/* ── CLIENTES ─────────────────────────────────────────── */}
         <section className="bg-slate-50 py-16 px-6">
-          <FadeIn className="max-w-5xl mx-auto text-center">
+          <FadeIn className="max-w-7xl mx-auto text-center">
             <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
               Empresas que confían en nosotros
             </p>
@@ -276,7 +279,7 @@ export default function Home() {
         </section>
 
         {/* ── HISTORIAL DIGITAL / QR ───────────────────────────── */}
-        <section className="py-24 px-6 bg-dark-blue">
+        <section className="py-24 px-6 bg-dark-blue min-h-[calc(100vh-4rem)]">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <FadeIn direction="left">
               <p className="text-sm font-semibold uppercase tracking-widest text-light-blue mb-3">
